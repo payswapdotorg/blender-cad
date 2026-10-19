@@ -1,49 +1,58 @@
 name: Blender fork patch apply-check
 
 # TP-CAT-11 (apply-check, M1). Canonical-side implementation: this workflow
-# clones the Blender fork at product/main and applies the canonical patch
-# series from patches/blender/ in order. The fork stays pristine (no workflow
-# commits land on the fork); the series is currently EMPTY, so the job asserts
-# exactly that state — the first patch will be exercised here the moment it
-# enters the series. A non-empty series must apply cleanly with `git am` on the
-# pinned base or the job fails (blocks re-pins and releases, per
-# docs/30-process/upstream-update-ci.md and repo-and-upstream-sync.md §7).
+# validates the Blender fork's `product/main` against the canonical patch
+# series in patches/blender/. The fork stays pristine (no workflow commits land
+# on the fork). With an EMPTY series the gate is a pure ref check via the
+# GitHub API (fast, no clone): product/main must equal the pinned upstream ref.
+# With a NON-EMPTY series the job shallow-clones product/main and applies the
+# series with `git am --3way` — the clone path activates the moment the first
+# patch enters the series. Failure blocks re-pins and releases
+# (docs/30-process/upstream-update-ci.md §7, repo-and-upstream-sync.md §5/§7).
 
 on:
   workflow_dispatch:
   schedule:
     - cron: "0 5 * * 1" # weekly, Monday 05:00 UTC
 
+permissions:
+  contents: read
+
 jobs:
   apply-check:
-    name: Apply patches/blender series onto fork product/main
+    name: Validate fork product/main against patches/blender series
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    env:
+      PINNED_UPSTREAM_REF: bf200615b83252a7be951aed5593d068f0f2438a
+      FORK_REPO: payswapdotorg/blender
     steps:
       - name: Checkout canonical repo (patch series source of truth)
         uses: actions/checkout@v4
 
-      - name: Assert series state and apply onto the pinned fork branch
-        env:
-          FORK: https://github.com/payswapdotorg/blender.git
+      - name: Ref check (empty series) or apply series (non-empty)
         run: |
           set -eu
           mkdir -p patches/blender
           COUNT=$(ls patches/blender/*.patch 2>/dev/null | wc -l)
           echo "patch series contains $COUNT patch(es)"
-          git clone --quiet --depth 1 --branch product/main --filter=blob:none "$FORK" fork 2>/dev/null
-          cd fork
-          BASE=$(git rev-parse HEAD)
-          echo "fork product/main @ $BASE"
+          HEAD_SHA=$(curl -sfS -H "Authorization: Bearer ${{ github.token }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$FORK_REPO/branches/product/main" \
+            | python3 -c "import json,sys; print(json.load(sys.stdin)['commit']['sha'])")
+          echo "fork product/main @ $HEAD_SHA"
           if [ "$COUNT" -eq 0 ]; then
             echo "series empty — asserting product/main equals the pinned upstream ref"
-            EXPECTED=bf200615b83252a7be951aed5593d068f0f2438a
-            if [ "$BASE" != "$EXPECTED" ]; then
-              echo "::error::product/main ($BASE) != pinned upstream ref ($EXPECTED) with an empty patch series — realignment required (repo-and-upstream-sync.md §4)"
+            if [ "$HEAD_SHA" != "$PINNED_UPSTREAM_REF" ]; then
+              echo "::error::product/main ($HEAD_SHA) != pinned upstream ref ($PINNED_UPSTREAM_REF) with an empty patch series — realignment required (repo-and-upstream-sync.md §4)"
               exit 1
             fi
             echo "OK: product/main == pin; nothing to apply; apply-check green"
           else
+            echo "series non-empty — shallow clone + git am"
+            git clone --depth 1 --branch product/main "https://github.com/$FORK_REPO.git" fork
+            cd fork
+            echo "applying $COUNT patch(es) onto $HEAD_SHA"
             git am --3way ../patches/blender/*.patch
-            echo "OK: full series applied cleanly onto $BASE"
+            echo "OK: full series applied cleanly"
           fi
