@@ -1,0 +1,81 @@
+# SolidCraft evaluation harness — isolated experiment workspace (NOT product code)
+#
+# Path-depends on the pinned upstream clone at ../.upstream (created by
+# ../fetch-upstream.sh; gitignored). The [patch.crates-io] table below replicates
+# upstream's root Cargo.toml so experiments run against the vendored,
+# SolidCraft-patched truck crates — the kernel SolidCraft actually ships.
+# The upstream egui-wgpu patch is deliberately NOT replicated (no UI builds here).
+
+[workspace]
+resolver = "3"
+members = ["."]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+publish = false
+
+[package]
+name = "solidcraft-eval-harness"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+description = "TL2 evaluation experiments against pinned SolidCraft crates (isolated; never shipped)"
+
+[dependencies]
+# Upstream crates at the pinned clone (see ../fetch-upstream.sh).
+# NOTE: solidcraft-engine / solidcraft-mcp are deliberately NOT linked here:
+# they pull solidcraft-io → cadmpeg-ir, whose rustc codegen exceeds this
+# sandbox's 4 GiB cgroup limit (measured peak > 2.4 GB and rising at SIGKILL,
+# opt-level 0, -j 1 — experiments/solidcraft Task 96 record). Experiment D
+# (agent interface) drives the official release binary's MCP server instead
+# (../fetch-release.sh), which is higher-fidelity evidence anyway.
+solidcraft-geom = { path = "../.upstream/crates/geom" }
+solidcraft-sketch = { path = "../.upstream/crates/sketch" }
+solidcraft-kernel = { path = "../.upstream/crates/kernel" }
+solidcraft-doc = { path = "../.upstream/crates/doc" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Replicates upstream [patch.crates-io] (their root Cargo.toml) minus egui-wgpu:
+# the vendored truck family with SolidCraft's local fixes (see upstream vendor/README.md,
+# each change marked 'SolidCraft:' in source; Apache-2.0 © RICOS Co. Ltd. retained).
+[patch.crates-io]
+truck-geometry = { path = "../.upstream/vendor/truck-geometry" }
+truck-shapeops = { path = "../.upstream/vendor/truck-shapeops" }
+truck-stepio = { path = "../.upstream/vendor/truck-stepio" }
+truck-meshalgo = { path = "../.upstream/vendor/truck-meshalgo" }
+matext4cgmath = { path = "../.upstream/vendor/matext4cgmath" }
+
+# Upstream dev-profile fidelity: dependencies optimized, debug-assertions OFF
+# (upstream note: truck's debug-only checks reject valid geometry — seam/closed edges).
+# debug=0 added for the 2-CPU/3.9GB sandbox (full debuginfo OOM-kills rustc here).
+[profile.dev]
+opt-level = 1
+debug = 0
+debug-assertions = false
+
+[profile.dev.package."*"]
+opt-level = 2
+
+# Sandbox-memory exception (experiment-only, no semantic effect): the cadmpeg codec
+# crates OOM-kill rustc at opt-level 2 on this 2-CPU/3.9GB host. Perf of these
+# serialization crates is irrelevant to every experiment; correctness is unaffected.
+[profile.dev.package.cadmpeg-ir]
+opt-level = 0
+[profile.dev.package.cadmpeg-core]
+opt-level = 0
+[profile.dev.package.cadmpeg-codec-freecad]
+opt-level = 0
+[profile.dev.package.cadmpeg-codec-rhino]
+opt-level = 0
+[profile.dev.package.cadmpeg-codec-step]
+opt-level = 0
+
+# Timing-sensitive experiments (kernel benchmark) run --release, mirroring upstream.
+[profile.release]
+opt-level = 3
+lto = "thin"
+debug = "line-tables-only"

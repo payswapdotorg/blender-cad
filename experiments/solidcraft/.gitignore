@@ -1,0 +1,12 @@
+# External, reproducible-from-SHA state — never committed
+# (no trailing slash: .upstream/.release are symlinks on the dev host)
+.upstream
+.release
+.upstream/
+.release/
+target/
+.ocp-venv/
+*.log
+scratch/
+__pycache__/
+*.pyc
