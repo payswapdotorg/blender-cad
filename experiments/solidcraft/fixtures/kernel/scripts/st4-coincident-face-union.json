@@ -1,0 +1,41 @@
+{
+ "commands": [
+  {
+   "command": "solid.box",
+   "params": {
+    "length": 10,
+    "width": 10,
+    "height": 10,
+    "body_name": "A",
+    "name": "BoxA"
+   }
+  },
+  {
+   "command": "solid.box",
+   "params": {
+    "length": 10,
+    "width": 10,
+    "height": 10,
+    "corner": [
+     10,
+     0,
+     0
+    ],
+    "body_name": "B",
+    "name": "BoxB"
+   }
+  },
+  {
+   "command": "solid.combine",
+   "params": {
+    "keep_tools": false,
+    "name": "Combine1",
+    "operation": "join",
+    "target": "A",
+    "tools": [
+     "B"
+    ]
+   }
+  }
+ ]
+}

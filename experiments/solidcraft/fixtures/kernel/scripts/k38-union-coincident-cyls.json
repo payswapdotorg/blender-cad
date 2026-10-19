@@ -1,0 +1,138 @@
+{
+  "commands": [
+    {
+      "command": "sketch.create",
+      "params": {
+        "name": "S1",
+        "plane": "XY"
+      }
+    },
+    {
+      "command": "sketch.circle.center",
+      "params": {
+        "center": [
+          0,
+          0
+        ],
+        "construction": false,
+        "id": "c1",
+        "radius": 10
+      }
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "body_names": [
+          "A"
+        ],
+        "direction": "positive",
+        "distance": 30,
+        "name": "CylA",
+        "operation": "new",
+        "profiles": [
+          {
+            "loops": [
+              {
+                "curves": [
+                  "c1"
+                ],
+                "outer": true
+              }
+            ],
+            "sketch": "S1"
+          }
+        ],
+        "sketch": "S1"
+      }
+    },
+    {
+      "command": "construct.plane.offset",
+      "params": {
+        "base": "XY",
+        "name": "Z20",
+        "offset": 20
+      }
+    },
+    {
+      "command": "sketch.create",
+      "params": {
+        "name": "S2",
+        "plane": {
+          "origin": [
+            0.0,
+            0.0,
+            20.0
+          ],
+          "x_dir": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y_dir": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        }
+      }
+    },
+    {
+      "command": "sketch.circle.center",
+      "params": {
+        "center": [
+          0,
+          0
+        ],
+        "construction": false,
+        "id": "c1",
+        "radius": 10
+      }
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "body_names": [
+          "B"
+        ],
+        "direction": "positive",
+        "distance": 30,
+        "name": "CylB",
+        "operation": "new",
+        "profiles": [
+          {
+            "loops": [
+              {
+                "curves": [
+                  "c1"
+                ],
+                "outer": true
+              }
+            ],
+            "sketch": "S2"
+          }
+        ],
+        "sketch": "S2"
+      }
+    },
+    {
+      "command": "solid.combine",
+      "params": {
+        "keep_tools": false,
+        "name": "Combine1",
+        "operation": "join",
+        "target": "A",
+        "tools": [
+          "B"
+        ]
+      }
+    }
+  ]
+}
