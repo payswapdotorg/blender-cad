@@ -15,7 +15,7 @@ results/w2-kernel.json embeds the numbers):
      - `w2_kernel`            all 16 fixtures: build/measure/timing/STEP round-trip
      - `w2_kernel --emit-step` truck STEP files for the cross-read
      - `w2_kernel --read-step` truck reader on the OCCT-written STEP files
-  B. OCP (cadquery-ocp 8.0.1.1.0 wheels in .ocp-venv, release build of OCCT):
+  B. OCP (cadquery-ocp 8.0.1.1.0 wheels in the OCP venv (default /home/z/solidcraft-ocp-venv), release build of OCCT):
      - `ocp_kernel_bench.py`  the same 16 fixtures + STEP round-trip + emitted STEP
      - `--read-step`          OCCT reader on the truck-written STEP files
   C. official release CLI (checksum-verified solidcraft-cli 0.16.2; tag 5de48e9 =
@@ -51,7 +51,8 @@ RESULTS = ROOT / "results"
 FIXTURES = ROOT / "fixtures" / "kernel"
 SCRIPTS = FIXTURES / "scripts"
 HARNESS_BIN = ROOT / "harness" / "target" / "debug" / "w2_kernel"
-OCP_PY = ROOT / ".ocp-venv" / "bin" / "python"
+OCP_VENV = Path(os.environ.get("OCP_VENV", "/home/z/solidcraft-ocp-venv"))
+OCP_PY = OCP_VENV / "bin" / "python"
 OCP_BENCH = ROOT / "python" / "ocp_kernel_bench.py"
 UPSTREAM = Path(os.environ.get("SOLIDCRAFT_UPSTREAM", "/home/z/solidcraft-upstream"))
 
@@ -277,10 +278,10 @@ def du_bytes(path: Path) -> int:
 def run_packaging() -> dict:
     rec = {}
     # OCP installed footprint
-    site = ROOT / ".ocp-venv" / "lib" / "python3.12" / "site-packages"
+    site = OCP_VENV / "lib" / "python3.12" / "site-packages"
     ocp_dir = site / "OCP"
     rec["ocp_installed_bytes"] = du_bytes(ocp_dir) if ocp_dir.is_dir() else None
-    wheels = list((ROOT / ".ocp-venv").rglob("*.whl"))
+    wheels = list(OCP_VENV.rglob("*.whl"))
     rec["ocp_wheel_files_in_venv"] = [{"name": w.name, "bytes": w.stat().st_size} for w in wheels]
     rec["ocp_wheel_download_note"] = (
         "wheel file not retained in the venv; installed size measured directly; "
@@ -426,7 +427,7 @@ def main() -> None:
             "ocp": {
                 "what": "python/ocp_kernel_bench.py, OCCT 8.0.1 via cadquery-ocp wheels",
                 "profile": "python in-process, OCP wheel (release build of OCCT), warm",
-                "venv": ".ocp-venv (experiment-side only; NOT a product dependency)",
+                "venv": "OCP_VENV env var, default /home/z/solidcraft-ocp-venv (outside the repo tree — moved after the secret-scanner walk found the venv inside experiments/; experiment-side only; NOT a product dependency)",
             },
             "timing_note": (
                 "release-config timing = the CLI path (release profile, shipped config); the harness and OCP "

@@ -56,3 +56,9 @@ document defers to it. Suggested reading order after the glossary:
 - `20-agent/zcode-runtime-spike-m1.md` — ZCode runtime compatibility spike at the pinned tree
 - `30-process/adr/0007-zcode-fork-realignment.md` — ZCode fork realignment decision
 - `30-process/completion-graph-m1.md` — M1 completion graph (test-backed)
+
+## TL2 SolidCraft evaluation additions (2026-10-20, issue #1)
+
+- `00-architecture/solidcraft-evaluation.md` — **TL2 decision record**: source audit, seven-candidate scorecard with gates, limitations, next-PR scope
+- `30-process/completion-graph-solidcraft-evaluation.md` — evaluation completion graph (ticks with committed evidence only)
+- `experiments/solidcraft/` — isolated experiment lane (not product code): reproducible harnesses/drivers/fixtures/results + per-lane findings docs

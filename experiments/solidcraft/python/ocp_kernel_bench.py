@@ -3,7 +3,7 @@
 
 Counterpart of harness/src/bin/w2_kernel.rs: the SAME 16 fixtures from
 fixtures/kernel/cases.json, re-implemented with OCCT operations through the
-`cadquery-ocp` 8.0.1.1.0 wheels (experiment-side venv ../.ocp-venv only — NOT a product
+`cadquery-ocp` 8.0.1.1.0 wheels (experiment-side venv /home/z/solidcraft-ocp-venv only — NOT a product
 dependency; ADR-0002 keeps OCCT as the product direction and this file is evidence for
 that decision, not an implementation of it).
 
@@ -27,7 +27,7 @@ Modes:
 STEP files for the cross-read experiment are written into ../scratch/w2-kernel/ocp-step/
 during the full run (--emit-step-dir to override).
 
-Run (from experiments/solidcraft/):  ../.ocp-venv/bin/python python/ocp_kernel_bench.py
+Run (from experiments/solidcraft/):  /home/z/solidcraft-ocp-venv/bin/python python/ocp_kernel_bench.py
 """
 
 from __future__ import annotations

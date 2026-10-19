@@ -2,7 +2,7 @@
 
 Drivers here run under the experiment environment(s):
 
-- `.ocp-venv/` (gitignored): `cadquery-ocp==8.0.1.1.0` wheels — the OCCT/OCP side of
+- `solidcraft-ocp-venv/` (gitignored): `cadquery-ocp==8.0.1.1.0` wheels — the OCCT/OCP side of
   the kernel comparison (experiment C). This venv is an evaluation artifact; it is NOT
   a product dependency and must never be referenced from `modules/` or requirements files.
 - repo dev Python (3.12, pytest): for anything importing `bcdoc` — the document-model

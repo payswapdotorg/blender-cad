@@ -15,7 +15,7 @@
    pinned SHA into `.upstream/` (gitignored). Committed evidence records the SHA; the
    clone is reproducible from the script.
 3. **No production runtime dependency may be introduced as a side effect.** The Rust
-   harness is a dev-time experiment workspace; the OCP venv (`.ocp-venv/`, gitignored) is
+   harness is a dev-time experiment workspace; the OCP venv (`solidcraft-ocp-venv/`, gitignored) is
    an experiment-side comparison environment, not a product dependency.
 4. **Fixtures carry provenance.** Self-authored fixtures state author + date; fixtures
    derived from upstream files (e.g. `recipe.json` oracle cases) record the source path
@@ -32,7 +32,7 @@
 experiments/solidcraft/
 ├── README.md               # this file — rules, reproduction
 ├── fetch-upstream.sh       # idempotent clone of the pinned SHA → .upstream/
-├── .gitignore              # .upstream/ target/ .ocp-venv/ *.log scratch/
+├── .gitignore              # .upstream/ target/ solidcraft-ocp-venv/ *.log scratch/
 ├── harness/                # Rust experiment workspace (path-deps on .upstream crates)
 │   ├── Cargo.toml          # replicates upstream [patch.crates-io] → .upstream/vendor/*
 │   └── src/bin/*.rs        # one binary per experiment (owners: see table)
@@ -64,7 +64,7 @@ rustup toolchain install stable
 #    -j 1 is mandatory on the 2-CPU/4GiB-cgroup sandbox (parallel rustc OOM-kills)
 cd experiments/solidcraft/harness && cargo build --workspace -j 1
 # 4. OCP comparison environment (experiment-side only)
-python3.12 -m venv ../.ocp-venv && ../.ocp-venv/bin/pip install cadquery-ocp==8.0.1.1.0
+python3.12 -m venv /home/z/solidcraft-ocp-venv && /home/z/solidcraft-ocp-venv/bin/pip install cadquery-ocp==8.0.1.1.0
 # 5. run a specific experiment (see its result JSON for the exact command)
 cargo run --bin w2_history   # example
 ```

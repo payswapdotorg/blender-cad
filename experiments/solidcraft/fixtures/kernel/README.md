@@ -2,7 +2,7 @@
 
 Shared fixture set for the comparative kernel experiment: SolidCraft's vendored-patched
 `truck` kernel (through `solidcraft-kernel` at the pinned upstream SHA) vs OCCT 8.0.1
-through the `cadquery-ocp` 8.0.1.1.0 Python wheels (`.ocp-venv`, experiment-side only).
+through the `cadquery-ocp` 8.0.1.1.0 Python wheels (OCP venv outside the repo tree, experiment-side only).
 
 **16 fixtures: 10 upstream-oracle-derived + 6 self-authored.** Machine-readable metadata
 with per-case provenance and analytic expectations: [`cases.json`](cases.json). CLI timing
@@ -12,7 +12,7 @@ The same parts are implemented twice, from the same parametrization:
 
 - truck side: `harness/src/bin/w2_kernel.rs` (direct `solidcraft-kernel` API, pinned
   clone `.upstream` @ `3b4db52`, vendored patched truck — the kernel SolidCraft ships);
-- OCP side: `python/ocp_kernel_bench.py` (OCCT via OCP bindings, `.ocp-venv`).
+- OCP side: `python/ocp_kernel_bench.py` (OCCT via OCP bindings, OCP venv outside the repo tree).
 
 ## Provenance rules (experiments/solidcraft/README.md §1.4)
 
