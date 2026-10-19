@@ -76,7 +76,7 @@ Sandbox constraints recorded honestly (Task 96 bootstrap):
   cgroup limit (peak > 2.4 GB at SIGKILL, opt-level 0, `-j 1`). Experiment D uses
   the checksum-verified official release binary instead — the shipped MCP server,
   which is the integration seam a real agent would face. Release tag `v0.16.2`
-  (commit `5de48e9`) is 8 commits behind the source pin `3b4db52`; source audits
+  (commit `5de48e9`) is 80 commits behind the source pin `3b4db52`; source audits
   use the pin, behavioral MCP evidence uses the binary, and every result file says
   which.
 

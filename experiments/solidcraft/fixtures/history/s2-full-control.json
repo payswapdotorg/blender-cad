@@ -1,0 +1,101 @@
+{
+ "provenance": {
+  "author": "TL2-W2 (history/naming lane)",
+  "date": "2026-10-19",
+  "license": "same as repo (experiments tree)",
+  "note": "derived from s1-baseline.json with len=50 and pick points at the new coordinates; contrast: the saved design survives the same edit without touching picks (named references)"
+ },
+ "description": "W2 scenario 2/3a control: the same final model as s2-edit-len.json (len=50) built from scratch (pick points moved to the new geometry), for full-rebuild vs incremental-edit comparison",
+ "commands": [
+  {
+   "command": "parameters.change",
+   "params": {
+    "name": "len",
+    "expression": "50 mm"
+   }
+  },
+  {
+   "command": "parameters.change",
+   "params": {
+    "name": "h",
+    "expression": "10 mm"
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": "XY",
+    "name": "S"
+   }
+  },
+  {
+   "command": "sketch.rectangle.two_point",
+   "params": {
+    "p0": [
+     0,
+     0
+    ],
+    "p1": [
+     40,
+     30
+    ]
+   }
+  },
+  {
+   "command": "sketch.dimension",
+   "params": {
+    "entities": [
+     "l1"
+    ],
+    "value": "len"
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "distance": "h",
+    "name": "Block"
+   }
+  },
+  {
+   "command": "solid.fillet",
+   "params": {
+    "edges": [
+     [
+      50,
+      15,
+      10
+     ]
+    ],
+    "radius": 2,
+    "name": "Round"
+   }
+  },
+  {
+   "command": "solid.hole",
+   "params": {
+    "position": [
+     25,
+     15,
+     10
+    ],
+    "diameter": 5,
+    "name": "Hole"
+   }
+  },
+  {
+   "command": "model.faces",
+   "params": {
+    "body": "Body1"
+   }
+  },
+  {
+   "command": "inspect.measure",
+   "params": {}
+  }
+ ]
+}

@@ -1,0 +1,13 @@
+{
+  "provenance": {
+    "author": "TL2-W2 (history/naming lane)",
+    "date": "2026-10-19",
+    "license": "same as repo (experiments tree)",
+    "note": "run with --in s3b-shell-baseline.solidcraft; thins the shell wall past the outer round so the edges InnerCorners names are gone"
+  },
+  "description": "W2 scenario 3b/4a edit: timeline.edit Shell thickness 5->2 removes the inner corner edges -> InnerCorners' stored edge names must FAIL loudly (no silent retarget)",
+  "commands": [
+    {"command": "timeline.edit", "params": {"feature": "Shell", "set": {"thickness": "2"}}},
+    {"command": "inspect.measure", "params": {}}
+  ]
+}

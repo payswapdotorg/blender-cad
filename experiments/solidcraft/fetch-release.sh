@@ -4,7 +4,7 @@
 #
 # Fidelity note (recorded honestly in every result that uses the binary):
 #   release tag v0.16.2 → commit 5de48e916df2d659586a36b15c90ed05293a0954,
-#   which is 8 commits BEHIND the source-pin 3b4db52c10279251a068cfca5eb7447068bc28e7
+#   which is 80 commits BEHIND the source-pin 3b4db52c10279251a068cfca5eb7447068bc28e7
 #   (source audits use the pin; behavioral MCP evidence uses the release binary).
 set -euo pipefail
 

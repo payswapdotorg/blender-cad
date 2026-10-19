@@ -1,0 +1,20 @@
+{
+  "provenance": {
+    "author": "TL2-W2 (history/naming lane)",
+    "date": "2026-10-19",
+    "license": "same as repo (experiments tree)",
+    "note": "s1-baseline.json with len=50 but the fillet pick point left at the old coordinates: an imperative script with a stale pick must fail loudly instead of retargeting"
+  },
+  "description": "W2 scenario 3c: len=50 from scratch with the fillet's pick point still at [40,15,10] (stale) -> the command must refuse (no silent nearest-edge retarget)",
+  "commands": [
+    {"command": "parameters.change", "params": {"name": "len", "expression": "50 mm"}},
+    {"command": "parameters.change", "params": {"name": "h", "expression": "10 mm"}},
+    {"command": "sketch.create", "params": {"plane": "XY", "name": "S"}},
+    {"command": "sketch.rectangle.two_point", "params": {"p0": [0, 0], "p1": [40, 30]}},
+    {"command": "sketch.dimension", "params": {"entities": ["l1"], "value": "len"}},
+    {"command": "sketch.finish", "params": {}},
+    {"command": "solid.extrude", "params": {"distance": "h", "name": "Block"}},
+    {"command": "solid.fillet", "params": {"edges": [[40, 15, 10]], "radius": 2, "name": "Round"}},
+    {"command": "solid.hole", "params": {"position": [20, 15, 10], "diameter": 5, "name": "Hole"}}
+  ]
+}

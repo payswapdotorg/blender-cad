@@ -1,0 +1,19 @@
+{
+  "provenance": {
+    "author": "TL2-W2 (history/naming lane)",
+    "date": "2026-10-19",
+    "license": "same as repo (experiments tree)",
+    "note": "self-authored after the upstream engine test crates/engine/src/naming_history_tests.rs::a_shell_fillet_does_not_follow_a_gone_edge_onto_a_smooth_seam (MIT OR Apache-2.0, idea only, numbers re-chosen)"
+  },
+  "description": "W2 scenario 3b baseline: plate -> 4 top corner fillets -> inside shell -> fillet of the shell's inner top edges (named references)",
+  "commands": [
+    {"command": "sketch.create", "params": {"plane": "XY", "name": "S"}},
+    {"command": "sketch.rectangle.two_point", "params": {"p0": [-27.5, -40], "p1": [27.5, 40]}},
+    {"command": "sketch.finish", "params": {}},
+    {"command": "solid.extrude", "params": {"distance": 25, "name": "Plate"}},
+    {"command": "solid.fillet", "params": {"edges": [[-27.5, -40, 12.5], [27.5, -40, 12.5], [27.5, 40, 12.5], [-27.5, 40, 12.5]], "radius": 5, "name": "OuterCorners"}},
+    {"command": "solid.shell", "params": {"faces": [[0, 0, 25]], "thickness": 5, "direction": "inside", "name": "Shell"}},
+    {"command": "solid.fillet", "params": {"edges": [[-22.5, 35, 15], [22.5, 35, 15], [22.5, -35, 15], [-22.5, -35, 15]], "radius": 5, "name": "InnerCorners"}},
+    {"command": "inspect.measure", "params": {}}
+  ]
+}
