@@ -1,4 +1,4 @@
-name: M0+M1 repo consistency and unit batteries
+name: Repo consistency and unit batteries
 
 on:
   push:
