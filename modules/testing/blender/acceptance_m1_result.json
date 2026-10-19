@@ -1,0 +1,180 @@
+{
+  "battery": "acceptance_m1",
+  "date": "2026-10-19T16:07:26Z",
+  "blender_binary": "/home/z/runtime/blender-5.2.2-linux-x64/blender",
+  "extension_zip": "blender_cad-0.1.0.zip",
+  "blender_version": "Blender 5.2.2 LTS",
+  "phases": {
+    "install": {
+      "exit": 0,
+      "seconds": 0.8,
+      "output": "STATUS Installed \"blender_cad\""
+    },
+    "verify": {
+      "exit": 0,
+      "seconds": 1.0,
+      "blend": "/tmp/bcad-accept-r8nui4hz/acceptance_m1.blend",
+      "phase_all_passed": true,
+      "dxf_engine": "ezdxf"
+    },
+    "reopen": {
+      "exit": 0,
+      "seconds": 0.7,
+      "phase_all_passed": true
+    }
+  },
+  "checks": [
+    {
+      "check": "blender.version",
+      "passed": true,
+      "detail": "Blender 5.2.2 LTS"
+    },
+    {
+      "check": "extension.install",
+      "passed": true,
+      "detail": "exit 0; STATUS Installed \"blender_cad\""
+    },
+    {
+      "check": "verify.extension.loaded_at_startup",
+      "passed": true,
+      "detail": "import bl_ext.user_default.blender_cad OK"
+    },
+    {
+      "check": "verify.bcshell.registered_flag",
+      "passed": true,
+      "detail": "registered=True"
+    },
+    {
+      "check": "verify.workspace.opens",
+      "passed": true,
+      "detail": "workspaces=['Animation', 'BlenderCAD', 'Compositing', 'Geometry Nodes', 'Layout', 'Modeling', 'Rendering', 'Scripting', 'Sculpting', 'Shading', 'Texture Paint', 'UV Editing']"
+    },
+    {
+      "check": "verify.command.LINE",
+      "passed": true,
+      "detail": "created=3 segments; Close honored"
+    },
+    {
+      "check": "verify.command.CIRCLE",
+      "passed": true,
+      "detail": "center=(20.0, 5.0, 0.0) radius=4.0"
+    },
+    {
+      "check": "verify.command.ARC",
+      "passed": true,
+      "detail": "3P arc radius=10.0 center=(10.0, 30.0, 0.0) (expected r=10)"
+    },
+    {
+      "check": "verify.command.MOVE",
+      "passed": true,
+      "detail": "p1=(5.0, 5.0, 0.0) p2=(15.0, 5.0, 0.0)"
+    },
+    {
+      "check": "verify.command.COPY",
+      "passed": true,
+      "detail": "copy center=(22.0, 5.0, 0.0); original kept at (20.0, 5.0, 0.0)"
+    },
+    {
+      "check": "verify.command.ROTATE",
+      "passed": true,
+      "detail": "rotated 90\u00b0 about base point at the circle center (center invariant)"
+    },
+    {
+      "check": "verify.command.SCALE",
+      "passed": true,
+      "detail": "radius 8.0 after scale factor 2 (base at center)"
+    },
+    {
+      "check": "verify.command.ERASE",
+      "passed": true,
+      "detail": "entities 6 -> 5"
+    },
+    {
+      "check": "verify.document.undo_depth",
+      "passed": true,
+      "detail": "undo_depth=10"
+    },
+    {
+      "check": "verify.document.undo_roundtrip",
+      "passed": true,
+      "detail": "undo() restored the ERASEd entity"
+    },
+    {
+      "check": "verify.display.sync",
+      "passed": true,
+      "detail": "display objects=6"
+    },
+    {
+      "check": "verify.native.functions_usable",
+      "passed": true,
+      "detail": "primitive_cube_add OK alongside CAD entities"
+    },
+    {
+      "check": "verify.dxf.roundtrip_in_blender",
+      "passed": true,
+      "detail": "engine out=ezdxf in=ezdxf; 6 entities identical after export->wipe->import"
+    },
+    {
+      "check": "verify.document.saved",
+      "passed": true,
+      "detail": "/tmp/bcad-accept-r8nui4hz/acceptance_m1.blend"
+    },
+    {
+      "check": "reopen.blend.reopened",
+      "passed": true,
+      "detail": "/tmp/bcad-accept-r8nui4hz/acceptance_m1.blend"
+    },
+    {
+      "check": "reopen.extension.active_after_reopen",
+      "passed": true,
+      "detail": "installed extension loaded at startup"
+    },
+    {
+      "check": "reopen.document.restored_entities",
+      "passed": true,
+      "detail": "6 entities after reopen (expected 6)"
+    },
+    {
+      "check": "reopen.document.restored_version",
+      "passed": true,
+      "detail": "doc_version=13"
+    },
+    {
+      "check": "reopen.document.restored_kinds",
+      "passed": true,
+      "detail": "kinds={'line': 3, 'circle': 2, 'arc': 1}"
+    },
+    {
+      "check": "reopen.document.undo_survived",
+      "passed": true,
+      "detail": "undo_depth=11"
+    },
+    {
+      "check": "reopen.document.live_after_reopen",
+      "passed": true,
+      "detail": "undo()+redo() callable on restored document"
+    },
+    {
+      "check": "reopen.display.resync_after_reopen",
+      "passed": true,
+      "detail": "display objects=6 vs entities=6"
+    },
+    {
+      "check": "reopen.native.functions_after_reopen",
+      "passed": true,
+      "detail": "primitive_cube_add OK after reopen"
+    },
+    {
+      "check": "reopen.extension.clean_unload_reload",
+      "passed": true,
+      "detail": "unregister() then register() both clean"
+    },
+    {
+      "check": "extension.uninstall",
+      "passed": true,
+      "detail": "exit 0; [Errno 2] No such file or directory: '/tmp/bcad-accept-r8nui4hz/extensions/blender_org'\nSTATUS Removed \"blender_cad\""
+    }
+  ],
+  "all_passed": true,
+  "platform": "Linux-5.10.134-013.15.kangaroo.al8.x86_64-x86_64-with-glibc2.41"
+}

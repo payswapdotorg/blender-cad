@@ -11,7 +11,7 @@ Checks per manifest:
   - components.zcode_runtime.upstream_ref is a 40-hex SHA or starts with "pending:"
   - components.cad_extension.commit is a 7- or 40-hex SHA or the literal "self-at-release"
   - dependencies: non-empty list; each item carries name/license/role/module/status;
-    module must be one of the 13 modules (loaded from modules/modules.json);
+    module must be one of the 15 modules (loaded from modules/modules.json);
     status in {candidate, adopted, rejected}
   - notes present as a string
 

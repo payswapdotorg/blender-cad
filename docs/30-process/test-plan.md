@@ -28,7 +28,7 @@ not a suite: its suite is created where its subject matter lands.
 | TP-CAT-02 | Precise geometry & constraint-solver | W2 | `modules/kernel/tests/`, `modules/parametric/tests/` | M1–M2 window (solver sections at M3 entry) |
 | TP-CAT-03 | Drawing regeneration & technical documentation | W1 | `modules/drawings/tests/` | M2–M4 window |
 | TP-CAT-04 | DWG/DXF import/export round-trip conformance | W2 | `modules/interchange/tests/` + `modules/testing/roundtrip/` | M2–M4 window (full suite at M4) |
-| TP-CAT-05 | BIM & specialist toolset | W2 (bim), W1 (toolsets) | `modules/bim/tests/`, `modules/toolsets/tests/` | M4 |
+| TP-CAT-05 | BIM, QTO/asset & specialist toolset | W2 (bim, qto, asset), W1 (toolsets) | `modules/bim/tests/`, `modules/qto/tests/`, `modules/asset/tests/`, `modules/toolsets/tests/` | M4 (BIM); M5–M6 (QTO/asset sections) |
 | TP-CAT-06 | Native Blender regression | TL (+ W2) | `modules/testing/blender-regression/` | M1 onward, every release |
 | TP-CAT-07 | Agent tool correctness, state-sync, conflict, rollback | W3 | `modules/agent/tests/` + `modules/testing/agent-contract/` | M5 |
 | TP-CAT-08 | Skill creation, portability, versioning, validation | W3 | `modules/skills/tests/` | M6 |
@@ -115,14 +115,14 @@ until then — never silently skipped.
 - **Pass criteria:** declared round-trip matrix green; corpus processed without crashes; every deviation ledgered.
 - **Owner:** W2. **Blocking from:** M2–M4 window — DXF sections from M2, DWG-read from M3; full round-trip conformance blocks M4 exit.
 
-### TP-CAT-05 — BIM & specialist toolset
+### TP-CAT-05 — BIM, QTO/asset & specialist toolset
 
-- **Purpose:** BIM workflows through Bonsai + IfcOpenShell produce valid IFC; toolset libraries (mechanical, electrical, MEP, plant, civil, GIS, raster) behave correctly and stay mutually independent.
-- **Suites:** `modules/bim/tests/`, `modules/toolsets/tests/` (per-toolset sub-suites); IFC conformance in `modules/testing/bim/`.
-- **Fixtures:** sample IFC files; per-toolset corpora (symbol libraries, part lists, geospatial samples).
-- **Tools:** pytest; IfcOpenShell validation; boundary checks assert no cross-toolset coupling.
-- **Pass criteria:** IFC validation clean on the fixture set; toolset smoke suites green; the no-toolset-to-toolset rule holds.
-- **Owner:** W2 (bim), W1 (toolsets). **Blocking from:** M4.
+- **Purpose:** BIM workflows through Bonsai + IfcOpenShell produce valid IFC; QTO takeoff and estimate workflows reproduce reference quantities within documented unit rules; asset (RCM) records stay referentially intact (registry links, defect markers, work-order export round-trip); toolset libraries (mechanical, electrical, MEP, plant, civil, GIS, raster) behave correctly and stay mutually independent.
+- **Suites:** `modules/bim/tests/`, `modules/qto/tests/` (takeoff accuracy), `modules/asset/tests/` (asset records integrity), `modules/toolsets/tests/` (per-toolset sub-suites); IFC conformance in `modules/testing/bim/`.
+- **Fixtures:** sample IFC files; known-quantity takeoff models and 2D drawings; asset-record sample sets with defect/grading history; per-toolset corpora (symbol libraries, part lists, geospatial samples).
+- **Tools:** pytest; IfcOpenShell validation; quantity comparison against reference tallies; record-integrity assertions; boundary checks assert no cross-toolset coupling.
+- **Pass criteria:** IFC validation clean on the fixture set; takeoff quantities match references within the documented unit-rule tolerances; asset record sets re-import with zero record loss; toolset smoke suites green; the no-toolset-to-toolset rule holds.
+- **Owner:** W2 (bim, qto, asset), W1 (toolsets). **Blocking from:** M4 (BIM sections — scope-expansion-m1.md §2); QTO sections at M5 and asset/RCM sections at M5–M6 (scope-expansion-m1.md §3–§4; milestone-plan §8–§9). The category count stays 12; the scope-expansion areas extend this category, they do not add a new one.
 
 ### TP-CAT-06 — Native Blender regression
 

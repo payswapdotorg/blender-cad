@@ -1,0 +1,22 @@
+area: QTO
+title: "Quantity takeoff, BOQ & estimating"
+module: qto
+entries:
+  - {id: FP-QTO-001, name: "Model takeoff", desc: "Element-based takeoff: counts, lengths, areas, volumes from model geometry", p: P1, dep: [ifcopenshell, occt], status: planned, test: "", note: "reads element data through the bim module"}
+  - {id: FP-QTO-002, name: "Classification takeoff", desc: "Group quantities by classification code across element sets", p: P1, dep: [ifcopenshell], status: planned, test: "", note: "classification tables owned by BIM area (FP-BIM-017)"}
+  - {id: FP-QTO-003, name: "2D geometry takeoff", desc: "Measure lengths and areas from 2D entities: polylines, boundaries, hatches", p: P1, dep: [shapely, ezdxf], status: planned, test: "", note: ""}
+  - {id: FP-QTO-004, name: "Boundary picking", desc: "On-screen measurement: pick boundary chains and islands; deduct holes", p: P1, dep: [shapely], status: planned, test: "", note: "uses drafting selection and snap mechanisms"}
+  - {id: FP-QTO-005, name: "Quantity categories", desc: "Quantity category definitions with unit rules: count, length, area, volume, weight", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-QTO-006, name: "Quantity formulas", desc: "Per-item formulas referencing element properties and measured quantities", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-QTO-007, name: "BOQ structure", desc: "Bill structure: sections, trades, items, part-sets with units", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-QTO-008, name: "Element-item mapping", desc: "Mapping rules linking element categories and classifications to bill items", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-QTO-009, name: "Rate libraries", desc: "Rate item libraries: unit rates, waste factors, tax classes", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-QTO-010, name: "Estimate rollups", desc: "Estimate totals: item, section, grand; overhead and profit lines", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-QTO-011, name: "Estimate variants", desc: "Duplicate estimates as variants; delta comparison between versions", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-QTO-012, name: "Cost codes", desc: "Organizational cost codes on items; group and filter estimates by code", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-QTO-013, name: "Estimate export CSV", desc: "Estimate export to CSV with a documented column schema", p: P1, dep: [], status: planned, test: "", note: "export round-trip checked TP-CAT-04-style"}
+  - {id: FP-QTO-014, name: "Estimate export PDF", desc: "Estimate reports to PDF through the drawings publish path", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-QTO-015, name: "Takeoff rule templates", desc: "Measurement rule templates per element category: net and gross, deduction rules", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-QTO-016, name: Reconciliation, desc: "Compare estimate quantities with as-executed records; variance report", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-QTO-017, name: "Work packages", desc: "Assign estimate items to work packages with per-package subtotals", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-QTO-018, name: Contingencies, desc: "Contingency and escalation percentage lines per section with audit note", p: P2, dep: [], status: planned, test: "", note: ""}

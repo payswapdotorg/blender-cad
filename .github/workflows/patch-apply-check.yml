@@ -1,0 +1,49 @@
+name: Blender fork patch apply-check
+
+# TP-CAT-11 (apply-check, M1). Canonical-side implementation: this workflow
+# clones the Blender fork at product/main and applies the canonical patch
+# series from patches/blender/ in order. The fork stays pristine (no workflow
+# commits land on the fork); the series is currently EMPTY, so the job asserts
+# exactly that state — the first patch will be exercised here the moment it
+# enters the series. A non-empty series must apply cleanly with `git am` on the
+# pinned base or the job fails (blocks re-pins and releases, per
+# docs/30-process/upstream-update-ci.md and repo-and-upstream-sync.md §7).
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 5 * * 1" # weekly, Monday 05:00 UTC
+
+jobs:
+  apply-check:
+    name: Apply patches/blender series onto fork product/main
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout canonical repo (patch series source of truth)
+        uses: actions/checkout@v4
+
+      - name: Assert series state and apply onto the pinned fork branch
+        env:
+          FORK: https://github.com/payswapdotorg/blender.git
+        run: |
+          set -eu
+          mkdir -p patches/blender
+          COUNT=$(ls patches/blender/*.patch 2>/dev/null | wc -l)
+          echo "patch series contains $COUNT patch(es)"
+          git clone --quiet --depth 1 --branch product/main --filter=blob:none "$FORK" fork 2>/dev/null
+          cd fork
+          BASE=$(git rev-parse HEAD)
+          echo "fork product/main @ $BASE"
+          if [ "$COUNT" -eq 0 ]; then
+            echo "series empty — asserting product/main equals the pinned upstream ref"
+            EXPECTED=bf200615b83252a7be951aed5593d068f0f2438a
+            if [ "$BASE" != "$EXPECTED" ]; then
+              echo "::error::product/main ($BASE) != pinned upstream ref ($EXPECTED) with an empty patch series — realignment required (repo-and-upstream-sync.md §4)"
+              exit 1
+            fi
+            echo "OK: product/main == pin; nothing to apply; apply-check green"
+          else
+            git am --3way ../patches/blender/*.patch
+            echo "OK: full series applied cleanly onto $BASE"
+          fi

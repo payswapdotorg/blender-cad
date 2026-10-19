@@ -20,7 +20,7 @@ Test vocabulary used here (citable): upstream-update conformance — **TP-CAT-11
 | Component | Repository | Upstream & pin | License |
 |---|---|---|---|
 | Blender fork | `https://github.com/payswapdotorg/blender` | Fork of `blender/blender` (default branch `main`). Upstream pin: `bf200615b83252a7be951aed5593d068f0f2438a` (blender/blender main, 2026-10-19T09:56Z). | GPL-2.0-or-later per blender.org — GitHub reports `NOASSERTION`; both recorded (license-inventory.md). |
-| ZCode runtime fork | `https://github.com/payswapdotorg/ZCode` | Fork of `zai-org/ZCode` (default branch `main`). Upstream pin: `0a1fc56d279fd1001f78387bd81aec1c26767411` (zai-org/ZCode main, 2026-10-19T02:34Z); upstream version v3.16.1. | Apache-2.0 |
+| ZCode runtime fork | `https://github.com/payswapdotorg/ZCode` | Fork of `zai-org/ZCode` (default branch `main`). Upstream pin: `0a1fc56d279fd1001f78387bd81aec1c26767411` (zai-org/ZCode main, 2026-10-19T02:34Z); upstream version v3.16.1. **M1 actual state (ADR-0007):** `main` = pristine mirror at the pin (identical to upstream main); immutable annotated tag `upstream-pin-0a1fc56` at the pin; product patch branch `cad-adaptation` at the pin (series empty); legacy pre-existing "Gen" program history preserved verbatim on branch `gen/archive` (head `c3cc34f`) — unrelated to this product. | Apache-2.0 |
 | CAD extension (this repo) | `https://github.com/payswapdotorg/blender-cad` | None — this repository is the canonical source of truth. | GPL-3.0-or-later (ADR-0005). |
 
 Provenance note (record, do not "fix" cosmetically): GitHub created the ZCode fork under the name **"Gen"** (network-root name cache) and it was renamed to `ZCode` — cosmetic only; fork parent was verified to be `zai-org/ZCode`.
@@ -30,12 +30,28 @@ Provenance note (record, do not "fix" cosmetically): GitHub created the ZCode fo
 | Repo | Responsibilities | What must NOT live there |
 |---|---|---|
 | `payswapdotorg/blender` (Blender fork) | Host application: build, packaging, launch config, minimal native patch set. | **The CAD engine never lives in the Blender fork.** No CAD modules, no feature inventory, no agent integration, no release manifests. Product code reaches the fork only as a loadable extension built from this repo. |
-| `payswapdotorg/ZCode` (ZCode runtime fork) | Pinned, audited mirror of the agent runtime; later, minimal reviewed adaptations. | Product UI, CAD logic, unaudited upstream tracking, unreviewed experiments. The fork is an audit boundary, not a development branch. |
+| `payswapdotorg/ZCode` (ZCode runtime fork) | Pinned, audited mirror of the agent runtime; later, minimal reviewed adaptations on `cad-adaptation` (ADR-0007). Legacy "Gen" program history preserved on `gen/archive` — not product content. | Product UI, CAD logic, unaudited upstream tracking, unreviewed experiments. The fork is an audit boundary, not a development branch. |
 | `payswapdotorg/blender-cad` (canonical) | Engineering architecture, feature inventory, API contracts, module packaging, tests, release manifests, canonical copies of the Blender patch series. | Vendored Blender sources; Blender build infrastructure; ZCode runtime code (only adaptation plans and audit records live here). |
 
 The bulk of the CAD engine, toolsets and agent integration live in this repository, not in Blender's tree. The fork stays as close to upstream as patch discipline permits; the extension stays a pure add-on wherever the architecture allows. This separation is a structural guarantee for the mission criterion that all native Blender capabilities are retained (guarded by TP-CAT-06).
 
 Organization note: the three repositories live under the `payswapdotorg` account at handoff; migration to a dedicated organization is a documented, non-blocking option (§11).
+
+### 2.3 ZCode fork branch model (actual, M1 — ADR-0007)
+
+| Ref | Points at | Role | Mutability |
+|---|---|---|---|
+| `main` (fork default) | upstream pin `0a1fc56` | pristine pinned mirror — verified identical to `zai-org/ZCode` main | reset only via re-pin procedure (ADR-0004 audit + manifest bump) |
+| tag `upstream-pin-0a1fc56` | upstream pin | immutable mirror ref recorded by the release manifests | never moved; a new pin creates a new tag |
+| `cad-adaptation` | upstream pin (series empty) | product patch branch — every runtime patch lives here with a `PATCHES.md` ledger entry (zcode-adaptation-plan §4.3) | advances only by reviewed patches on top of the pin |
+| `gen/archive` | `c3cc34f` | verbatim preservation of the fork's pre-existing legacy program history (2026-10-04→09), unrelated to this product | append-only archive |
+| `w1`–`w18`, `feat(w13|15|17)`, `directive/gen-native-product-ui` | legacy worker branches | preserved untouched (legacy program delivery branches) | archive |
+
+Blender fork branch model (§4) is realized as of M1 entry: `main` mirrors the
+pinned upstream ref `bf200615`; `product/main` was created AT the pin (the
+patch series is empty, so the branch equals the pin; the first patch will
+advance it through the §7 procedure). Fork Actions are enabled; the
+patch-apply gate runs canonical-side (upstream-update-ci §"apply-check (M1)").
 
 ## 3. Repository and update-flow diagram
 
@@ -145,7 +161,7 @@ One window = one reviewed procedure, executed on a short-lived `update/<yyyy-mm-
 1. **Freeze.** Announce the window. Record the current release-manifest pins. Branch `update/<yyyy-mm-dd>` from `product/main`. A CI snapshot of last-known-good state is attached to the window record.
 2. **Merge upstream.** Fetch `blender/blender` `main`; merge into the update branch. Merge conflicts are resolved by the owning patch maintainer; no unrelated conflict resolution without review.
 3. **Apply patch series.** Re-apply `patches/blender/NNNN-*.patch` in order on the merged result. Any conflict triggers the owning patch's rebase; regenerated canonical copies are committed to this repository as part of the window.
-4. **Extension compatibility matrix.** Build and run the CAD extension against the new Blender; produce/refresh the compatibility matrix (rows: the 13 modules; columns: upstream versions; cells: `compatible` / `needs-work` / `broken`, each backed by test IDs). A `broken` cell blocks the window.
+4. **Extension compatibility matrix.** Build and run the CAD extension against the new Blender; produce/refresh the compatibility matrix (rows: the 15 modules (13 at M0 + qto/asset at M1, glossary §15); columns: upstream versions; cells: `compatible` / `needs-work` / `broken`, each backed by test IDs). A `broken` cell blocks the window.
 5. **Native Blender regression subset (TP-CAT-06).** Run the native Blender regression subset proving ordinary Blender workflows are unaffected by the merge and patches. Failure blocks the window — native capability is never traded for update velocity.
 6. **CAD suites.** Run the CAD regression suites that exist at that milestone: TP-CAT-01 (drafting/commands), TP-CAT-02 (geometry/constraints), TP-CAT-03 (drawings/documentation), TP-CAT-04 (DWG/DXF round-trip), TP-CAT-05 (BIM/toolsets), TP-CAT-07 (agent tools/sync/conflict/rollback), TP-CAT-12 (packaged E2E).
 7. **Manifest bump.** Create `release-manifests/manifest-<version>.json` recording the exact new upstream ref (§10); validate with `scripts/validate_manifest.py` (task 1-d scaffold). A changed pin without a manifest version bump is invalid by definition (glossary §8).

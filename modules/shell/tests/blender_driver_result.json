@@ -1,0 +1,373 @@
+{
+ "all_passed": true,
+ "blender": "5.2.2 LTS",
+ "driver_phase": "reopen",
+ "dxf_engine": "r12-minimal",
+ "phases": {
+  "main": {
+   "blend": "/tmp/blender_cad_driver_dhi90r8b/blender_cad_driver.blend",
+   "checks": [
+    {
+     "detail": "",
+     "name": "bcshell.registered flag",
+     "ok": true
+    },
+    {
+     "detail": "10 operators",
+     "name": "all operators registered",
+     "ok": true
+    },
+    {
+     "detail": "",
+     "name": "N-panel registered",
+     "ok": true
+    },
+    {
+     "detail": "BlenderCAD Window",
+     "name": "keymap registered",
+     "ok": true
+    },
+    {
+     "detail": "",
+     "name": "load_post/save_pre handlers installed",
+     "ok": true
+    },
+    {
+     "detail": "BlenderCAD",
+     "name": "workspace BlenderCAD exists",
+     "ok": true
+    },
+    {
+     "detail": "{'FINISHED'}",
+     "name": "bcshell.workspace_open operator",
+     "ok": true
+    },
+    {
+     "detail": "LINE: 2 segment(s)",
+     "name": "LINE 3 chained points -> 2 segments",
+     "ok": true
+    },
+    {
+     "detail": "(0.0, 0.0, 0.0)-(10.0, 0.0, 0.0); (10.0, 0.0, 0.0)-(10.0, 10.0, 0.0)",
+     "name": "LINE geometry exact",
+     "ok": true
+    },
+    {
+     "detail": "CIRCLE: radius 5 at (20, 20)",
+     "name": "CIRCLE center+radius",
+     "ok": true
+    },
+    {
+     "detail": "c=(20.0, 20.0, 0.0) r=5.0",
+     "name": "CIRCLE geometry exact",
+     "ok": true
+    },
+    {
+     "detail": "ARC: 3-point through (20, 30), (10, 40), (0, 30)",
+     "name": "ARC 3-point method",
+     "ok": true
+    },
+    {
+     "detail": "c=(10.0, 30.0, 0.0) r=10.0 0.0-180.0",
+     "name": "ARC geometry exact",
+     "ok": true
+    },
+    {
+     "detail": "4",
+     "name": "session doc_version after draw commands",
+     "ok": true
+    },
+    {
+     "detail": "MOVE: 2 object(s) by (5, 5, 0)",
+     "name": "MOVE via command interface",
+     "ok": true
+    },
+    {
+     "detail": "(5.0, 5.0, 0.0)-(15.0, 5.0, 0.0)",
+     "name": "MOVE geometry exact",
+     "ok": true
+    },
+    {
+     "detail": "COPY: 1 new object(s) in 1 placement(s)",
+     "name": "COPY via command interface",
+     "ok": true
+    },
+    {
+     "detail": "copy c=(30.0, 20.0, 0.0)",
+     "name": "COPY new id + geometry exact",
+     "ok": true
+    },
+    {
+     "detail": "ERASE: removed 1 object(s)",
+     "name": "ERASE via command interface",
+     "ok": true
+    },
+    {
+     "detail": "{'line': 2, 'circle': 1, 'arc': 1}",
+     "name": "ERASE removed from document",
+     "ok": true
+    },
+    {
+     "detail": "UNDO: one step undone, 6 step(s) left",
+     "name": "UNDO restores erased entity",
+     "ok": true
+    },
+    {
+     "detail": "REDO: one step redone, 0 step(s) left",
+     "name": "REDO re-removes",
+     "ok": true
+    },
+    {
+     "detail": "9",
+     "name": "doc_version after full command battery",
+     "ok": true
+    },
+    {
+     "detail": "undo=7 redo=0",
+     "name": "undo depth tracks every committed transaction",
+     "ok": true
+    },
+    {
+     "detail": "{'FINISHED'}",
+     "name": "bcshell.cmdline operator dispatch",
+     "ok": true
+    },
+    {
+     "detail": "{'line': 2, 'circle': 2, 'arc': 1}",
+     "name": "cmdline-created circle geometry",
+     "ok": true
+    },
+    {
+     "detail": "",
+     "name": "display collection BlenderCAD",
+     "ok": true
+    },
+    {
+     "detail": "5 objects / 5 entities",
+     "name": "one display object per entity",
+     "ok": true
+    },
+    {
+     "detail": "",
+     "name": "display objects carry bcdoc_id custom prop",
+     "ok": true
+    },
+    {
+     "detail": "5 entities",
+     "name": "display deletion leaves document untouched",
+     "ok": true
+    },
+    {
+     "detail": "rebuilt 5 objects",
+     "name": "display regenerates from document",
+     "ok": true
+    },
+    {
+     "detail": "{'FINISHED'}",
+     "name": "native bpy.ops.mesh.primitive_cube_add",
+     "ok": true
+    },
+    {
+     "detail": "2",
+     "name": "native cube in scene",
+     "ok": true
+    },
+    {
+     "detail": "",
+     "name": "CAD display collection unaffected by native ops",
+     "ok": true
+    },
+    {
+     "detail": "engine=r12-minimal/r12-minimal losses=0",
+     "name": "DXF round-trip document compare (in Blender)",
+     "ok": true
+    },
+    {
+     "detail": "export=r12-minimal import=r12-minimal",
+     "name": "DXF round-trip stats recorded",
+     "ok": true
+    },
+    {
+     "detail": "/tmp/blender_cad_driver_dhi90r8b/blender_cad_driver.blend",
+     "name": ".blend saved",
+     "ok": true
+    },
+    {
+     "detail": "",
+     "name": "persistence text block in bpy.data.texts",
+     "ok": true
+    },
+    {
+     "detail": "",
+     "name": "text block content is bcdoc/1 JSON",
+     "ok": true
+    },
+    {
+     "detail": "",
+     "name": "unregister clears flag",
+     "ok": true
+    },
+    {
+     "detail": "all gone",
+     "name": "unregister removes operators",
+     "ok": true
+    },
+    {
+     "detail": "",
+     "name": "unregister removes keymap",
+     "ok": true
+    },
+    {
+     "detail": "",
+     "name": "unregister removes handlers",
+     "ok": true
+    },
+    {
+     "detail": "",
+     "name": "second unregister is safe",
+     "ok": true
+    }
+   ],
+   "document": {
+    "doc_version": 10,
+    "entities": [
+     {
+      "color": null,
+      "handle": 4097,
+      "id": "85f25be43b7b4df7b7ed094f64a227c8",
+      "kind": "line",
+      "layer": "0",
+      "linetype": "ByLayer",
+      "p1": [
+       5.0,
+       5.0,
+       0.0
+      ],
+      "p2": [
+       15.0,
+       5.0,
+       0.0
+      ]
+     },
+     {
+      "color": null,
+      "handle": 4098,
+      "id": "e156db1b640f42f0bf787018cfcb9423",
+      "kind": "line",
+      "layer": "0",
+      "linetype": "ByLayer",
+      "p1": [
+       15.0,
+       5.0,
+       0.0
+      ],
+      "p2": [
+       15.0,
+       15.0,
+       0.0
+      ]
+     },
+     {
+      "center": [
+       20.0,
+       20.0,
+       0.0
+      ],
+      "color": null,
+      "handle": 4099,
+      "id": "13604b390b1745acab738c869847b450",
+      "kind": "circle",
+      "layer": "0",
+      "linetype": "ByLayer",
+      "radius": 5.0
+     },
+     {
+      "center": [
+       10.0,
+       30.0,
+       0.0
+      ],
+      "color": null,
+      "end_angle": 180.0,
+      "handle": 4100,
+      "id": "0b26740fa3024d0e835459df26595af4",
+      "kind": "arc",
+      "layer": "0",
+      "linetype": "ByLayer",
+      "radius": 10.0,
+      "start_angle": 0.0
+     },
+     {
+      "center": [
+       40.0,
+       40.0,
+       0.0
+      ],
+      "color": null,
+      "handle": 4102,
+      "id": "593af2537cec42769ef4844dfdcd4ecc",
+      "kind": "circle",
+      "layer": "0",
+      "linetype": "ByLayer",
+      "radius": 2.0
+     }
+    ],
+    "name": "Untitled",
+    "redo_depth": 0,
+    "undo_depth": 8
+   },
+   "failed": 0
+  },
+  "reopen": {
+   "checks": [
+    {
+     "detail": "",
+     "name": "fresh-process register",
+     "ok": true
+    },
+    {
+     "detail": "{'FINISHED'}",
+     "name": "bpy.ops.wm.open_mainfile",
+     "ok": true
+    },
+    {
+     "detail": "",
+     "name": "load_post restored persistence text block",
+     "ok": true
+    },
+    {
+     "detail": "v10, 5 entities, undo 8/redo 0",
+     "name": "document restored identical (entities + doc_version)",
+     "ok": true
+    },
+    {
+     "detail": "5 objects / 5 entities",
+     "name": "display synced after reopen",
+     "ok": true
+    },
+    {
+     "detail": "UNDO: one step undone, 7 step(s) left",
+     "name": "restored document is live (UNDO works after reopen)",
+     "ok": true
+    },
+    {
+     "detail": "REDO: one step redone, 0 step(s) left",
+     "name": "REDO after reopen",
+     "ok": true
+    },
+    {
+     "detail": "",
+     "name": "reopen-phase clean unload",
+     "ok": true
+    },
+    {
+     "detail": "",
+     "name": "reopen-phase second unregister safe",
+     "ok": true
+    }
+   ],
+   "failed": 0
+  }
+ },
+ "python": "3.13.13"
+}

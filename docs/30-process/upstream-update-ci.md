@@ -135,14 +135,20 @@ review** is human (W3 + TL), per this checklist:
 
 ## 7. Planned patch-apply CI in the Blender fork (M1)
 
-A `workflow_dispatch` workflow will live **in the fork**
-(`payswapdotorg/blender`), not in this repo: it clones upstream
-`blender/blender` at `main` HEAD and applies the `patches/` series; the series
-must apply clean at all times. **Actions must be enabled on the fork** — this
-is an M1 entry criterion (docs/30-process/milestone-plan.md), because a
-fork with Actions disabled cannot run the apply-check and the drift discipline
-degrades to manual inspection. The canonical copies of the patches and the
-per-patch documentation live in `patches/README.md` (current series: empty).
+**M1 decision (recorded, 2026-10-19): the apply-check runs CANONICAL-side.**
+The workflow lives in THIS repo (`payswapdotorg/blender-cad`,
+`.github/workflows/patch-apply-check.yml`, workflow_dispatch + weekly): it
+clones the fork's `product/main` and applies the `patches/blender` series in
+order. Rationale vs the original M0 sketch above (in-fork): a workflow file
+committed to the fork is itself a product commit — it would break the "fork
+`main` is a pristine upstream mirror" invariant (repo-and-upstream-sync.md
+§4/§2.3) and the empty-patch-series state. The canonical-side job exercises
+exactly the same gate (series applies cleanly on the pinned fork branch; empty
+series asserts `product/main` == pin) without polluting the fork. **Actions
+remain enabled on the fork** (verified 2026-10-19) — the M1 entry criterion is
+met, and the in-fork option stays open should a patch ever require fork-side
+build infrastructure. The canonical copies of the patches and the per-patch
+documentation live in `patches/README.md` (current series: empty).
 
 ## 8. Honesty note
 

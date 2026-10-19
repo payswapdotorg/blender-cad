@@ -47,3 +47,12 @@ document defers to it. Suggested reading order after the glossary:
   hand-authored docs (a CI test enforces traceability).
 - Generated files (`10-product/inventory-tables.md`) are never edited by
   hand; regenerate with `python3 scripts/render_inventory.py`.
+
+## M1 additions (2026-10-19)
+
+- `10-product/scope-expansion-m1.md` — product-scope expansion record (BIM, QTO, RCM areas; interop limitations)
+- `00-architecture/m1-module-contracts.md` — binding cross-worker implementation contracts for M1
+- `00-architecture/kernel-bindings-evaluation-m1.md` — OCCT/OCP kernel binding evaluation record
+- `20-agent/zcode-runtime-spike-m1.md` — ZCode runtime compatibility spike at the pinned tree
+- `30-process/adr/0007-zcode-fork-realignment.md` — ZCode fork realignment decision
+- `30-process/completion-graph-m1.md` — M1 completion graph (test-backed)

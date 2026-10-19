@@ -1,0 +1,24 @@
+# Blender CAD extension manifest. Schema: blender-extensions "schema_version = 1".
+# The Blender-side required field set for an add-on extension. Content is binding
+# per docs/00-architecture/m1-module-contracts.md §2 and release-manifests/manifest-*.json.
+schema_version = "1.0.0"
+
+id = "blender_cad"
+version = "0.1.0"
+name = "Blender CAD"
+tagline = "AutoCAD-familiar CAD workspace inside Blender"
+maintainer = "Blender CAD project (payswapdotorg)"
+type = "add-on"
+website = "https://github.com/payswapdotorg/blender-cad"
+copyright = [
+    "2026 the Blender CAD project. Blender is a registered trademark of the Blender Foundation. AutoCAD and Autodesk are trademarks of their respective owners. This project is an independent work, not affiliated with or endorsed by any of them.",
+]
+license = ["SPDX:GPL-3.0-or-later"]
+tags = ["Add Mesh", "Import-Export", "User Interface"]
+
+# Minimum Blender version supported by this extension build. The M1 runtime
+# test build is Blender 5.2.2 LTS (recorded in release-manifests/manifest-0.2.0-m1.json).
+blender_version_min = "5.2.0"
+
+[permissions]
+files = "Import and export DXF drawings and CAD document JSON"

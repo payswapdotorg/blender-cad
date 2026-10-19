@@ -1,4 +1,4 @@
-name: M0 repo consistency
+name: M0+M1 repo consistency and unit batteries
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   repo-consistency:
-    name: Repo-consistency suite (TP-CAT-00)
+    name: TP-CAT-00 + pure-python module batteries
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -16,13 +16,33 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
-      - name: Install dev requirements
-        run: python -m pip install -r requirements-dev.txt
+      - name: Install dev requirements (pytest, pyyaml, ezdxf)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt ezdxf
 
-      - name: Repo-consistency test suite
+      - name: Repo-consistency suite (TP-CAT-00)
         run: python -m pytest tests/ -q
 
-      - name: Byte-compile scripts
-        run: python -m compileall scripts -q
+      - name: Module unit batteries (TP-CAT-01/02/04/07 precursor sections, bpy-free)
+        run: python -m pytest modules tests -q
+
+      - name: Byte-compile scripts and packages
+        run: python -m compileall scripts modules/document/bcdoc modules/interchange/bcio modules/commands/bccmd modules/drafting/bcdraft modules/agent/bcagent -q
+
+      - name: Build extension package (assembly check)
+        run: |
+          python scripts/build_extension.py
+          python scripts/build_extension.py --check
+
+      - name: Generated tables in sync
+        run: python scripts/render_inventory.py --check
+
+      - name: Upload built extension artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: blender_cad-extension
+          path: dist/blender_cad-*.zip
+          retention-days: 7

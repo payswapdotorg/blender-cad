@@ -56,6 +56,10 @@ graph LR
 
 ## 4. M1 — Walking skeleton
 
+> **Status (2026-10-19): M1 EXITED** — all acceptance requirements verified with
+> test evidence; per-item status, deviations and the honest not-done list in
+> [completion-graph-m1.md](completion-graph-m1.md).
+
 - **Objective:** the extension loads in Blender; the CAD workspace shell exists;
   the command-line state machine works; LINE/CIRCLE/ARC plus basic modify
   operations run; document model v0 with DXF read/write via ezdxf.
@@ -139,9 +143,12 @@ graph LR
   **TP-CAT-05 green** (IFC validation + toolset smoke suites); TP-CAT-03
   complete (technical documentation); TP-CAT-06 green.
 - **Deliverables:** DWG write; round-trip golden corpus + loss ledger in CI;
-  `bim` bridge (Bonsai + IfcOpenShell); first toolset libraries with mutually
+  `bim` bridge (Bonsai + IfcOpenShell); **BIM architecture workflows begin
+  (element modeling through the bim module per FP-BIM P1 items —
+  scope-expansion-m1.md §2)**; first toolset libraries with mutually
   independent sub-packages; TS inventory P1/P2 grooming.
-- **Owner split:** W2 — DWG write, IFC/BIM bridge; W1 — toolset libraries;
+- **Owner split:** W2 — DWG write, IFC/BIM bridge, BIM architecture
+  workflows; W1 — toolset libraries;
   TL — conformance gates, corpus licensing review.
 - **Risks:** DWG write fidelity (register risk R1, §10); toolset scope sprawl
   (R8); corpus licensing (mitigation: per-file license notes, self-authored
@@ -161,7 +168,8 @@ graph LR
   conflict handling, checkpoint rollback; TP-CAT-06 green; TP-CAT-11 current.
 - **Deliverables:** sidecar runtime (ADR-0004 seam: `packages/rpc`-derived
   versioned interface); `cad.*` tool contract v1 server; permission broker
-  (modes + permission classes, glossary §6); activity log; MCP adapter.
+  (modes + permission classes, glossary §6); activity log; MCP adapter;
+  **QTO/BOQ/estimating core (FP-QTO P1 — scope-expansion-m1.md §3)**.
 - **Owner split:** W3 — sidecar, contract, permissions, conflict model; W2 —
   document lock/version hardening; W1 — shell agent surfaces; TL — audit gate,
   integration.
@@ -183,7 +191,8 @@ graph LR
   tested → published); package format engine (skill.yaml, workflow.yaml,
   typed inputs, provenance + SHA-256); sandboxed execution; registry client +
   publishing MVP; command-line skill registration hook live (glossary §4
-  inversion note).
+  inversion note); **reality capture + defect/repair/maintenance records
+  (FP-RCM P1 — scope-expansion-m1.md §4)**.
 - **Owner split:** W3 — skills end-to-end; W1 — command-line/UX integration of
   the skill hook; TL — security gate before registry MVP is declared usable.
 - **Risks:** sandbox escape (R7); skill portability overkill (mitigation:
@@ -248,7 +257,7 @@ scope opens:
 | R5 | **GPL compliance discipline** — Blender host is GPL-2.0+; extension must remain compatible; LibreDWG is GPL-3.0 | High — legal | ADR-0005 (GPL-3.0-or-later for this repo); license inventory as the compliance record; per-dependency adoption gates; licensing-clean fixtures only |
 | R6 | **Usability gap discovery late** — summative testing only at M7 could reveal deep UX debt | High — acceptance criterion 2 | formative sessions run from M2 per docs/10-product/usability-validation-plan.md; M7 is summative; every failed task becomes a triaged issue, not an anecdote |
 | R7 | **Agent security incidents** — a compromised or malicious skill mutating engineering documents | High | permission classes + modes (glossary §6); transactions + checkpoints make every agent action rollback-able; TP-CAT-09 malicious corpus blocking before registry MVP; skills untrusted until validated |
-| R8 | **Toolset scope sprawl** — seven specialist toolsets × deep parity is enormous | High | inventory priorities (P0/P1/P2) gate scope; toolsets land after the conformance core (M4+); no toolset→toolset coupling (independent sub-packages); per-toolset exit criteria in the inventory |
+| R8 | **Toolset and specialist scope sprawl** — seven specialist toolsets plus the M1 scope-expansion areas (BIM/QTO/RCM, scope-expansion-m1.md) × deep parity is enormous; more breadth for the same capacity (TL + 3 workers) | High | inventory priorities (P0/P1/P2) gate scope — the new areas carry no P0; toolsets and BIM land after the conformance core (M4+), QTO at M5, RCM at M5–M6; no toolset→toolset coupling (independent sub-packages); per-area exit criteria in the inventory; scope decisions recorded per milestone |
 | R9 | **Capacity** — TL + 3 workers for a program of this breadth | High | sequencing-only plan, P0-first ordering; module ownership keeps lanes clean (glossary §10); scope decisions recorded per milestone; no calendar commitments to break |
 | R10 | **Sandbox honesty enforcement** — agents (and humans under deadline pressure) produce plausible-but-unverified "done" claims | High — credibility | statuses flip only with TP id + evidence artifact (glossary §5, test-plan §7); CI drift-checks generated tables; completion-graph ticks only for test-passed items; agent claims are never acceptance evidence |
 

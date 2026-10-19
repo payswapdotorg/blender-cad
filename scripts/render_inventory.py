@@ -34,7 +34,7 @@ OUTPUT_FILE = REPO_ROOT / "docs" / "10-product" / "inventory-tables.md"
 # glossary §5 area order (validation + render order)
 AREA_ORDER = [
     "CMD", "DRAW", "MOD", "PREC", "ORG", "ANN", "LAY", "P3D", "PAR",
-    "IO", "TS", "UX", "AGT", "SKL",
+    "IO", "TS", "UX", "AGT", "SKL", "BIM", "QTO", "RCM",
 ]
 
 # glossary §5 file column — on-disk name of each area's YAML file
@@ -53,6 +53,9 @@ AREA_FILES = {
     "UX": "ux.yaml",
     "AGT": "agent.yaml",
     "SKL": "skills.yaml",
+    "BIM": "bim.yaml",
+    "QTO": "qto.yaml",
+    "RCM": "rcm.yaml",
 }
 
 # glossary §5 owning-module map (area -> module that must own the YAML file)
@@ -71,6 +74,9 @@ AREA_MODULE = {
     "UX": "shell",
     "AGT": "agent",
     "SKL": "skills",
+    "BIM": "bim",
+    "QTO": "qto",
+    "RCM": "asset",
 }
 
 ALLOWED_DEPS = [
@@ -82,10 +88,11 @@ ALLOWED_STATUS = ["planned", "in-progress", "partial", "blocked", "verified"]
 ALLOWED_PRIORITY = ["P0", "P1", "P2"]
 ALLOWED_TOOLSETS = ["mechanical", "electrical", "mep", "plant", "civil", "gis", "raster"]
 
-# the 13 modules (glossary §4)
+# the 15 modules (glossary §4)
 MODULES = [
     "document", "kernel", "drafting", "parametric", "drawings", "interchange",
-    "bim", "toolsets", "commands", "agent", "skills", "shell", "testing",
+    "bim", "qto", "asset", "toolsets", "commands", "agent", "skills", "shell",
+    "testing",
 ]
 
 ID_RE = re.compile(r"^FP-[A-Z0-9]+-[0-9]{3}$")
@@ -115,7 +122,7 @@ def validate_area(area, doc, errors, seen_ids):
     if "module" in doc:
         module = doc["module"]
         if module not in MODULES:
-            errors.append(f"{fname}: module {module!r} is not one of the 13 modules")
+            errors.append(f"{fname}: module {module!r} is not one of the 15 modules")
         if module != AREA_MODULE[area]:
             errors.append(
                 f"{fname}: module {module!r} does not match the glossary §5 map "

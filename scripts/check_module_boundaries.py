@@ -3,12 +3,12 @@
 
 Validates:
   - schema_version == 1
-  - exactly the 13 module keys
+  - exactly the 15 module keys
   - every module directory exists and carries a README.md
   - depends_on members all exist
   - owner in {TL, W1, W2, W3}
   - status in {planned, in-progress, active}
-  - fp_areas drawn from the 14 inventory area codes (glossary §5)
+  - fp_areas drawn from the 17 inventory area codes (glossary §5)
   - dependency graph is acyclic (module "testing" is exempt: test-only)
 
 Prints the full edge list and "OK: N modules, no cycles" on success.
@@ -25,13 +25,14 @@ MODULES_FILE = REPO_ROOT / "modules" / "modules.json"
 
 EXPECTED_MODULES = [
     "document", "kernel", "drafting", "parametric", "drawings", "interchange",
-    "bim", "toolsets", "commands", "agent", "skills", "shell", "testing",
+    "bim", "qto", "asset", "toolsets", "commands", "agent", "skills", "shell",
+    "testing",
 ]
 ALLOWED_OWNERS = ["TL", "W1", "W2", "W3"]
 ALLOWED_STATUS = ["planned", "in-progress", "active"]
 AREA_CODES = [
     "CMD", "DRAW", "MOD", "PREC", "ORG", "ANN", "LAY", "P3D", "PAR",
-    "IO", "TS", "UX", "AGT", "SKL",
+    "IO", "TS", "UX", "AGT", "SKL", "BIM", "QTO", "RCM",
 ]
 TEST_ONLY_EXEMPT = "testing"
 
@@ -102,7 +103,7 @@ def main(argv=None):
     for missing in sorted(set(EXPECTED_MODULES) - names):
         errors.append(f"modules.json: missing module '{missing}'")
     for extra in sorted(names - set(EXPECTED_MODULES)):
-        errors.append(f"modules.json: unexpected module '{extra}' (expected exactly the 13 modules)")
+        errors.append(f"modules.json: unexpected module '{extra}' (expected exactly the 15 modules)")
 
     for name in sorted(names):
         module = modules[name]
@@ -122,7 +123,7 @@ def main(argv=None):
         for area in fp_areas:
             if area not in AREA_CODES:
                 errors.append(
-                    f"modules.json: module '{name}': fp_area {area!r} is not one of the 14 area codes"
+                    f"modules.json: module '{name}': fp_area {area!r} is not one of the 17 area codes"
                 )
         summary = module.get("summary")
         if not isinstance(summary, str) or not summary.strip():

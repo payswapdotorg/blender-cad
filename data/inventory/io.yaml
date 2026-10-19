@@ -2,8 +2,8 @@ area: IO
 title: Interchange & file compatibility
 module: interchange
 entries:
-  - {id: FP-IO-001, name: "DXF read", desc: "Read DXF R12 through 2027 with entity and property mapping", p: P0, dep: [ezdxf], status: planned, test: "", note: ""}
-  - {id: FP-IO-002, name: "DXF write", desc: "Write DXF 2018, 2000 and R12 tiers with entity fidelity", p: P0, dep: [ezdxf], status: planned, test: "", note: ""}
+  - {id: FP-IO-001, name: "DXF read", desc: "Read DXF R12 through 2027 with entity and property mapping", p: P0, dep: [ezdxf], status: partial, test: "TP-CAT-04", note: "M1 v0: LINE/CIRCLE/ARC+layers via ezdxf and R12-minimal engines; unknown entities ledgered; full entity set M2+"}
+  - {id: FP-IO-002, name: "DXF write", desc: "Write DXF 2018, 2000 and R12 tiers with entity fidelity", p: P0, dep: [ezdxf], status: partial, test: "TP-CAT-04", note: "M1 v0: R2010 via ezdxf + R12 minimal writer; round-trip green incl. in-Blender; 2000/2018 tiers planned"}
   - {id: FP-IO-003, name: "DXF version conversion", desc: "Save-as across supported DXF versions with entity warnings", p: P1, dep: [ezdxf], status: planned, test: "", note: ""}
   - {id: FP-IO-004, name: "DWG read", desc: "Read DWG via LibreDWG; M3 target, conformance-gated", p: P1, dep: [libredwg], status: planned, test: "", note: ""}
   - {id: FP-IO-005, name: "DWG write", desc: "Write DWG; M4 target, conformance-gated before enablement", p: P1, dep: [libredwg], status: planned, test: "", note: ""}
@@ -29,3 +29,7 @@ entries:
   - {id: FP-IO-025, name: "Template files", desc: "Read and write .dwt-like template drawings with styles and layouts", p: P1, dep: [ezdxf], status: planned, test: "", note: ""}
   - {id: FP-IO-026, name: "Round-trip loss ledger", desc: "Every importer and exporter records unsupported entities and losses", p: P1, dep: [], status: planned, test: "", note: "ledger format defined in file-compatibility-matrix.md"}
   - {id: FP-IO-027, name: "Proxy entities", desc: "Preserve unknown custom entities as round-trip-safe proxies", p: P1, dep: [ezdxf, libredwg], status: planned, test: "", note: ""}
+  - {id: FP-IO-028, name: "Archicad project import", desc: "Import Archicad .pln/.pla content through IFC exchange only", p: P2, dep: [ifcopenshell], status: planned, test: "", note: "No native .pln/.pla round-trip; IFC-based exchange only with recorded loss ledger (ADR-0003)"}
+  - {id: FP-IO-029, name: "Revit project import", desc: "Import Revit .rvt content through IFC exchange only", p: P2, dep: [ifcopenshell], status: planned, test: "", note: "No native .rvt round-trip; IFC-based exchange only with recorded loss ledger (ADR-0003)"}
+  - {id: FP-IO-030, name: "Archicad/Revit IFC export", desc: "Export IFC4 for Archicad/Revit consumption with mapped property sets", p: P1, dep: [ifcopenshell], status: planned, test: "", note: "the supported exchange path per glossary §4 interop honesty rule"}
+  - {id: FP-IO-031, name: "BCF issue exchange", desc: "Import and export BCF issue files: topics, viewpoints, comments", p: P2, dep: [], status: planned, test: "", note: "model-side workflow in BIM area (FP-BIM-029)"}

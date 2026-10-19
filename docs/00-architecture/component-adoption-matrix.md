@@ -79,6 +79,20 @@ Gate process (how a row becomes `adopted`):
 | Blender (upstream host) | Host application: viewport, UI, file format, Python API | shell (host) | GPL-2.0-or-later per blender.org; GitHub shows NOASSERTION (high, cite blender.org/license) | fork + minimal patch series | candidate (host, pinned) | the platform we extend; mission requires retaining ALL native capabilities | upstream API churn (monthly windows); release-cycle timing | M1 walking skeleton: extension loads in the fork; TP-CAT-06 green; patch-series discipline holds | — | upstream pin at handoff: `bf200615b83252a7be951aed5593d068f0f2438a` |
 | ZCode (zai-org/ZCode) | Agent runtime (sidecar) + skill loading conventions | agent | Apache-2.0 (high — verified via GitHub API 2026-10-19) | sidecar process + versioned RPC interface (ADR-0004); pinned fork | candidate | proven agent harness ("Z.ai's coding agent harness.", v3.16.1); skill ecosystem conventions; mission criterion 3 | upstream churn; audit cost; scope of reused packages | M5-entry source audit (ADR-0004 checklist); security review; pin + quarterly audits; TP-CAT-07 conformance | ADR-0004 | fork created as "Gen", renamed `ZCode` (cosmetic; parent verified = zai-org/ZCode); pin at handoff `0a1fc56d279fd1001f78387bd81aec1c26767411`; ZCode UI packages excluded per glossary §6 |
 
+### 4.1 M1 evaluation note — OCCT and OCP rows (2026-10-19, W2)
+
+Distribution-level evidence for the **OCP** row was recorded at M1 in
+`docs/00-architecture/kernel-bindings-evaluation-m1.md`: PyPI `cadquery-ocp`
+latest 8.0.1.1.0 (uploaded 2026-10-05) ships `cp313` wheels for all five
+target platforms — matching the pinned Blender 5.2.2 Python (3.13.13), so
+**no version gap exists at the distribution level** — at 45.7–65.0 MB per
+platform, license Apache-2.0, `requires_python >=3.11,<3.15`. The binary
+weight makes the packaging criterion MORE concrete, not less; the
+extension-platform policy on bundled native libraries remains unverified.
+**No status change**: OCCT stays `candidate`, OCP stays `evaluate`; the
+M3-entry binding decision must still fill in every ADR-0002 criteria row
+(performance, packaging, binding stability, coverage).
+
 ## 5. Honest risk notes (recorded, not hidden)
 
 1. **LibreDWG write-path maturity**: the write path is younger than the read path. DWG write at M4 is explicitly conformance-gated (TP-CAT-04); until that gate passes, DWG is read-only in-product and communications state exactly that.

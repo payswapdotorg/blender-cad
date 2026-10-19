@@ -1,8 +1,8 @@
 # Blender CAD — Authoritative Glossary & M0 Planning Map
 
-- **Status:** Active — binding for all M0 documents
+- **Status:** Active — binding for all M0 documents; **amended at M1 entry** (see §15 for the M1 amendment record)
 - **Owner:** Technical Lead (TL)
-- **Date:** 2026-10-19 (UTC)
+- **Date:** 2026-10-19 (UTC); M1 amendment 2026-10-19 (see §15)
 - **Rule:** If any document contradicts this file, this file wins. Record the conflict in your worklog entry and follow this file.
 
 ---
@@ -36,7 +36,7 @@ Organization note: repos live under the `payswapdotorg` account at handoff; migr
 - Working name: **Blender CAD**. Final product naming is open (ADR-0001); any name must not imply Autodesk affiliation.
 - Required disclaimer (use verbatim where licensing/naming is discussed): *"Blender is a registered trademark of the Blender Foundation. AutoCAD, Autodesk and Procore are trademarks of their respective owners. This project is an independent work, not affiliated with or endorsed by any of them."*
 
-## 4. Modules (13) — boundaries, ownership, allowed dependencies
+## 4. Modules (15) — boundaries, ownership, allowed dependencies
 
 Independently packageable modules live in `modules/`. A module may depend ONLY on modules in its `depends_on` list (checked by `scripts/check_module_boundaries.py`). **No toolset may depend on another toolset's internals**; shared code goes down, not sideways.
 
@@ -44,23 +44,26 @@ Independently packageable modules live in `modules/`. A module may depend ONLY o
 |---|---|---|---|
 | `document` | W2 | (none) | CAD document model: entities, layers, blocks, properties, units, transactions, undo journal, checkpoints. The authoritative engineering model. |
 | `kernel` | W2 | document | OCCT-based precise B-rep/analytic geometry + 2D/3D construction ops + tessellation-for-display. |
-| `drafting` | W1 | document, kernel | 2D entities, precision-input engine (osnap/ortho/polar/tracking), selection, grips, layers/blocks editing UX. |
+| `drafting` | W1 | document, kernel, commands | 2D entities, precision-input engine (osnap/ortho/polar/tracking), selection, grips, layers/blocks editing UX. Drafting commands register into the command registry (M1 amendment: drafting→commands edge, see §15). |
 | `parametric` | W2 | document, kernel, drafting | Geometric + dimensional constraints, constraint solver, parametric edits. |
 | `drawings` | W1 | document, drafting, kernel | Layouts, viewports, dimension/text/table styles, annotation scale, plot/publish. |
 | `interchange` | W2 | document, kernel, drafting, drawings | DXF/DWG/IFC/STEP I/O, xrefs, round-trip conformance, loss ledger. |
-| `bim` | W2 | document, kernel, interchange | BIM workflows through Bonsai + IfcOpenShell. |
+| `bim` | W2 | document, kernel, interchange | BIM workflows through Bonsai + IfcOpenShell; architecture workflows (walls/doors/windows/stairs/roofs, spaces, schedules, classification). Area BIM (FP-BIM-*). |
+| `qto` | W2 | document, kernel, drafting, drawings, bim | Construction quantity takeoff, BOQ generation, estimating/cost items (FP-QTO-*). Added at M1 scope expansion (§15). |
+| `asset` | W2 | document, kernel, drafting, drawings, interchange, bim | Reality capture ingestion, defect diagnostics, repair planning, maintenance records for buildings, machines, vehicles, electronics (FP-RCM-*). Added at M1 scope expansion (§15). |
 | `toolsets` | W1 | document, drafting, drawings, parametric, kernel | Specialist toolsets: mechanical, electrical, mep, plant, civil, gis, raster (sub-packages, mutually independent). |
-| `commands` | W1 | document, drafting, drawings, parametric, interchange, toolsets | Command registry, aliases, prompt state machine, command history, dynamic input. |
-| `agent` | W3 | document | CAD tool contract (`cad.*` tools), MCP adapter, runtime sidecar bridge, activity/permissions plumbing. |
+| `commands` | W1 | document | Command registry, aliases, prompt state machine, command history, dynamic input. (M1 amendment: command implementations register into the registry FROM their owning modules — drafting/drawings/toolsets etc. own the commands they add, mirroring the skills inversion; commands imports only the document model; see §15.) |
+| `agent` | W3 | document, interchange | CAD tool contract (`cad.*` tools), MCP adapter, runtime sidecar bridge, activity/permissions plumbing (cad.io tools use the interchange DXF engine — M1 amendment, see §15). |
 | `skills` | W3 | agent, document, commands | Skill authoring (record→generalize), package format, execution engine, registry client. |
-| `shell` | W1 | commands, drafting, drawings, toolsets, agent, skills, document | CAD application shell: ribbon, palettes, status bar, command-line dock, workspace integration with Blender. |
+| `shell` | W1 | commands, drafting, drawings, toolsets, agent, skills, document, bim, qto, asset | CAD application shell: ribbon, palettes, status bar, command-line dock, workspace integration with Blender. |
 | `testing` | TL | (all — test-only, exempt from cycle rules) | Regression, interop, usability and security suites + fixtures. |
 
-**Recorded decision (dependency inversion):** `commands` does NOT depend on `skills`. Skills depend on commands (a skill step may invoke a command through the registry). The command line exposes installed skills through a **registration hook**: `skills` registers itself into `commands` at load time. This keeps the graph acyclic (skills→commands, not commands→skills) while preserving the familiar "type a skill name in the command line" UX.
+- **Interop honesty rule (binding, M1 scope expansion):** the product does NOT claim lossless native Archicad (`.pln/.pla`) or Revit (`.rvt`) project round-tripping. Exchange with those ecosystems is via IFC (and DXF/DWG where applicable) with a recorded loss ledger (ADR-0003). Inventory/compatibility docs must state this explicitly wherever Archicad/Revit interoperability is mentioned.
+- **Recorded decision (dependency inversion):** `commands` does NOT depend on `skills`. Skills depend on commands (a skill step may invoke a command through the registry). The command line exposes installed skills through a **registration hook**: `skills` registers itself into `commands` at load time. This keeps the graph acyclic (skills→commands, not commands→skills) while preserving the familiar "type a skill name in the command line" UX.
 
 ## 5. Feature-parity inventory vocabulary
 
-### Areas (14) — each has one YAML file `data/inventory/<area>.yaml`
+### Areas (17) — each has one YAML file `data/inventory/<area>.yaml`
 
 | Area | Title | Owning module (use in YAML `module:`) | File |
 |---|---|---|---|
@@ -78,6 +81,9 @@ Independently packageable modules live in `modules/`. A module may depend ONLY o
 | UX | AutoCAD-familiar interface conventions | shell | ux.yaml |
 | AGT | Integrated agent operation | agent | agent.yaml |
 | SKL | Skills & automation | skills | skills.yaml |
+| BIM | Architecture & BIM workflows | bim | bim.yaml |
+| QTO | Quantity takeoff, BOQ & estimating | qto | qto.yaml |
+| RCM | Reality capture, defects, repair & maintenance | asset | rcm.yaml |
 
 ### ID scheme
 
@@ -236,3 +242,13 @@ EOF
 ```
 
 Read the worklog tail BEFORE starting (prior context) and append AFTER finishing. Do not commit or push; the TL integrates, commits and pushes centrally.
+
+## 15. M1 amendment record (TL-owned; supersedes conflicting M0 text)
+
+- **Date:** 2026-10-19 (M1 entry). **Author:** TL. Scope: product-scope expansion + repository/fork actual-state alignment (operator directive).
+- **Modules:** 13 → 15 (added `qto`, `asset`; `commands`/`shell` dependency lists extended accordingly). §4 table above is binding.
+- **Areas:** 14 → 17 (added `BIM`, `QTO`, `RCM`). §5 table above is binding; `scripts/check_module_boundaries.py` and `scripts/render_inventory.py` updated to match in the same change set (489 → 561 entries).
+- **New scope content:** docs/10-product/scope-expansion-m1.md (feature IDs, priorities, target modules, dependencies, test IDs, acceptance criteria, milestone ownership). Every FP-BIM/FP-QTO/FP-RCM entry is `status: planned` at M1 entry; none is implemented by being documented.
+- **ZCode fork alignment (facts, supersede §2's fork note):** fork `main` was carrying 35 legacy "Gen"-program commits (2026-10-04→09, unrelated closed program) and lacked 2 upstream commits (`aac4755` v3.15.1, `0a1fc56` the pin). Resolved: `main` reset to the exact upstream pin `0a1fc56` (now identical to `zai-org/ZCode` main), legacy history preserved verbatim on branch `gen/archive` (head `c3cc34f`), immutable annotated tag `upstream-pin-0a1fc56` created at the pin, product patch branch `cad-adaptation` created at the pin (patch series empty; patches per zcode-adaptation-plan §4.3 with a PATCHES.md ledger). Details: ADR-0007.
+- **Blender fork:** branch `product/main` created at the pinned upstream ref `bf200615` (patch series empty ⇒ branch == pin). Fork Actions enabled.
+- **Interop honesty (binding):** no lossless native Archicad/Revit round-trip claims — IFC/DXF/DWG exchange with loss ledger only (FP-IO-028/029 record the limitation; FP-IO-030 is the supported IFC path).

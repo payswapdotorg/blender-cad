@@ -129,6 +129,21 @@ DWG stores 3D solids in **proprietary SAT/ASM internals** (Autodesk ShapeManager
 - Entity mapping tiers are recorded through the loss ledger; IFC property sets that have no CAD-document counterpart are SEMANTIC-LOSS by default until mapped.
 - Licensing note: Bonsai license history — `(verify)` at the adoption gate (glossary §9).
 
+### BIM ecosystem and reality-capture exchange paths (M1 scope expansion — PLAN)
+
+Binding honesty rule (glossary §4): the product does NOT claim lossless native
+Archicad (`.pln`/`.pla`) or Revit (`.rvt`) project round-tripping. Exchange with
+those ecosystems is via IFC (and DXF/DWG where applicable) with a recorded
+loss ledger (ADR-0003). Scope record: [scope-expansion-m1.md](scope-expansion-m1.md) §5.
+
+| Format | Read (plan) | Write (plan) | Carrier | Explicit limitation |
+|---|---|---|---|---|
+| Archicad `.pln`/`.pla` | limited — via IFC exchange only | none — no native writer planned | `FP-IO-028` (P2) | No native `.pln`/`.pla` round-trip; IFC-based exchange only with recorded loss ledger (ADR-0003) |
+| Revit `.rvt` | limited — via IFC exchange only | none — no native writer planned | `FP-IO-029` (P2) | No native `.rvt` round-trip; IFC-based exchange only with recorded loss ledger (ADR-0003) |
+| IFC4 | P1 | P1 — includes Archicad/Revit-targeted export | `FP-IO-010`, `FP-IO-011`, `FP-IO-030` | property sets without a CAD-document counterpart are SEMANTIC-LOSS until mapped (§5) |
+| LAS/LAZ/E57 point clouds | P1 (planned; reality-capture ingestion via PDAL) | not planned | `FP-RCM-001` | ingestion for the RCM area only; no AutoCAD RCP/RCS compatibility claim |
+| BCF (issue exchange) | P2 (planned) | P2 (planned) | `FP-IO-031` | topics, viewpoints, comments only; carries no model geometry; model-side workflow `FP-BIM-029` |
+
 ## 12. Manufacturing exchanges
 
 - **STEP / IGES:** kernel-level (OCCT) — `FP-IO-012`, `FP-IO-013`, `FP-IO-014`.
@@ -156,9 +171,9 @@ The interchange conformance suite must include fixtures in each category; a form
 ## 14. Support-level declaration policy
 
 1. A format, version or dialect may be called **supported** only when the claim cites its conformance suite status: a `TP-*` test-plan ID, the passing fixture categories (§13), and recorded artifacts.
-2. Support levels mirror the inventory status enum (`planned | in-progress | partial | blocked | verified`); the per-format carrier entries are `FP-IO-001..027`, and their `test` fields fill only with evidence.
+2. Support levels mirror the inventory status enum (`planned | in-progress | partial | blocked | verified`); the per-format carrier entries are `FP-IO-001..031`, and their `test` fields fill only with evidence.
 3. The loss ledger (§5) is the running conformance record; CI aggregates it and blocks promotion of tiers with unrecorded losses.
 4. `(verify)` tags in this document are re-verification obligations routed through the component adoption gate (glossary §9) — the 2027 DWG code (§2), SHX substitution (§7), SAT import (§9), CUIx scope (§10) and the DST-like format (§8) are the open items at M0.
 5. Any change to a declared tier is a re-review: update this matrix, the inventory entries, and regenerate `docs/10-product/inventory-tables.md` in the same change. Drift is a CI failure.
 
-Related: [feature-parity-inventory.md](feature-parity-inventory.md) (methodology, index, limited-tier declarations), `docs/30-process/test-plan.md` (TP registry, task 1-d), `docs/00-architecture/component-adoption-matrix.md` and `docs/00-architecture/license-inventory.md` (task 1-a).
+Related: [feature-parity-inventory.md](feature-parity-inventory.md) (methodology, index, limited-tier declarations), [scope-expansion-m1.md](scope-expansion-m1.md) (M1 scope expansion: BIM/QTO/RCM + interop limitations), `docs/30-process/test-plan.md` (TP registry, task 1-d), `docs/00-architecture/component-adoption-matrix.md` and `docs/00-architecture/license-inventory.md` (task 1-a).

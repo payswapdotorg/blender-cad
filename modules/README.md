@@ -1,6 +1,6 @@
 # Modules — Index, Boundaries, Dependency Graph
 
-- **Status:** Active — 13 modules defined at M0; all `planned` (no code at M0)
+- **Status:** Active — 15 modules (13 at M0 + `qto` and `asset` added at the M1 scope expansion, glossary §15) defined at M0; all `planned` (no code at M0)
 - **Owner:** TL (module owners per glossary §10 below)
 - **Date:** 2026-10-19 (UTC)
 - **Vocabulary:** docs/GLOSSARY.md (binding)

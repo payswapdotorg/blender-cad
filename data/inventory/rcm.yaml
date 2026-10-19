@@ -1,0 +1,24 @@
+area: RCM
+title: "Reality capture, defects, repair & maintenance"
+module: asset
+entries:
+  - {id: FP-RCM-001, name: "Point cloud import", desc: "Import LAS/LAZ/E57 point clouds; decimation, clipping, spatial caching", p: P1, dep: [pdal], status: planned, test: "", note: ""}
+  - {id: FP-RCM-002, name: "Scan registration", desc: "Register scans: target-based and cloud-to-cloud; residual error report", p: P1, dep: [pdal], status: planned, test: "", note: ""}
+  - {id: FP-RCM-003, name: "Photogrammetry ingest", desc: "Import photo-reconstructed meshes and clouds with georeference data", p: P2, dep: [gdal, blender-native], status: planned, test: "", note: ""}
+  - {id: FP-RCM-004, name: "Scan-to-mesh", desc: "Reconstruct meshes from registered scans; simplification and hole handling", p: P2, dep: [blender-native], status: planned, test: "", note: ""}
+  - {id: FP-RCM-005, name: "Deviation analysis", desc: "As-built versus design deviation: color map, distance statistics, threshold report", p: P1, dep: [occt, blender-native], status: planned, test: "", note: ""}
+  - {id: FP-RCM-006, name: "Defect markers", desc: "Defect markers on models and scans: cracks, spalling, corrosion, dents", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-RCM-007, name: "Defect classification", desc: "Defect class library per domain: buildings, machines, vehicles, electronics", p: P1, dep: [], status: planned, test: "", note: "severity scales fixed per domain before use"}
+  - {id: FP-RCM-008, name: "Condition grading", desc: "Condition grade per asset and element: scale, date, inspector, evidence links", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-RCM-009, name: "Inspection sessions", desc: "Dated inspection sessions binding capture sets, markers and assets", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-RCM-010, name: "Repair plan drawings", desc: "Repair-plan drawing generation: defects to annotation layers, callouts, sheets", p: P1, dep: [ezdxf], status: planned, test: "", note: "sheets through the drawings module"}
+  - {id: FP-RCM-011, name: "Maintenance records", desc: "Maintenance records per asset: task, date, cost, outcome, documents", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-RCM-012, name: "Maintenance schedules", desc: "Preventive schedules: interval rules, due-date lists, completion tracking", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-RCM-013, name: "Work-order export", desc: "Export work orders (CSV/PDF): location, defect references, priority, status", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-RCM-014, name: "Asset registry", desc: "Registry linking model elements to asset IDs, domains, locations, custodians", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-RCM-015, name: "Asset domain profiles", desc: "Asset profiles for building, machine, vehicle and electronics domains", p: P2, dep: [], status: planned, test: "", note: "explicit domain coverage requirement for records"}
+  - {id: FP-RCM-016, name: "Wear measurement", desc: "Machine-part wear measurement against nominal geometry; tolerance-band report", p: P2, dep: [occt], status: planned, test: "", note: "machines domain"}
+  - {id: FP-RCM-017, name: "Corrosion mapping", desc: "Corrosion extent mapping over surfaces with area tallies per element", p: P2, dep: [shapely], status: planned, test: "", note: ""}
+  - {id: FP-RCM-018, name: "Vehicle damage mapping", desc: "Vehicle damage records: panel zones, impact severity, repair-replace flags", p: P2, dep: [], status: planned, test: "", note: "vehicles domain"}
+  - {id: FP-RCM-019, name: "Electronics defect records", desc: "Electronics defects: board and component-level faults, rework status records", p: P2, dep: [], status: planned, test: "", note: "electronics domain"}
+  - {id: FP-RCM-020, name: "Condition history", desc: "Asset condition history timeline: gradings, defects, interventions, costs", p: P1, dep: [], status: planned, test: "", note: ""}

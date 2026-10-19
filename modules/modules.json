@@ -3,7 +3,7 @@
   "modules": {
     "document": {
       "owner": "W2",
-      "status": "planned",
+      "status": "in-progress",
       "depends_on": [],
       "fp_areas": [],
       "summary": "CAD document model, entities, layers, blocks, transactions, undo, units"
@@ -19,10 +19,11 @@
     },
     "drafting": {
       "owner": "W1",
-      "status": "planned",
+      "status": "in-progress",
       "depends_on": [
         "document",
-        "kernel"
+        "kernel",
+        "commands"
       ],
       "fp_areas": [
         "DRAW",
@@ -61,7 +62,7 @@
     },
     "interchange": {
       "owner": "W2",
-      "status": "planned",
+      "status": "in-progress",
       "depends_on": [
         "document",
         "kernel",
@@ -82,9 +83,41 @@
         "interchange"
       ],
       "fp_areas": [
-        "IO"
+        "IO",
+        "BIM"
       ],
       "summary": "BIM workflows via Bonsai and IfcOpenShell"
+    },
+    "qto": {
+      "owner": "W2",
+      "status": "planned",
+      "depends_on": [
+        "document",
+        "kernel",
+        "drafting",
+        "drawings",
+        "bim"
+      ],
+      "fp_areas": [
+        "QTO"
+      ],
+      "summary": "Construction quantity takeoff, BOQ generation and estimating"
+    },
+    "asset": {
+      "owner": "W2",
+      "status": "planned",
+      "depends_on": [
+        "document",
+        "kernel",
+        "drafting",
+        "drawings",
+        "interchange",
+        "bim"
+      ],
+      "fp_areas": [
+        "RCM"
+      ],
+      "summary": "Reality capture ingestion, defect diagnostics, repair planning and maintenance records"
     },
     "toolsets": {
       "owner": "W1",
@@ -103,14 +136,9 @@
     },
     "commands": {
       "owner": "W1",
-      "status": "planned",
+      "status": "in-progress",
       "depends_on": [
-        "document",
-        "drafting",
-        "drawings",
-        "parametric",
-        "interchange",
-        "toolsets"
+        "document"
       ],
       "fp_areas": [
         "CMD"
@@ -119,9 +147,10 @@
     },
     "agent": {
       "owner": "W3",
-      "status": "planned",
+      "status": "in-progress",
       "depends_on": [
-        "document"
+        "document",
+        "interchange"
       ],
       "fp_areas": [
         "AGT"
@@ -143,7 +172,7 @@
     },
     "shell": {
       "owner": "W1",
-      "status": "planned",
+      "status": "in-progress",
       "depends_on": [
         "commands",
         "drafting",
@@ -151,7 +180,10 @@
         "toolsets",
         "agent",
         "skills",
-        "document"
+        "document",
+        "bim",
+        "qto",
+        "asset"
       ],
       "fp_areas": [
         "UX"
@@ -173,7 +205,9 @@
         "commands",
         "agent",
         "skills",
-        "shell"
+        "shell",
+        "qto",
+        "asset"
       ],
       "fp_areas": [],
       "summary": "Cross-module regression, interop, usability and security suites (test-only)"

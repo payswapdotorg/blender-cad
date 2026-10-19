@@ -11,3 +11,10 @@ node_modules/
 dist/
 build/
 .idea/
+
+# M1 build artifacts (never committed)
+build/
+dist/
+__pycache__/
+*.pyc
+.pytest_cache/

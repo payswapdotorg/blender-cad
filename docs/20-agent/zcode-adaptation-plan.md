@@ -12,6 +12,7 @@ Facts below are recorded in glossary §6 and bind this plan verbatim.
 - **Upstream repository:** `zai-org/ZCode` — **Apache-2.0**, version **3.16.1**, a **TypeScript pnpm monorepo**, described as "Z.ai's coding agent harness."
 - **Upstream pin (binding):** `0a1fc56d279fd1001f78387bd81aec1c26767411` (zai-org/ZCode `main`, 2026-10-19T02:34Z). Recorded in `release-manifests/manifest-*.json` → `components.zcode_runtime.upstream_ref`; pins never change silently (glossary §8).
 - **Our fork:** `payswapdotorg/ZCode`. GitHub created the fork under the root-name cache entry "Gen" and it was renamed to `ZCode` — **cosmetic only**; parent verified as `zai-org/ZCode`.
+- **Fork actual state (ADR-0007, M1 entry — supersedes any in-sync assumption):** fork `main` = pristine mirror at the pin (verified identical to upstream main); immutable annotated tag `upstream-pin-0a1fc56` records the pin in-repo; product patch branch **`cad-adaptation`** sits at the pin (series empty — every future runtime patch lands there with a `PATCHES.md` ledger entry, §4.3); the fork's pre-existing legacy "Gen" program history is preserved on `gen/archive` and its worker branches — unrelated to the runtime and never a build input. Runtime compatibility is tested against the exact pinned tree, reachable identically via upstream `zai-org/ZCode@0a1fc56`, fork `main`, or tag `upstream-pin-0a1fc56`.
 - **Top-level layout:** `apps/`, `packages/`, `patches/`, `.agents/skills`, `skills-lock.json`, `AGENTS.md`, `DESIGN.md`, `architecture-policy.yaml`, `dependency-graph.mmd`.
 
 ## 2. Architecture
@@ -150,7 +151,7 @@ The upstream runtime assumes a code-editing context. Risk R1 (§8) requires re-r
 
 ### 4.3 Patch policy
 
-- Our fork carries patches on a branch `cad-adaptation` on top of the pinned commit — never a divergent history.
+- Our fork carries patches on a branch `cad-adaptation` on top of the pinned commit — never a divergent history. The branch exists at the pin as of M1 entry (ADR-0007); the patch series is empty.
 - Every patch has an entry in a patch ledger (`PATCHES.md`: upstream package, purpose, owner, review status); undocumented patches fail CI.
 - Updates are evaluated as `git range-diff` between the old pin, the new pin and our branch; a patch that no longer applies **blocks the re-pin** until resolved (rebased or deliberately dropped with ledger justification).
 - Excluded packages (§4 rows marked exclude) are removed from the sidecar build; the build fails if any of them is imported by an included package (boundary check).

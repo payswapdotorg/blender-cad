@@ -2,14 +2,14 @@ area: DRAW
 title: 2D drawing entities
 module: drafting
 entries:
-  - {id: FP-DRAW-001, name: LINE, desc: "Two-point chained lines with Close and Undo options", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-DRAW-001, name: LINE, desc: "Two-point chained lines with Close and Undo options", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M1 v0: chained LINE with Close/Undo; pytest drafting + in-Blender acceptance evidence"}
   - {id: FP-DRAW-002, name: PLINE, desc: "Lightweight polylines chaining line and arc segments", p: P0, dep: [], status: planned, test: "", note: ""}
   - {id: FP-DRAW-003, name: "PLINE arcs", desc: "Arc segment options: center, angle, direction, second point, radius", p: P0, dep: [], status: planned, test: "", note: ""}
   - {id: FP-DRAW-004, name: "PLINE width", desc: "Global, half-width and per-vertex tapered width options", p: P0, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-DRAW-005, name: CIRCLE, desc: "Circle from center with radius or diameter prompts", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-DRAW-005, name: CIRCLE, desc: "Circle from center with radius or diameter prompts", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M1 v0: center+radius and Diameter option; tested via registry, driver + acceptance"}
   - {id: FP-DRAW-006, name: "CIRCLE 2P/3P", desc: "Circle through two diameter points or three points", p: P0, dep: [], status: planned, test: "", note: ""}
   - {id: FP-DRAW-007, name: "CIRCLE TTR", desc: "Tangent-tangent-radius and tangent-tangent-tangent circles", p: P1, dep: [occt], status: planned, test: "", note: ""}
-  - {id: FP-DRAW-008, name: ARC, desc: "Eleven arc methods: 3-point, start/center/end, angle, direction, radius, tangent", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-DRAW-008, name: ARC, desc: "Eleven arc methods: 3-point, start/center/end, angle, direction, radius, tangent", p: P0, dep: [], status: partial, test: "TP-CAT-01", note: "M1 v0: 3-point + start-center-end methods; 9 of 11 methods planned"}
   - {id: FP-DRAW-009, name: "ARC continuation", desc: "Enter at first prompt continues tangent from last drawn curve", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-DRAW-010, name: RECTANG, desc: "Rectangle by corners; fillet, chamfer, width, area, rotation options", p: P0, dep: [], status: planned, test: "", note: ""}
   - {id: FP-DRAW-011, name: POLYGON, desc: "Regular polygons inscribed, circumscribed or edge-defined; 3 to 1024 sides", p: P0, dep: [], status: planned, test: "", note: ""}

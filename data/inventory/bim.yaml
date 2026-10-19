@@ -1,0 +1,34 @@
+area: BIM
+title: "Architecture & BIM workflows"
+module: bim
+entries:
+  - {id: FP-BIM-001, name: WALL, desc: "Architectural walls: linear, chained, arc placement; height, thickness, composite layers", p: P1, dep: [ifcopenshell, bonsai, occt], status: planned, test: "", note: "IfcWall mapping through the IFC bridge"}
+  - {id: FP-BIM-002, name: "Wall joins", desc: "Wall junction trimming at L, T and X intersections; updates on element edits", p: P1, dep: [occt, ifcopenshell], status: planned, test: "", note: ""}
+  - {id: FP-BIM-003, name: DOOR, desc: "Doors hosted in walls; automatic opening cut, swing direction, threshold parameters", p: P1, dep: [ifcopenshell, bonsai], status: planned, test: "", note: ""}
+  - {id: FP-BIM-004, name: WINDOW, desc: "Windows hosted in walls; automatic opening cut, reveal and sill parameters", p: P1, dep: [ifcopenshell, bonsai], status: planned, test: "", note: ""}
+  - {id: FP-BIM-005, name: STAIR, desc: "Stairs from runs and landings; straight, L, U and spiral; winder rules", p: P1, dep: [occt, ifcopenshell], status: planned, test: "", note: ""}
+  - {id: FP-BIM-006, name: RAILING, desc: "Railings along stairs, edges and paths; posts, rails, panel patterns", p: P1, dep: [ifcopenshell], status: planned, test: "", note: ""}
+  - {id: FP-BIM-007, name: ROOF, desc: "Roofs by footprint, extrusion or slope arrows; dormer and opening support", p: P1, dep: [occt, ifcopenshell], status: planned, test: "", note: ""}
+  - {id: FP-BIM-008, name: SLAB, desc: "Slabs and floors: thickness, slope, boundary-derived perimeter; openings", p: P1, dep: [ifcopenshell], status: planned, test: "", note: ""}
+  - {id: FP-BIM-009, name: COLUMN, desc: "Columns, rectangular or profiled; top and bottom attachment to slabs and beams", p: P1, dep: [occt, ifcopenshell], status: planned, test: "", note: ""}
+  - {id: FP-BIM-010, name: BEAM, desc: "Beams: line-based placement, profile library, junction coping", p: P1, dep: [occt, ifcopenshell], status: planned, test: "", note: ""}
+  - {id: FP-BIM-011, name: "Shaft openings", desc: "Hosted openings in walls, slabs and roofs: rectangular, circular, polygonal", p: P1, dep: [ifcopenshell], status: planned, test: "", note: ""}
+  - {id: FP-BIM-012, name: Spaces, desc: "Spaces from boundary picking; name, number, occupancy and use data", p: P1, dep: [shapely], status: planned, test: "", note: "IfcSpace mapping"}
+  - {id: FP-BIM-013, name: "Space areas", desc: "Space area computation: net and gross rules, wall-face or centerline boundaries", p: P1, dep: [shapely, occt], status: planned, test: "", note: ""}
+  - {id: FP-BIM-014, name: Zones, desc: "Group spaces into zones with program targets and area tallies", p: P1, dep: [], status: planned, test: "", note: "IfcZone mapping"}
+  - {id: FP-BIM-015, name: "Element schedules", desc: "Element schedules: category filters, sorting, totals; refresh on model edits", p: P1, dep: [], status: planned, test: "", note: "schedule table objects owned by ANN area"}
+  - {id: FP-BIM-016, name: "Door/window schedules", desc: "Door and window schedules: type, size, count, finish, fire rating columns", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-BIM-017, name: "Classification reference", desc: "Map elements to classification tables (Uniclass/OMNICLASS-style) by code", p: P2, dep: [], status: planned, test: "", note: "reference mapping only; no certification or completeness claim"}
+  - {id: FP-BIM-018, name: "Property sets", desc: "Pset-style property management: type and instance properties, custom sets", p: P1, dep: [ifcopenshell], status: planned, test: "", note: "no certification claim on third-party Pset dictionaries"}
+  - {id: FP-BIM-019, name: "Material assignment", desc: "Assign materials to element layers and parts; per-material takeoff into schedules", p: P1, dep: [ifcopenshell], status: planned, test: "", note: ""}
+  - {id: FP-BIM-020, name: "IFC export validation", desc: "Pre-export checks: schema validation, unmapped-property warnings, coverage report", p: P1, dep: [ifcopenshell], status: planned, test: "", note: ""}
+  - {id: FP-BIM-021, name: "Renovation filters", desc: "Renovation states per element: existing, demolition, new; filtered view display", p: P2, dep: [blender-native], status: planned, test: "", note: "Archicad-style renovation filters; explicit P2, no Archicad compatibility claim"}
+  - {id: FP-BIM-022, name: "Model views", desc: "Plan, section, elevation views generated from the model; regenerate on change", p: P1, dep: [blender-native, occt], status: planned, test: "", note: "view generation from the model; sheets owned by LAY area"}
+  - {id: FP-BIM-023, name: "Story management", desc: "Story and level datums: elevation, height, template defaults, multi-story repetition", p: P1, dep: [blender-native], status: planned, test: "", note: ""}
+  - {id: FP-BIM-024, name: "Type catalogs", desc: "Element type libraries with parametric sizes; type and instance separation", p: P1, dep: [ifcopenshell], status: planned, test: "", note: ""}
+  - {id: FP-BIM-025, name: "Structural grids", desc: "Column grids: chained grid lines with bubbles; snap elements to grids", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-BIM-026, name: "Spatial hierarchy", desc: "Project, site, building, storey containers; assign elements to containers", p: P1, dep: [ifcopenshell], status: planned, test: "", note: "IfcSpatialStructure mapping"}
+  - {id: FP-BIM-027, name: "Clash checks", desc: "Clash detection between selected element categories; marker list and report", p: P2, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-BIM-028, name: "Model checker", desc: "Rule checks: missing properties, naming conventions, classification gaps", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-BIM-029, name: "BCF issue workflow", desc: "Attach BCF issues to elements: topics, camera viewpoints, comment threads", p: P2, dep: [], status: planned, test: "", note: "file-format exchange entry is FP-IO-031 in IO area"}
+  - {id: FP-BIM-030, name: "COBie handover export", desc: "COBie-style handover worksheets: types, components, attributes (MVD subset)", p: P2, dep: [ifcopenshell], status: planned, test: "", note: "COBie-style; conformance scope fixed before any support claim"}
