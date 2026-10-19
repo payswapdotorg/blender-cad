@@ -54,11 +54,14 @@ HARNESS_BIN = ROOT / "harness" / "target" / "debug" / "w2_kernel"
 OCP_VENV = Path(os.environ.get("OCP_VENV", "/home/z/solidcraft-ocp-venv"))
 OCP_PY = OCP_VENV / "bin" / "python"
 OCP_BENCH = ROOT / "python" / "ocp_kernel_bench.py"
-UPSTREAM = Path(os.environ.get("SOLIDCRAFT_UPSTREAM", "/home/z/solidcraft-upstream"))
+UPSTREAM = Path(os.environ.get("SOLIDCRAFT_UPSTREAM", str(ROOT / ".upstream")))
 
+# Verification-pass fix (Task 103): default to the in-tree .release/ layout created by
+# ../fetch-release.sh (the previous /home/z/solidcraft-release default was a dev-host
+# symlink artifact — reproducible-from-clean-checkout now works without out-of-tree setup).
 CLI = os.environ.get(
     "SOLIDCRAFT_CLI",
-    "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+    str(ROOT / ".release" / "solidcraft-0.16.2-linux-x86_64" / "bin" / "solidcraft-cli"),
 )
 UPSTREAM_SHA = "3b4db52c10279251a068cfca5eb7447068bc28e7"
 RELEASE_TAG_COMMIT = "5de48e9"  # v0.16.2 tag; measured 80 commits behind the source pin
@@ -120,7 +123,7 @@ def run_truck_harness(harness_commit: str) -> dict:
     if not HARNESS_BIN.is_file():
         return {"status": "blocked", "blocker": f"harness binary missing: {HARNESS_BIN} (cargo build --bin w2_kernel -j 1)"}
     env = dict(os.environ, HARNESS_COMMIT=harness_commit)
-    r = subprocess.run([str(HARNESS_BIN)], capture_output=True, text=True, timeout=900, env=env, cwd=str(HARNESS_BIN.parents[1]))
+    r = subprocess.run([str(HARNESS_BIN)], capture_output=True, text=True, timeout=900, env=env, cwd=str(HARNESS_BIN.parents[2]))  # cwd = harness/ so the binary's ../scratch/w2-kernel/ output lands where this runner reads it (verification-pass fix, Task 103)
     if r.returncode != 0:
         return {"status": "blocked", "blocker": f"harness rc={r.returncode}: {r.stderr[:500]}"}
     return json.loads((SCRATCH / "truck-harness.json").read_text())

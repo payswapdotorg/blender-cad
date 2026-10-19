@@ -31,7 +31,8 @@ from collections import defaultdict
 from pathlib import Path
 
 META = "/tmp/meta-full.json"  # cd harness && cargo metadata --locked --format-version 1
-LOCK = "/home/z/blender-cad/experiments/solidcraft/harness/Cargo.lock"
+# Verification-pass fix (Task 103): repo-relative (was an absolute dev-host path).
+LOCK = Path(__file__).resolve().parents[1] / "harness" / "Cargo.lock"
 HOST = {"target_arch": "x86_64", "target_os": "linux",
         "target_vendor": "unknown", "target_env": "gnu"}
 

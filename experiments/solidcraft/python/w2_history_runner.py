@@ -49,9 +49,12 @@ FIX = ROOT / "fixtures" / "history"
 SCRATCH = ROOT / "scratch" / "w2-history"
 RESULTS = ROOT / "results"
 
+# Verification-pass fix (Task 103): default to the in-tree .release/ layout created by
+# ../fetch-release.sh (the previous /home/z/solidcraft-release default was a dev-host
+# symlink artifact); SOLIDCRAFT_CLI env still overrides.
 CLI = os.environ.get(
     "SOLIDCRAFT_CLI",
-    "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+    str(ROOT / ".release" / "solidcraft-0.16.2-linux-x86_64" / "bin" / "solidcraft-cli"),
 )
 UPSTREAM = ROOT / ".upstream"
 UPSTREAM_SHA = "3b4db52c10279251a068cfca5eb7447068bc28e7"

@@ -35,7 +35,16 @@ EXP = os.path.abspath(os.path.join(HERE, ".."))
 SCRATCH = os.path.join(EXP, "scratch", "w3")
 RESULTS = os.path.join(EXP, "results", "w3-mcp.json")
 
-BIN = "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli"
+# Verification-pass fix (Task 103): SOLIDCRAFT_CLI env override (consistent with the
+# other drivers) + default to the in-tree .release/ layout created by ../fetch-release.sh
+# (the previous hardcoded /home/z/solidcraft-release path was a dev-host symlink artifact).
+BIN = os.environ.get(
+    "SOLIDCRAFT_CLI",
+    os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "..", ".release",
+        "solidcraft-0.16.2-linux-x86_64", "bin", "solidcraft-cli",
+    ),
+)
 UPSTREAM_REPO = "https://github.com/tangency-labs/solidcraft"
 UPSTREAM_SHA = "3b4db52c10279251a068cfca5eb7447068bc28e7"  # source pin used for audits
 RELEASE_TAG_COMMIT = "5de48e9"  # release binary tag; 80 commits behind the pin (measured by W2)

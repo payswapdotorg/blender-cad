@@ -69,6 +69,18 @@ python3.12 -m venv /home/z/solidcraft-ocp-venv && /home/z/solidcraft-ocp-venv/bi
 cargo run --bin w2_history   # example
 ```
 
+Path resolution (verification-pass note, Task 103): the Python drivers resolve the
+release CLI and the upstream clone **in-tree first** — `.release/` (created by
+`fetch-release.sh`) and `.upstream/` (created by `fetch-upstream.sh`) — and every
+one of them accepts the `SOLIDCRAFT_CLI` / `SOLIDCRAFT_UPSTREAM` / `OCP_VENV` env
+overrides. The originally-recorded runs used dev-host symlinks at
+`/home/z/solidcraft-release` and `/home/z/solidcraft-upstream` (same artifacts,
+out-of-tree layout); a clean checkout now reproduces without creating those
+symlinks. `python/w2_kernel_runner.py` also invokes the harness binary with
+`cwd=harness/` so its `../scratch/w2-kernel/` output lands where the runner reads
+it (the previous `cwd=target/` worked only when a direct harness run had already
+seeded the scratch file — recorded by the Task 103 verification pass).
+
 Sandbox constraints recorded honestly (Task 96 bootstrap):
 
 - `solidcraft-engine` / `solidcraft-mcp` cannot be linked into the harness here:
