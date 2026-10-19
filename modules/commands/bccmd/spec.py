@@ -1,4 +1,7 @@
-"""Command spec + input model — contract §4.1/§4.2 (m1-module-contracts.md).
+"""Command spec + input model — contract §4.1/§4.2 (m1-module-contracts.md),
+extended by m2-module-contracts.md §3 (input model additions: the
+InputValue source flag, CommandContext pointer + pending one-shot osnap,
+direct distance entry at point prompts).
 
 One input model, three input sources (interactive shell operator, scripted
 tests, agent adapter later) — every source produces :class:`InputValue`
@@ -69,11 +72,19 @@ class InputValue:
     "string" | "selection"``; ``value`` is a :class:`Point`, ``float`` or
     ``str`` (selection: ``list[str]`` entity ids). ``raw`` keeps the
     original text for the history.
+
+    ``source`` (M2, contract §3) records where the value came from:
+    ``"typed"`` (keyboard/script — the default) or ``"mouse"`` (viewport
+    pick). Typed input NEVER passes through osnap/ortho/grid resolution
+    (the AutoCAD rule — deterministic scripted tests); mouse input ALWAYS
+    does (``bcdraft._common.ask_point`` runs ``bcdraft.precision.
+    resolve_point`` on it).
     """
 
     kind: str
     value: Any
     raw: str = ""
+    source: str = "typed"
 
 
 @dataclass
@@ -134,6 +145,16 @@ class CommandContext:
     last_point: Optional[Point] = None
     machine: Optional["PromptMachine"] = None
     default_provider: Optional[Callable[[Request], InputValue]] = None
+    #: Last known cursor position (M2, contract §3) — updated by bcshell on
+    #: mouse moves; consumed by direct distance entry (direction
+    #: last_point -> pointer) and the ortho direction when no drag vector
+    #: exists. None in headless tests unless set explicitly.
+    pointer: Optional[Point] = None
+    #: Pending ONE-SHOT osnap override (M2, contract §3) — a list of mode
+    #: names (e.g. ``["ENDPOINT"]``) set when the user types an osnap token
+    #: at a point prompt; consumed (set back to None) by the next mouse
+    #: point resolution in ``bcdraft._common.ask_point``.
+    pending_osnap: Optional[list] = None
 
     def __post_init__(self):
         if self.history is None:
@@ -242,6 +263,12 @@ def _kind_accepted(req: Request, value: InputValue) -> bool:
     if req.kind == "string":
         return True
     if value.kind == req.kind or value.kind == "keyword":
+        return True
+    if value.kind == "distance" and req.kind == "point":
+        # M2 direct distance entry (contract §3): a plain number at a point
+        # prompt resolves to a point via ``bcdraft.precision.dde_point``;
+        # ``bcdraft._common.ask_point`` performs the conversion against
+        # last_point + the pointer direction.
         return True
     return value.kind == "point" and req.kind in ("distance", "angle")
 

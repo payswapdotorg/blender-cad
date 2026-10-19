@@ -47,10 +47,12 @@ from .registry import Registry
 from .history import History, HistoryEntry
 from .input import (
     InputParseError,
+    OSNAP_TOKEN_ALIASES,
     ScriptedProvider,
     angle_input,
     distance_input,
     keyword_input,
+    osnap_tokens,
     parse,
     point_input,
     selection_input,
@@ -92,6 +94,8 @@ __all__ = [
     "selection_input",
     "distance_input",
     "angle_input",
+    "osnap_tokens",
+    "OSNAP_TOKEN_ALIASES",
 ]
 
 __version__ = "0.1.0"

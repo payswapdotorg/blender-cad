@@ -94,6 +94,53 @@ class Registry:
         tokens = list(self._specs) + list(self._aliases)
         return sorted(t for t in tokens if t.startswith(prefix) and t)
 
+    def suggestions(self, prefix: str, limit: int = 8) -> List[tuple]:
+        """Autocomplete suggestions — ``(name, help)`` pairs (M2 §3).
+
+        Case-insensitive matching over canonical names AND aliases; an
+        alias match reports its CANONICAL command name. Exact-prefix
+        matches come first, then contains-matches; within each group the
+        order is stable (canonical names in registration order, then
+        aliases in alias-map order), deduplicated by canonical name, and
+        the combined ranked list is truncated to ``limit``.
+
+        An empty prefix matches everything, so it returns the first
+        ``limit`` canonical names in registration order.
+        """
+        limit = max(int(limit), 0)
+        text = (prefix or "").strip().upper()
+        if limit == 0:
+            return []
+        if not text:
+            return [(spec.name, spec.help)
+                    for spec in self._specs.values()][:limit]
+
+        ranked: List[tuple] = []
+        seen: set = set()
+
+        def _add(name: str, spec) -> None:
+            if name not in seen:
+                seen.add(name)
+                ranked.append((spec.name, spec.help))
+
+        # exact-prefix matches: canonical names first, then aliases
+        for name, spec in self._specs.items():
+            if name.startswith(text):
+                _add(name, spec)
+        for alias, name in self._aliases.items():
+            if alias.startswith(text) and name not in seen:
+                _add(name, self._specs[name])
+        if len(ranked) >= limit:
+            return ranked[:limit]
+        # contains-matches (still prefix-ordered groups; canonical first)
+        for name, spec in self._specs.items():
+            if text in name and name not in seen:
+                _add(name, spec)
+        for alias, name in self._aliases.items():
+            if text in alias and name not in seen:
+                _add(name, self._specs[name])
+        return ranked[:limit]
+
     # -- execution ----------------------------------------------------------
     def run_command(
         self,

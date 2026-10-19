@@ -15,15 +15,28 @@ is flagged in the worklog for amendment.
 
 from bccmd import CommandSpec, Registry
 
-from . import commands_doc, commands_draw, commands_modify
+from . import (
+    commands_doc,
+    commands_draw,
+    commands_modify,
+    commands_organization,
+    commands_precision,
+    selection,
+)
 from .commands_doc import COMMANDS as _DOC_COMMANDS
 from .commands_draw import COMMANDS as _DRAW_COMMANDS
 from .commands_modify import COMMANDS as _MODIFY_COMMANDS
+from .commands_organization import COMMANDS as _ORG_COMMANDS
+from .commands_precision import COMMANDS as _PRECISION_COMMANDS
+from .selection import COMMANDS as _SELECTION_COMMANDS
 
 COMMANDS = (
     tuple(_DRAW_COMMANDS)
     + tuple(_MODIFY_COMMANDS)
     + tuple(_DOC_COMMANDS)
+    + tuple(_PRECISION_COMMANDS)
+    + tuple(_SELECTION_COMMANDS)
+    + tuple(_ORG_COMMANDS)
 )
 
 
@@ -45,6 +58,9 @@ __all__ = [
     "commands_draw",
     "commands_modify",
     "commands_doc",
+    "commands_precision",
+    "commands_organization",
+    "selection",
 ]
 
 __version__ = "0.1.0"
