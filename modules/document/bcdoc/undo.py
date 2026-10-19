@@ -1,4 +1,5 @@
-"""Undo journal: undo groups and the op vocabulary (contract §3.3).
+"""Undo journal: undo groups and the op vocabulary (contracts §3.3 M1,
+§2.8 M2).
 
 Journal op vocabulary (plain dicts; JSON-serializable via ``UndoGroup.to_dict``):
 
@@ -18,16 +19,44 @@ Journal op vocabulary (plain dicts; JSON-serializable via ``UndoGroup.to_dict``)
 
 ``{"op": "mutate", "id": str, "changes": {field: value, ...}}``
     Set ``changes`` on the entity. Inverse: mutate with the prior values
-    (captured live).
+    (captured live; the API records ops carry the PRIOR values, so the
+    pure inverse is the op itself).
 
-``{"op": "add_layer", "name": str}`` / ``{"op": "remove_layer", "name": str}``
-    Layer-table edits; inverses of each other.
+``{"op": "add_layer", "name": str, "props": {...}}`` /
+``{"op": "remove_layer", "name": str, "record": {...}}`` /
+``{"op": "mutate_layer", "name": str, "changes": {...}}``
+    Layer-table edits (v2 payloads: add carries the record properties,
+    remove the full record, mutate the PRIOR values). M1 journals with
+    bare ``{"op": "add_layer"/"remove_layer", "name"}`` still replay
+    (missing payloads -> default records — tolerant replay rule).
+
+``{"op": "add_block", "name", "base_point", "handle", "entities": [...]}`` /
+``{"op": "remove_block", "name", "record": {...}}`` /
+``{"op": "redefine_block", "name", "new": {...}, "old": {...}}``
+    Block table edits; every op carries full entity-dict snapshots so
+    journal replay rebuilds definitions (restored members are equal
+    copies, not identity-preserving objects).
+
+``{"op": "add_layout", "name", "page_width", "page_height", "paper_units"}`` /
+``{"op": "remove_layout", "name", "record": {...}}`` /
+``{"op": "rename_layout", "old", "new"}`` /
+``{"op": "reorder_layout", "name", "old_index"}``
+    Layout table edits (reorder's ``old_index`` is the PRE-move index, so
+    applying the op moves the layout back there).
+
+``{"op": "add_text_style"|"add_dim_style", "name", "props"}`` /
+``{"op": "remove_text_style"|"remove_dim_style", "name", "record"}`` /
+``{"op": "mutate_text_style"|"mutate_dim_style", "name", "changes"}``
+    Style table edits (same shapes as the layer ops).
 
 Every committed transaction appends one :class:`UndoGroup` whose entries
 are the *reversed* journal — applying them in order undoes the
 transaction. Undo itself re-applies those entries as a new committed
 transaction (bumping ``doc_version``, per the monotonicity rule) and the
 counter-ops it captures become the redo group.
+
+Settings/sysvars are deliberately NOT part of this vocabulary (contracts
+§2.5 undo-policy exception).
 """
 
 from __future__ import annotations
@@ -91,8 +120,57 @@ def inverse_of_applied(op: dict) -> dict:
             "id": op["id"],
             "changes": dict(op["changes"]),
         }
+    # -- layers ----------------------------------------------------------
     if kind == "add_layer":
         return {"op": "remove_layer", "name": op["name"]}
     if kind == "remove_layer":
-        return {"op": "add_layer", "name": op["name"]}
+        inverse = {"op": "add_layer", "name": op["name"]}
+        record = op.get("record")
+        if record is not None:  # v2 payload; M1 bare ops replay with defaults
+            inverse["props"] = {key: record[key] for key in record
+                               if key != "name"}
+        return inverse
+    if kind == "mutate_layer":
+        return {"op": "mutate_layer", "name": op["name"],
+                "changes": dict(op["changes"])}
+    # -- blocks ----------------------------------------------------------
+    if kind == "add_block":
+        return {"op": "remove_block", "name": op["name"]}
+    if kind == "remove_block":
+        record = op["record"]
+        return {"op": "add_block", "name": record["name"],
+                "base_point": record["base_point"],
+                "handle": record["handle"],
+                "entities": record["entities"]}
+    if kind == "redefine_block":
+        return {"op": "redefine_block", "name": op["name"],
+                "new": dict(op["old"]), "old": dict(op["new"])}
+    # -- layouts ----------------------------------------------------------
+    if kind == "add_layout":
+        return {"op": "remove_layout", "name": op["name"]}
+    if kind == "remove_layout":
+        record = op["record"]
+        return {"op": "add_layout", "name": record["name"],
+                "page_width": record["page_width"],
+                "page_height": record["page_height"],
+                "paper_units": record["paper_units"]}
+    if kind == "rename_layout":
+        return {"op": "rename_layout", "old": op["new"], "new": op["old"]}
+    if kind == "reorder_layout":
+        # the op's old_index is the PRE-move position: applying the op
+        # again moves the layout back there
+        return {"op": "reorder_layout", "name": op["name"],
+                "old_index": op["old_index"]}
+    # -- styles -------------------------------------------------------------
+    if kind in ("add_text_style", "add_dim_style"):
+        return {"op": kind.replace("add_", "remove_", 1), "name": op["name"]}
+    if kind in ("remove_text_style", "remove_dim_style"):
+        record = op["record"]
+        inverse = {"op": kind.replace("remove_", "add_", 1),
+                   "name": record["name"]}
+        inverse["props"] = {key: record[key] for key in record
+                            if key != "name"}
+        return inverse
+    if kind in ("mutate_text_style", "mutate_dim_style"):
+        return {"op": kind, "name": op["name"], "changes": dict(op["changes"])}
     raise ValueError(f"unknown journal op {op!r}")
