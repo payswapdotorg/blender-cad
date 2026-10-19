@@ -93,25 +93,26 @@ extension-platform policy on bundled native libraries remains unverified.
 M3-entry binding decision must still fill in every ADR-0002 criteria row
 (performance, packaging, binding stability, coverage).
 
-### 4.2 SolidCraft evaluation rows (2026-10-20, TL2 — issue #1 track)
+### 4.2 SolidCraft evaluation rows (2026-10-19 UTC, TL2 — issue #1 track; close-out sync with main `a6a46f1` on 2026-10-20)
 
 Full decision record: `docs/00-architecture/solidcraft-evaluation.md`
 (upstream pin `3b4db52`, evidence under `experiments/solidcraft/`). One
 matrix row is added (below) with status `evaluate`; its seven candidate
 capabilities are **separately gated** there and summarized here. Nothing is
-adopted; no release-manifest change; no product dependency exists at any
-point in the evaluation.
+adopted — no product dependency, solver, kernel or document model — and every
+"adapt" disposition is a **provisional recommendation for product review**;
+no release-manifest change exists at any point in the evaluation.
 
 | Component | Role in product | Target module | License (confidence, glossary §9) | Integration path | Status | Rationale | Key risks | Adoption gate criteria | ADR | Notes |
 |---|---|---|---|---|---|---|---|---|---|---|
-| SolidCraft (tangency-labs/solidcraft) | Evaluation upstream: sketch-constraint design + solver crate (gated); parametric/naming/registry/MCP/skill **design patterns**; kernel comparison evidence | parametric (constraints); commands/agent (patterns); kernel (reference only) | MIT OR Apache-2.0 — verified from license files 2026-10-20, per-crate (high); vendored truck family Apache-2.0 © RICOS (high) | (1) design adoption via docs (no dependency); (2) gated FFI/port of the sketch-solver crate closure (12 crates, zero GPL); never the app, UI, runtime or document model | evaluate | proven parametric-CAD architecture with verified behavior contracts; 83/83 analytic oracle; bitwise-deterministic solver; permissive closure | FFI packaging under extension policy (same unverified policy as OCCT); PlaneGCS not yet compared; upstream cadence (80 commits between pin and nearest tag) | per-candidate gates in solidcraft-evaluation.md §4.1–4.7; the only code-reuse gate (sketch solver) additionally requires: PlaneGCS comparison suite, packaging review, unicode-ident Unicode-3.0 verification, FFI-vs-port decision | — | evaluation branch `tl2/solidcraft-evaluation`; experiments isolated under `experiments/solidcraft/`; occluded: egui/wgpu UI, cadmpeg codecs, whole runtime (issue #1 boundaries) |
+| SolidCraft (tangency-labs/solidcraft) | Evaluation upstream: sketch-constraint design + solver crate (gated); parametric/naming/registry/MCP/skill **design patterns**; kernel comparison evidence | parametric (constraints); commands/agent (patterns); kernel (reference only) | MIT OR Apache-2.0 — verified from license files 2026-10-19 UTC, per-crate (high); vendored truck family Apache-2.0 © RICOS (high) | (1) design adoption via docs (no dependency); (2) gated FFI/port of the sketch-solver crate closure (12 crates, zero GPL); never the app, UI, runtime or document model | evaluate | proven parametric-CAD architecture with verified behavior contracts; 83/83 oracle cases pass at the pin per the generated oracle record (62 analytic + 21 FreeCAD — README's stale "75 of 76 public reference parts" line distinguished in the decision record §2); bitwise-deterministic solver; permissive closure | FFI packaging under extension policy (same unverified policy as OCCT); PlaneGCS not yet compared; upstream cadence (80 commits between pin and nearest tag) | per-candidate gates in solidcraft-evaluation.md §4.1–4.7; the only code-reuse gate (sketch solver) additionally requires: PlaneGCS comparison suite, packaging review, unicode-ident Unicode-3.0 verification, FFI-vs-port decision | — | evaluation branch `tl2/solidcraft-evaluation` (synced with main `a6a46f1`); experiments isolated under `experiments/solidcraft/`; occluded: egui/wgpu UI, cadmpeg codecs, whole runtime (issue #1 boundaries) |
 
 Candidate-capability disposition (each separately gated; details + test IDs in the
 decision record §4):
 
 | Candidate capability | Disposition | Gate (before any status change) |
 |---|---|---|
-| 1. Sketch solver + constraint representation | adapt/port — representation adopted as design baseline; solver crate behind gate | PlaneGCS comparison suite; extension packaging review; Unicode-3.0 verify; FFI-vs-port decision |
+| 1. Sketch solver + constraint representation | adapt/port — representation design proposed as baseline (provisional, subject to product review); solver crate behind gate | PlaneGCS comparison suite; extension packaging review; Unicode-3.0 verify; FFI-vs-port decision |
 | 2. Feature history + incremental recompute | adapt design / reference implementation | design-level; M3 parametric design must cite the record |
 | 3. Persistent topology naming | adapt behavior contract / reference mechanism | design-level; M3 design adoption |
 | 4. `truck` kernel vs OCCT/OCP | **rejected as kernel replacement** (reasons recorded: 1–2 orders slower curved booleans in release config; tessellated internal measurement; one STEP-import anomaly; packaging win already priced into ADR-0002) — ADR-0002 affirmed | terminal for this evaluation; any future kernel change = new ADR with scale/robustness/packaging/ABI/topology-identity/regression evidence |

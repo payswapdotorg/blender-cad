@@ -2,20 +2,23 @@
 
 - **Status:** Evaluation complete (issue #1 acceptance gates). **No component is adopted; no release-manifest change; no product code touched.** Every decision below is evidence-backed by committed, reproducible experiments under `experiments/solidcraft/`.
 - **Owner:** TL2 (evaluation track); TL owns the product consequences
-- **Date:** 2026-10-20 (UTC)
+- **Date:** 2026-10-19 (UTC) — experiments 17:20–18:21 UTC per result-envelope timestamps; decision record committed as `467eaba` (2026-10-19 18:47 UTC); station re-verification `685f7c4` (2026-10-19 20:07 UTC); close-out sync with main `a6a46f1` (M2) on 2026-10-20
 - **Vocabulary:** [docs/GLOSSARY.md](../GLOSSARY.md) (binding)
 - **Upstream evaluated:** `tangency-labs/solidcraft` @ `3b4db52c10279251a068cfca5eb7447068bc28e7` (v0.16.2, commit date 2026-10-19); official release binary v0.16.2 (tag `5de48e9`, **80 commits behind the pin** — measured, recorded in every behavioral result envelope)
-- **Experiment lane:** `tl2/solidcraft-evaluation` off main `a4b0d7a` (M1 walking skeleton)
+- **Experiment lane:** `tl2/solidcraft-evaluation`, originally branched off main `a4b0d7a` (M1 walking skeleton) — **synced with main `a6a46f1` (M2) via merge `df378b3` at close-out; all M2 implementation, acceptance artifacts and inventory changes preserved, zero conflicts, nothing reverted** (verified: the PR diff vs main touches only `experiments/solidcraft/` + these evaluation docs)
 
 ## 1. Executive decision
 
 SolidCraft is a **high-quality reference implementation whose architecture we should
 learn from in four places, whose sketch-constraint design we should adapt, and whose
-runtime, kernel, UI and document model we should not adopt.** Concretely:
+runtime, kernel, UI and document model we should not adopt.** Every "adapt" verdict below
+is a **provisional, evidence-backed recommendation for product review** — nothing in this
+record constitutes adoption: no product dependency, solver, kernel, document-model or
+schema change exists or is authorized by this document (§9). Concretely:
 
 | # | Candidate | Decision | One-line basis |
 |---|---|---|---|
-| 1 | Sketch solver + constraint representation | **Adapt/port** (representation now; solver crate behind a gate) | 32 constraint kinds covering our full PAR list; DOF/redundancy/conflict diagnostics with named causes; bitwise-deterministic; 85/85 harness checks; 235/0/3 upstream tests; near-isomorphic to `bcdoc` entities; 12-crate closure, zero GPL, no native code |
+| 1 | Sketch solver + constraint representation | **Adapt/port (provisional recommendation)** — representation design now; solver crate only behind a gate | 32 constraint kinds covering our full PAR list; DOF/redundancy/conflict diagnostics with named causes; bitwise-deterministic; 85/85 harness checks; 235/0/3 upstream tests; near-isomorphic to `bcdoc` entities; 12-crate closure, zero GPL, no native code |
 | 2 | Parametric feature history + incremental recompute | **Adapt (design) / reference (implementation)** | Fingerprint prefix-reuse recompute contract verified (edit → exactly the dependent features re-run); per-feature failure with frozen state; loud write-gating — but their in-process state-digest cache does not map onto our UUID/`doc_version` model |
 | 3 | Persistent topology naming + reference stability | **Adapt (behavior contract) / reference (mechanism)** | Graded name lookup, failure-over-silent-retarget, unverified-matches-announce-themselves — all behaviorally verified; the kernel mechanism is truck-specific (vendored `history.rs` provenance), OCCT `Modified`/`Generated` is our equivalent |
 | 4 | `truck` kernel vs OCCT/OCP | **Reject as kernel replacement; adapt kernel-agnostic patterns** | OCCT is 1–2 orders faster on curved-curved booleans in release config; truck's internal measurement is tessellated (~1.5e-4 rel) where OCCT integrates exactly (≤8e-9); one truck STEP-import anomaly (st5, +4.1% volume, closed, no warnings); packaging — truck's one win — is already a priced-in cost of ADR-0002 |
@@ -48,15 +51,27 @@ claims (W3-b):
   from every reuse path). All Apache-2.0 © RICOS Co. Ltd. (egui-wgpu: MIT OR Apache-2.0);
   every change marked `SolidCraft:` in source — **129 markers counted** (W3-b).
 - **Reuse closures audited for license risk** (the dependency sets we would actually
-  ship if candidates were adopted): closure 1 (sketch solver) = **12 crates**, all
+  ship if a gated candidate were ever approved): closure 1 (sketch solver) = **12 crates**, all
   permissive, zero GPL, no native code; closure 2 (kernel+doc) = **136 crates**, 15
   SPDXs, all permissive, zero GPL; `zstd-sys` and the `cadmpeg` codec family are outside
   both closures (io/engine excluded from every reuse path). The only pre-ship `(verify)`
   item for candidate #1 is `unicode-ident`'s Unicode-3.0 term FSF listing.
-- **Upstream maturity:** v0.16.2 released 2026-10-19; 83/83 oracle reference cases pass
-  (62 analytic + 21 FreeCAD-verified — FreeCAD is an *independent* oracle, not a
-  dependency); 235 sketch-crate tests pass at the pin; CI runs per-PR license generation
-  and scheduled cargo-deny advisories.
+- **Upstream maturity:** v0.16.2 released 2026-10-19. Two upstream statements exist at the
+  pin and are reported distinctly (evidence below): the pinned **README status line** says
+  "75 of 76 public reference parts match … the other is a tracked bug", while the pinned
+  **generated oracle record** (`docs/oracle.md`) says "83 / 83 cases pass; sources: 62
+  analytic, 21 freecad; 0 known failure(s)". We verified the machine-checkable side at
+  `3b4db52`: `tests/oracle/` contains exactly **83 case directories** and the `docs/oracle.md`
+  table has exactly **83 rows, all `pass`, 0 `fail`**. Upstream git history explains the gap:
+  the README line was last set at upstream commit `e12758ff` (2026-10-12), when the oracle
+  corpus was 76 cases with 1 tracked failure (`docs/oracle.md` then read "75 / 76 cases
+  pass; 55 analytic, 21 freecad; 1 known failure"); the corpus has since grown to 83 cases
+  and the tracked failure was fixed, but the hand-maintained README line was never updated.
+  Our evidence uses the **generated** oracle record (83/83 at the pin, 62 analytic +
+  21 FreeCAD-computed — FreeCAD is an *independent* oracle, not a dependency), cross-checked
+  by our own 10/10 oracle-fixture agreement between the release binary and pin-level paths
+  (experiment C). 235 sketch-crate tests pass at the pin; upstream CI runs per-PR license
+  generation and scheduled cargo-deny advisories.
 
 ## 3. Experiments run (all under `experiments/solidcraft/`, reproducible)
 
@@ -79,7 +94,8 @@ agreement between binary and pin-level paths).
 
 Each candidate carries: decision, exact upstream SHA + source paths, tested version,
 license status, target product module, integration design, packaging/runtime impact,
-test results, limitations, and a **measurable adoption gate**. Full detail per candidate
+test results, limitations, and a **measurable adoption gate** — a gate is the precondition
+for any future status change, not an authorization to change it. Full detail per candidate
 lives in the findings docs; this is the decision layer.
 
 ### 4.1 Candidate 1 — sketch solver + constraint representation → **Adapt/port**
@@ -104,7 +120,8 @@ lives in the findings docs; this is the decision layer.
 - **Source:** `crates/doc/src/{naming.rs, history_names.rs, lineage.rs, piece_names.rs, name_lookup.rs}` + vendored `truck-shapeops/src/transversal/history.rs` (face/edge provenance recorded *during* construction, never reconstructed) @ `3b4db52`.
 - **Behavior verified:** graded lookup (Exact > Alias > Piece > Stem); destroyed references fail loudly naming what's gone; stale picks refused with nearest-match distance; geometric-vote fallbacks announce themselves as unverified.
 - **Mechanism:** truck-specific; our equivalent information source is OCCT's `BRepBuilderAPI` `Modified`/`Generated` history — a design reference, not portable code.
-- **Gate:** none needed (design-level); M3 parametric design must adopt the behavior contract.
+- **Gate:** none needed (design-level); the M3 parametric design *should* adopt this behavior
+  contract (provisional recommendation, subject to that design's own review).
 
 ### 4.4 Candidate 4 — `truck` vs OCCT/OCP → **Reject as replacement; adapt patterns**
 
@@ -185,6 +202,10 @@ ships from this evaluation, so no verdict is exercised yet.
 
 ## 8. Recommended next integration PR (scoped, no new dependencies)
 
+> All five items are **provisional design recommendations** for product review — none is
+> adopted, authorized or scheduled by this evaluation; each lands only through the normal
+> reviewed-PR path, and the product owner may accept, amend or reject each independently.
+
 1. **PAR-area constraint taxonomy + diagnostics design update** (document-model doc
    §3.8 / parametric module README): adopt the 32-kind inventory structure, DOF =
    vars − rank reporting, redundancy with `determined_by` naming, conflict failure
@@ -215,15 +236,37 @@ schema change.**
 
 ## 10. Regression evidence (experiment E)
 
-- `python3 -m pytest -q` at the repo root (branch tip): **440 passed** — identical to
-  the M1 completion-graph record; zero product files modified by the evaluation
-  (`git diff a4b0d7a..HEAD --stat` = `experiments/solidcraft/**` + the docs added by
-  this record only).
-- `python3 scripts/build_extension.py --check`: green (extension package check).
+Two records, both green, exactly one command set each:
+
+- **At the original M1-baseline tip `685f7c4` (2026-10-19):** `python3 -m pytest -q`
+  at the repo root → **440 passed** (identical to the M1 completion-graph record);
+  `python3 scripts/build_extension.py --check` → green; zero product files modified
+  (`git diff a4b0d7a..HEAD` = `experiments/solidcraft/**` + the docs added by this record).
+- **At the close-out sync with M2 main `a6a46f1` (merge `df378b3` + close-out fixes):**
+  `python3 -m pytest tests/ -q` → **6 passed** (TP-CAT-00 repo-consistency);
+  `python3 -m pytest modules tests -q` → **1127 passed** (the M2 unit batteries —
+  unchanged by this PR, matching main);
+  `python3 -m pytest -q` (root-wide, now also collecting the lane's 11 normalizer
+  regression tests) → **1138 passed, 0 failed, 0 errors**;
+  `python3 -m compileall scripts modules/document/bcdoc modules/interchange/bcio
+  modules/commands/bccmd modules/drafting/bcdraft modules/drawings/bcdraw
+  modules/agent/bcagent -q` → rc 0;
+  `python3 scripts/build_extension.py` → built `blender_cad-0.2.0.zip` (67 files,
+  250,274 bytes; **zero experiments/solidcraft entries** in the package) and
+  `python3 scripts/build_extension.py --check` → green;
+  `python3 scripts/render_inventory.py --check` → in sync.
+  These are exactly the five checks the repo CI workflow ("Repo consistency and unit
+  batteries") runs; the close-out head SHA and CI run URLs are recorded in the PR.
 - Blender 5.2.2 acceptance battery: **not re-run — no production-facing file was
-  touched** (the issue requires it only in that case); the battery's last committed
-  evidence (`modules/testing/blender/acceptance_m1_result.json`, 30/30) remains the
-  standing record.
+  touched** (the issue requires it only in that case); the standing in-Blender evidence
+  remains main's `modules/testing/blender/acceptance_m2_result.json` (59/59, plus the
+  M1 battery re-run 30/30 recorded in the same M2 commit).
+- A dev-host pytest hazard found and fixed at close-out: re-running the MCP probe
+  leaves mode-000 permission-fixture directories under the gitignored `scratch/`,
+  which broke root-wide pytest *collection* on the authoring host (6 PermissionErrors,
+  never on a clean checkout). The lane now carries `experiments/solidcraft/conftest.py`
+  (pytest scope guard: scratch/.upstream/.release/harness excluded from collection) —
+  the recorded root-wide command works identically on clean checkouts and re-run hosts.
 
 ## 11. References
 

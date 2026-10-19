@@ -366,8 +366,9 @@ its OCCT analogue would be OCCT's own shape history (`BRepBuilderAPI_MakeShape::
 Generated`) — equivalent information exists there, so the layered design transfers even
 though the code does not. The geometric-voting fallback is worth knowing about but is
 explicitly their second-class path. Risk: medium (naming design must be co-designed with
-the kernel binding choice); recommend TL2 treat candidate #3 as *design-adoption now,
-mechanism-decision after the kernel benchmark (W2-b)*.
+the kernel binding choice); recommend TL2 treat candidate #3 as *design-adoption (provisional,
+pending product review), mechanism-decision after the kernel benchmark (W2-b)* — the binding
+verdict lives in the decision record §4.3; matrix status stays `evaluate`.
 
 ---
 

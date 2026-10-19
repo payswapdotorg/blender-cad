@@ -57,8 +57,8 @@ document defers to it. Suggested reading order after the glossary:
 - `30-process/adr/0007-zcode-fork-realignment.md` — ZCode fork realignment decision
 - `30-process/completion-graph-m1.md` — M1 completion graph (test-backed)
 
-## TL2 SolidCraft evaluation additions (2026-10-20, issue #1)
+## TL2 SolidCraft evaluation additions (2026-10-19 UTC, issue #1)
 
-- `00-architecture/solidcraft-evaluation.md` — **TL2 decision record**: source audit, seven-candidate scorecard with gates, limitations, next-PR scope
+- `00-architecture/solidcraft-evaluation.md` — **TL2 decision record**: source audit, seven-candidate scorecard with gates, limitations, next-PR scope (all recommendations provisional — nothing adopted)
 - `30-process/completion-graph-solidcraft-evaluation.md` — evaluation completion graph (ticks with committed evidence only)
-- `experiments/solidcraft/` — isolated experiment lane (not product code): reproducible harnesses/drivers/fixtures/results + per-lane findings docs
+- `experiments/solidcraft/` — isolated experiment lane (not product code): reproducible harnesses/drivers/fixtures/results + per-lane findings docs + close-out regression tests for the comparison normalizer

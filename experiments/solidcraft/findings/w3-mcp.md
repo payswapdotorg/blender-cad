@@ -215,6 +215,21 @@ honours (vfs.rs:410-422). Default-deny, escalation by explicit `--allow-path`.
   variance anywhere is the engine's self-reported per-step `"ms"` timing fields (isolated in
   a dedicated determinism check: two processes, same 10-step batch → identical except
   `"ms": 1.021429` vs `"ms": 0.876684`) — matching W2's finding for `solidcraft-cli run`.
+- **Temp-path variance, classified (close-out)**: the comparison normalizer redacts
+  run-dir paths and the engine's scratch pid-seed folder names before diffing. At the pin,
+  the runtime form is always `solidcraft-mcp-<pid>-<seed-hex>` (`crates/mcp/src/lib.rs`:
+  `format!("solidcraft-mcp-{}-{:x}", std::process::id(), seed)`; pid is a u32 decimal, never
+  empty), so the digit-less variant `solidcraft-mcp--<seed-hex>` cannot occur — residual
+  temp-path variance is an **environment-only difference**, never affecting any recorded
+  outcome. The normalizer nonetheless also accepts the digit-less form (defensive coverage
+  for future pins; upstream churn is a recorded risk) and this is now **regression-tested**
+  in `tests/test_mcp_normalizer.py` (11 checks: both forms collapse to one token,
+  upstream test-fixture-style names stay untouched, geometry is never redacted, a real
+  geometry difference still diffs, and the committed `w3-mcp.json` envelope re-normalizes
+  to its recorded identical/no-diffs verdict under the hardened normalizer). The
+  determinism claim is scoped to exactly this normalized comparison — pass flags plus
+  normalized verbatim evidence with geometry and error strings compared exactly — and is
+  not a claim of byte-identical raw transcripts.
 
 ## 4. Mapping onto our contracts (READ-ONLY analysis)
 

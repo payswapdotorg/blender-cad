@@ -31,12 +31,15 @@
 ```text
 experiments/solidcraft/
 ├── README.md               # this file — rules, reproduction
+├── conftest.py             # pytest scope guard: keeps root `pytest -q` out of
+│                           #   scratch/.upstream/.release/harness (dev-host safe)
 ├── fetch-upstream.sh       # idempotent clone of the pinned SHA → .upstream/
 ├── .gitignore              # .upstream/ target/ solidcraft-ocp-venv/ *.log scratch/
 ├── harness/                # Rust experiment workspace (path-deps on .upstream crates)
 │   ├── Cargo.toml          # replicates upstream [patch.crates-io] → .upstream/vendor/*
 │   └── src/bin/*.rs        # one binary per experiment (owners: see table)
 ├── python/                 # Python drivers: OCP/OCCT comparisons, MCP client, bcdoc mapping
+├── tests/                  # close-out regression tests (normalizer: see w3-mcp findings)
 ├── fixtures/               # shared fixtures with provenance (README per set)
 └── results/                # committed machine-readable outputs (README documents schema)
 ```

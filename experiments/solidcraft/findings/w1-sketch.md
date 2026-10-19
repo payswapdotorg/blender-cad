@@ -388,10 +388,14 @@ change is required by their model — the mapping is representable today.
 
 ## 8. Recommendation input for candidate #1 (sketch solver + constraint representation)
 
-**Recommendation: ADOPT the constraint representation as the design baseline, and ADAPT
+> Status note: this is the W1 worker's **provisional recommendation** to the TL2 decision
+> record — the binding verdict lives in `docs/00-architecture/solidcraft-evaluation.md` §4.1
+> (adapt/port, gated; matrix status stays `evaluate`; nothing is adopted by this lane).
+
+**Recommendation: adopt the constraint representation as the design baseline, and adapt
 the solver crate (bind it; don't rewrite).** Concretely:
 
-- **Constraint representation — adopt.** The 32-variant inventory (§2) is a strict
+- **Constraint representation — adopt (as design baseline, provisional on product review).** The 32-variant inventory (§2) is a strict
   superset of our §3.8 PAR list with exactly the diagnostics §3.8 demands
   ("over/under-constrained diagnostics reported to the user" — theirs is richer:
   per-entity determined flags, named redundant + implying constraints, named failing

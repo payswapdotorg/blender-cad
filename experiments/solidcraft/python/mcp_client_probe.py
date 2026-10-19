@@ -248,10 +248,31 @@ def err_layer(r):
 
 def normalize_verbatim(s, run_dir):
     """Strip run-specific details (paths, pids, scratch seeds, engine self-reported
-    step timings — geometry is byte-identical, only `"ms"` fields vary) for run diffing."""
+    step timings — geometry is byte-identical, only `"ms"` fields vary) for run diffing.
+
+    Temp-path classification (close-out, regression-tested in
+    experiments/solidcraft/tests/test_mcp_normalizer.py):
+    * The upstream runtime form is ALWAYS ``solidcraft-mcp-<pid>-<seed-hex>``
+      (``crates/mcp/src/lib.rs`` @ pin ``3b4db52``:
+      ``format!("solidcraft-mcp-{}-{:x}", std::process::id(), seed)``) — the pid is a
+      u32 decimal, never empty, so the digit-less variant cannot occur at this pin.
+    * The regex nonetheless also accepts the digit-less form
+      ``solidcraft-mcp--<seed-hex>`` as defensive coverage for future upstream pins
+      (upstream churn is a recorded risk — 80 commits between our pin and the nearest
+      tag); previously that form would have leaked a pid-seed path into the cross-run
+      comparison and produced a spurious "observed-differs" diff.
+    * Residual temp-path variance is therefore classified as ENVIRONMENT-ONLY: it is
+      normalized away before comparison and never affects the recorded outcome; the
+      determinism claim in the envelope is scoped to exactly this normalized comparison
+      (pass flags + normalized verbatim evidence; geometry and error strings compared
+      exactly)."""
     s = str(s)
     s = s.replace(run_dir, "<RUNDIR>")
-    s = re.sub(r"solidcraft-mcp-\d+-[0-9a-f]+", "solidcraft-mcp-<PID>", s)
+    # digit-ful pid-seed form (the only runtime-real form at pin 3b4db52) AND the
+    # digit-less defensive form; both collapse to the same redaction token; the
+    # alternation is deliberately precise so test-fixture-style names upstream uses
+    # (solidcraft-mcp-urdf-<pid> etc. in crates/mcp/src/tests.rs) stay untouched
+    s = re.sub(r"solidcraft-mcp-(?:\d+-|-)[0-9a-f]+", "solidcraft-mcp-<PID>", s)
     s = re.sub(r'(\\?"ms\\?"\s*:\s*)[0-9.]+', r'\1<T>', s)  # raw and escaped (inside verbatim strings)
     s = re.sub(r"\u2026\[truncated, (\d+) chars total\]", "\u2026[truncated, N chars total]", s)
     return s
@@ -880,9 +901,11 @@ def main():
                 "run2_duration_s": run2["duration_s"],
                 "identical_to_run1": repro["identical"],
                 "diffs": repro["diffs"],
-                "normalization": ("run-dir paths, mcp scratch pid-seed folders and engine "
-                                   "self-reported \"ms\" step timings redacted; geometry and all "
-                                   "error strings compared exactly"),
+                "normalization": ("run-dir paths, mcp scratch pid-seed folders (digit-ful "
+                                   "runtime form + digit-less defensive form, regression-tested) "
+                                   "and engine self-reported \"ms\" step timings redacted — "
+                                   "temp-path variance is environment-only and never affects "
+                                   "the outcome; geometry and all error strings compared exactly"),
             },
         },
         "notes": {
