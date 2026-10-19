@@ -50,7 +50,7 @@ Conditional rows (pybind11, pythonocc-core) exist because ADR-0002's binding dec
 | ezdxf | MIT | repository LICENSE | compatible | compatible | retain copyright + permission notice | high — 2026-10-19 | recheck at M1 adoption |
 | LibreDWG | GPL-3.0 | repository LICENSE | **compatible directly** (GPL-3.0-or-later) | combined work distributes under GPL-3.0-or-later terms ("or later" of the host) | ship license text; source availability for shipped binaries | high — 2026-10-19 | recheck at M3 (read) and M4 (write) gates |
 | ODA File Converter | proprietary freeware **(verify)** | vendor terms | **not applicable — never distributed with the product**; dev-fixture tooling only | same — never shipped | no product obligations; usage documented in testing module | unverified — must remain fixture-only | hard rule: never bundled/linked/shipped |
-| SolveSpace | GPL-3.0 **(verify)** | repository LICENSE | compatible if ever adopted (evaluate-only today) | same | license text if shipped | unverified — evaluate-only, no shipping planned | verify only if evaluation escalates |
+| SolveSpace | GPL-3.0-or-later (verified at 477d4c8 2026-10-20: COPYING.txt = full GPLv3 with NO appended exception; README.md:356 "GPL v3 or later"; CONTRIBUTING.md:20-21) | repository COPYING.txt + README.md + the CAD Sketcher wheel's dist-info/licenses/COPYING.txt (byte-identical) | compatible directly (GPL-3.0-or-later) — candidate REJECTED on functional evidence, not license | combined work distributes under GPL-3.0-or-later terms ("or later" of the host) | ship license text; corresponding source for any shipped binary (solver + Eigen + mimalloc submodule pins); notices | high — 2026-10-20 · solvespace@477d4c8 COPYING.txt/README/CONTRIBUTING + wheel artifacts · license file read (TL verified the decisive facts directly from the artifacts) · TL · GPLv3-or-later, no linking exception (high) | evaluate-only; no shipping planned — see cad-sketcher-evaluation.md §4.1 for the functional rejection + re-review conditions |
 | Bonsai (BlenderBIM) | **(verify — license history has changed)** | upstream repository | **pending — row stays candidate until verified** | pending | to be determined at verification | must verify at adoption gate | **blocking** at bim integration gate |
 | IfcOpenShell | LGPL-3.0-or-later | repository license | compatible (library use) — pending verification | compatible via "or later" | retain LGPL-3.0-or-later text; library boundary | medium — **(verify)** at gate | recheck at M4 bim bridge |
 | GDAL | MIT/X11-style (MIT-style permissive) | repository LICENSE | compatible — pending verification | compatible — pending verification | retain license + notice | medium — **(verify)** at gate | recheck at gis toolset gate |
@@ -62,6 +62,28 @@ Conditional rows (pybind11, pythonocc-core) exist because ADR-0002's binding dec
 | ZCode (zai-org/ZCode) | Apache-2.0 | repository LICENSE + NOTICE; GitHub API (verified 2026-10-19) | compatible (GPL-3.0-or-later path) | compatible via "or later" path | **preserve NOTICE and THIRD-PARTY-NOTICES from upstream; state changes (Apache-2.0 §4(d))** | high — verified via GitHub API 2026-10-19 | recheck at M5-entry audit (ADR-0004) |
 
 Rows are keyed by component; where a component appears in multiple roles (OCCT as kernel, OCP as binding) the row records the single governing verdict. Fork-specific provenance (payswapdotorg/ZCode created-as-"Gen"-then-renamed) is recorded in `repo-and-upstream-sync.md` §2.1 and ADR-0004, not duplicated per row.
+
+### 2.1 SolidCraft evaluation rows (2026-10-20, TL2 — issue #1 track)
+
+*Added by the TL2 evaluation on its branch (`tl2/solidcraft-evaluation`); rows for the
+SolidCraft surface live there. The CAD Sketcher evaluation rows below (§2.2) follow
+the same pattern on main's m3-eval lane.*
+
+### 2.2 CAD Sketcher evaluation rows (2026-10-20, TL1 track — m3-eval)
+
+Added by the CAD Sketcher evaluation (decision record:
+`cad-sketcher-evaluation.md`; machine-readable evidence:
+`experiments/cad-sketcher/results/license-supply-chain.json` +
+`results/upstream-audit.json` — digests + verbatim quotes for every fact below).
+**No product dependency exists**: these rows record the evaluation surface and the
+licenses any future gated adoption would exercise. Nothing here is shipped, vendored
+or linked today; the merge-gate policy (§1) applies unchanged if any of these ever
+becomes a dependency.
+
+| Component | License | Source of truth | Verdict vs extension (GPL-3.0-or-later) | Verdict vs host (Blender, GPL-2.0-or-later) | Notice / attribution obligations | Verified | Adoption-gate recheck |
+|---|---|---|---|---|---|---|---|
+| CAD Sketcher (hlorus/CAD_Sketcher) @ v0.32.1 (`e7db7e6`) | GPL-3.0-or-later | `blender_manifest.toml:12` `license = ["SPDX:GPL-3.0-or-later"]` + root `LICENSE` (full GPLv3 text, 674 lines) at the pin | compatible (GPL-3.0-or-later direct) — **NOT adopted** | compatible via combined distribution | ship license text if ever distributed; NOTE: `units.py` re-distributes MeasureIt_ARCH GPL-2.0-or-later code with the license block dropped (upstream hygiene finding; restore block + attribution if that file is ever derived from) | high — 2026-10-20 · manifest + LICENSE at the pin · license/manifest file read · TL · GPL-3.0-or-later (high) | evaluation-only; no adoption (decision record §4.2) |
+| slvs 3.2 solver wheel (byte-identical to PyPI; source solvespace/solvespace @ `477d4c8`) | **GPLv3-or-later** (wheel `slvs-3.2.dist-info/licenses/COPYING.txt` = full GPLv3, byte-identical to solvespace's COPYING.txt; upstream README.md:356 + CONTRIBUTING.md:20-21) — **wheel METADATA's "License :: OSI Approved :: MIT License" classifier is WRONG-or-at-best-partial (the author's wrapper contribution at most); recorded as a formal inconsistency; METADATA treated as unreliable** | wheel dist-info (METADATA + licenses/COPYING.txt) + solvespace@477d4c8 COPYING/README/CONTRIBUTING (all quoted verbatim in `experiments/cad-sketcher/findings/license-supply-chain.md`) | compatible (GPL-3.0-or-later direct) — fact recorded; **candidate REJECTED on functional evidence, not license** | combined work distributes under GPL-3.0-or-later terms | ship GPLv3 text + corresponding source for any shipped binary: solvespace @ `477d4c8` (provenance from sdist-embedded git refs — the solvespace `v3.2` tag DRIFTED post-upload) + **Eigen @ `3147391d` (MPL-2.0) — pin-specific license text UNVERIFIABLE from this sandbox: explicit (verify) BLOCKER** + mimalloc @ `f81bf1b` (MIT, verified) | high — 2026-10-20 · wheel artifacts + solvespace@477d4c8 files · license file read (TL verified the decisive facts directly from the artifacts; wheel COPYING.txt = plain GPLv3; the "exception" mentions are standard GPL §7 template text, NOT a grant) · TL · GPLv3-or-later, no linking exception (high); Eigen-at-pin stays (verify) blocker | only per the re-review conditions in cad-sketcher-evaluation.md §4.1 (blockers re-reviewed, never waived; only if PlaneGCS AND SolidCraft both fail their gates) |
 
 ## 3. Blender GPL nuance
 
@@ -93,7 +115,7 @@ The ZCode runtime (pinned `0a1fc56d279fd1001f78387bd81aec1c26767411`, upstream v
 | MIT / BSD / MIT-style | ezdxf, shapely, pybind11, GDAL (verify), PDAL (verify) | retain copyright + permission notices; BSD non-endorsement clauses |
 | Apache-2.0 | ZCode, OCP, build123d, CadQuery | retain LICENSE + NOTICE; state changes (§4(d)) |
 | LGPL (2.1 / 3.0) | OCCT (with exception), FreeCAD components, PlaneGCS (verify), IfcOpenShell (verify), pythonocc (verify) | retain license texts; keep library boundaries; LGPL-3.0-or-later permits GPL-3.0+ combined distribution |
-| GPL-3.0 | LibreDWG, SolveSpace (verify) | ship license; source availability for distributed binaries; compatible with GPL-3.0-or-later |
+| GPL-3.0 | LibreDWG; SolveSpace (verified GPLv3-or-later at 477d4c8 — no linking exception; see §2.2 for the CAD Sketcher wheel rows) | ship license; source availability for distributed binaries; compatible with GPL-3.0-or-later |
 | Proprietary freeware | ODA File Converter | never shipped — dev fixtures only; no product obligation |
 
 ## 7. Verification logging protocol

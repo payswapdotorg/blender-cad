@@ -1,6 +1,6 @@
 # CAD Sketcher evaluation experiments — isolated lane (M3-eval)
 
-- **Status:** evaluation infrastructure, owned by the M3-eval worker (E1); experiment owners per sub-lane
+- **Status:** **EVALUATION COMPLETE** — decision record: [docs/00-architecture/cad-sketcher-evaluation.md](../../docs/00-architecture/cad-sketcher-evaluation.md) (addon REJECT as a product component; slvs/SolveSpace wheel REJECT as the PAR-area solver — evidence-backed; reference material ADAPT/REFERENCE at design level; PlaneGCS vs SolidCraft head-to-head on this lane's committed fixtures is the remaining M3-entry gate). Experiments A–D are DONE (see the ownership table); regression evidence: 1127 passed / 0 failed + package check green (record section §10). Nothing adopted; no manifest change; no product code touched.
 - **Upstream pinned:** `hlorus/CAD_Sketcher` @ release tag `v0.32.1` — tag object `6a5a34001efcdec05381b6f419cc4d0394a24ab5`, commit `e7db7e6f94ad9dcaf2be03e849e1d3a2ac82e7a4` (2026-09-28)
 - **Solver binary pinned:** the in-repo wheel `wheels/slvs-3.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl` at that commit (sha256 `9ee04ff5a00482cef1751eed71658f4b01f605de42c56786373c7da9e5b25f80`), which is byte-identical to the PyPI `slvs` 3.2 wheel of the same name — see `findings/license-supply-chain.md`
 - **Repo baseline:** `tl1/cad-sketcher-evaluation` off main `a6a46f1` (M2 complete)
