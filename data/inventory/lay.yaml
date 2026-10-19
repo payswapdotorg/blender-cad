@@ -2,13 +2,13 @@ area: LAY
 title: Layouts, viewports, plot/publish
 module: drawings
 entries:
-  - {id: FP-LAY-001, name: "Layout management", desc: "Create, delete, copy, rename and reorder paper-space layouts", p: P0, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-LAY-002, name: "Model and paper space", desc: "TILEMODE switching between model space and layouts", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-001, name: "Layout management", desc: "Create, delete, copy, rename and reorder paper-space layouts", p: P0, dep: [], status: verified, test: "TP-CAT-03", note: "M2: LAYOUT New/Copy/Delete/Rename/Set/Move (reorder); battery §6"}
+  - {id: FP-LAY-002, name: "Model and paper space", desc: "TILEMODE switching between model space and layouts", p: P0, dep: [], status: verified, test: "TP-CAT-03", note: "M2: current-space semantics (TILEMODE maintained), space-routed entities + collections; MSPACE/PSPACE"}
   - {id: FP-LAY-003, name: "Page setup manager", desc: "Named page setups per layout; import setups from other drawings", p: P1, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-LAY-004, name: "Viewport creation", desc: "Create viewports; fit, standard scales, named view assignment", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-004, name: "Viewport creation", desc: "Create viewports; fit, standard scales, named view assignment", p: P0, dep: [], status: partial, test: "TP-CAT-03", note: "M2: MVIEW rect creation + Fit-from-model-bbox + explicit center/height, persistent + DXF; standard-scale list + named-view assignment planned"}
   - {id: FP-LAY-005, name: "Viewport controls", desc: "Clip viewports polygonally, lock display, maximize and restore", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-LAY-006, name: "Viewport layer overrides", desc: "Per-viewport color, linetype, lineweight, transparency (VPLAYER)", p: P2, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-LAY-007, name: "MSPACE/PSPACE", desc: "Edit inside viewports in floating model space", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-007, name: "MSPACE/PSPACE", desc: "Edit inside viewports in floating model space", p: P0, dep: [], status: verified, test: "TP-CAT-03", note: "M2: MSPACE/PSPACE switching with active-layout session state; battery §6"}
   - {id: FP-LAY-008, name: PLOT, desc: "Plot dialog: window, extents, layout areas; scale and fit options", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-LAY-009, name: "Plot styles", desc: "Color-dependent CTB and named STB tables; attach per layout", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-LAY-010, name: "Plot preview", desc: "WYSIWYG preview with zoom and pan before plotting", p: P1, dep: [], status: planned, test: "", note: ""}

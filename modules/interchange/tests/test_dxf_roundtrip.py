@@ -1,8 +1,10 @@
-"""bcio DXF round-trip tests (M1 contracts §7; TP-CAT-04 precursor).
+"""bcio DXF round-trip tests (M1 contracts §7 + M2 contract §6; TP-CAT-04
+precursor).
 
 Scenarios (plain pytest, ezdxf IS installed in this environment and is
 therefore the exercised engine; the pure-Python R12 path is forced
-directly through ``bcio.dxf_minimal``):
+simulated-unavailable through ``bcio.ezdxf_bridge.available`` patches and
+exercised directly through ``bcio.dxf_minimal``):
 
 1. document -> export (ezdxf R2010) -> import -> kinds/geometry/handles/
    layers preserved (1e-9 tolerance), file passes ``doc.audit()``;
@@ -10,16 +12,22 @@ directly through ``bcio.dxf_minimal``):
    ``ezdxf.recover.readfile`` + ``doc.audit()`` (standard-compliance
    oracle);
 3. loss ledger: an ezdxf-authored file with unsupported entity types
-   (TEXT) imports without crashing, ledgered — never silently dropped;
+   (SPLINE/SOLID) imports without crashing, ledgered — never silently
+   dropped; layer properties round-trip since bcdoc v2 (the M1
+   names-only ledger expectation is lifted by contract §2.2/§14);
 4. handle-collision honesty: re-importing the same file into one
    document reallocates every colliding handle and ledgered each one;
 5. color mapping: DXF 0/256 (ByBlock/ByLayer) -> None, else ACI int.
+
+The M2 kind set (13 kinds, tables, layouts, settings) is covered by
+test_dxf_m2.py + modules/testing/roundtrip/test_roundtrip_m2.py.
 """
 
 import ezdxf
 import ezdxf.recover
 import pytest
 
+import bcio
 from bcdoc import Arc, Circle, Document, Line
 from bcio import LossLedger, export_dxf, import_dxf
 from bcio import dxf_minimal, ezdxf_bridge
@@ -38,6 +46,15 @@ def build_sample_document():
         doc.add_entity(Circle((5, 3), 2.5, layer="WALLS", color=140))
         doc.add_entity(Arc((2.5, 2.5), 1.75, 15.5, 202.25, layer="0"))
     return doc
+
+
+def kind_counts(**overrides):
+    """The additive v2 stats shape: per-kind counts for all 13 kinds +
+    total (M1 keys kept, M2 keys added — contract §6)."""
+    counts = {kind: 0 for kind in bcio.KINDS}
+    counts.update(overrides)
+    counts["total"] = sum(counts[k] for k in bcio.KINDS)
+    return counts
 
 
 def geometry_values(entity):
@@ -71,12 +88,12 @@ class TestEzdxfEngineRoundTrip:
 
         stats = export_dxf(path, doc)
         assert stats["engine"] == "ezdxf", "ezdxf is installed — it must be the engine"
-        assert stats["entities"] == {"line": 2, "circle": 1, "arc": 1, "total": 4}
+        assert stats["entities"] == kind_counts(line=2, circle=1, arc=1)
         assert stats["losses"] == [], "no losses are expected for v0 content"
 
         mirror, istats = import_dxf(path)
         assert istats["engine"] == "ezdxf"
-        assert istats["imported"]["total"] == 4
+        assert istats["imported"] == kind_counts(line=2, circle=1, arc=1)
         assert istats["handle_reallocations"] == 0
         for layer in ("0", "WALLS"):
             assert layer in mirror.layers, "layers must survive the round trip"
@@ -210,20 +227,21 @@ class TestMinimalR12Engine:
         author = ezdxf.new("R2010", setup=False)
         msp = author.modelspace()
         msp.add_line((0, 0), (1, 1))
-        msp.add_text("hello")  # unsupported by v0
+        msp.add_text("hello")  # supported by the r12-minimal reader since M2
+        msp.add_point((5, 5))   # NOT supported by the minimal engine
         author.layers.add("EXTRA", color=3)
         path = str(tmp_path / "mixed.dxf")
         author.saveas(path)
 
         ledger = LossLedger()
         raw = dxf_minimal.read_dxf(path, ledger)
-        assert [rec["type"] for rec in raw["entities"]] == ["LINE"], (
-            "the TEXT entity must not be imported"
+        assert [rec["type"] for rec in raw["entities"]] == ["LINE", "TEXT"], (
+            "TEXT imports through the minimal reader at M2; the POINT must not"
         )
         assert any(
-            entry["dxf_type"] == "TEXT" and entry["kind"] == "import"
+            entry["dxf_type"] == "POINT" and entry["kind"] == "import"
             for entry in ledger
-        ), "the dropped TEXT must be ledgered"
+        ), "the dropped POINT must be ledgered"
         layer_names = {rec["name"] for rec in raw["layers"]}
         assert "EXTRA" in layer_names, "unknown tables entries are still parsed"
 
@@ -239,16 +257,16 @@ class TestLossLedger:
         msp = author.modelspace()
         msp.add_line((0, 0), (12, 0), dxfattribs={"layer": "WALLS", "color": 2})
         msp.add_circle((3, 3), 1.5)
-        msp.add_text("ANNOTATION")
-        msp.add_lwpolyline([(0, 0), (1, 1), (2, 0)])
+        msp.add_spline([(0, 0), (1, 1), (2, 0)])          # outside the M2 set
+        msp.add_solid([(0, 0), (1, 0), (1, 1), (0, 1)])   # outside the M2 set
         path = str(tmp_path / "lossy.dxf")
         author.saveas(path)
 
         doc, stats = import_dxf(path)
-        assert stats["imported"] == {"line": 1, "circle": 1, "arc": 0, "total": 2}
+        assert stats["imported"] == kind_counts(line=1, circle=1)
         ledger_types = {entry["dxf_type"] for entry in stats["losses"]}
-        assert "TEXT" in ledger_types
-        assert "LWPOLYLINE" in ledger_types
+        assert "SPLINE" in ledger_types
+        assert "SOLID" in ledger_types
         assert {e.kind for e in doc.entities()} == {"line", "circle"}
         assert "WALLS" in doc.layers
         # ledger entries carry the full contract shape
@@ -260,7 +278,7 @@ class TestLossLedger:
 
     def test_ledger_json_serializable(self, tmp_path):
         author = ezdxf.new("R2010", setup=False)
-        author.modelspace().add_text("x")
+        author.modelspace().add_spline([(0, 0), (1, 1), (2, 0)])
         path = str(tmp_path / "t.dxf")
         author.saveas(path)
         _, stats = import_dxf(path)
@@ -270,19 +288,32 @@ class TestLossLedger:
 
         json.loads(payload)  # must be valid JSON
 
-    def test_layer_properties_loss_recorded(self, tmp_path):
+    def test_layer_properties_round_trip_since_v2(self, tmp_path):
+        """bcdoc v2 has a full layer table (contract §2.2): the M1
+        names-only limitation (and its ledger entry) is LIFTED — foreign
+        layer records import WITH their properties and no longer lose."""
         author = ezdxf.new("R2010", setup=True)  # setup: the LTYPE table must
         # actually define DASHED so the fixture itself is a well-formed file
-        author.layers.add("FANCY", color=3, linetype="DASHED")
+        author.layers.add("FANCY", color=3, linetype="DASHED", lineweight=35)
+        fancy = author.layers.get("FANCY")
+        fancy.freeze()
         author.modelspace().add_line((0, 0), (1, 1))
         path = str(tmp_path / "fancy.dxf")
         author.saveas(path)
 
         doc, stats = import_dxf(path)
         assert "FANCY" in doc.layers
-        entry = [e for e in stats["losses"] if e["dxf_type"] == "LAYER"]
-        assert entry, "non-default layer properties must be ledgered (names-only v0)"
-        assert "not representable" in entry[0]["reason"]
+        record = doc.layers.get("FANCY")
+        assert record.color == 3
+        assert record.linetype == "DASHED"
+        assert record.lineweight == 0.35  # enum 35 -> 0.35 mm
+        assert record.frozen is True
+        # the dash PATTERN (not the name) is the honest v2 loss
+        entry = [e for e in stats["losses"] if e["dxf_type"] == "LTYPE"]
+        assert entry, "linetype pattern data must be ledgered (names only)"
+        assert not [e for e in stats["losses"] if e["dxf_type"] == "LAYER"], (
+            "layer records themselves round-trip losslessly since bcdoc v2"
+        )
 
     def test_no_losses_for_supported_content(self, tmp_path):
         doc = build_sample_document()
@@ -342,7 +373,10 @@ class TestHandleCollisions:
 
 class TestColorAndStats:
     def test_byblock_bylayer_map_to_none(self):
-        assert ezdxf_bridge._aci_color(0) is None
+        # M1 treated DXF 0 (ByBlock) as unrepresentable; bcdoc v2 models
+        # color 0 = ByBlock (contract §2.1/§6 — block members keep it), so
+        # 0 now maps through UNCHANGED; only 256 (ByLayer) / absent -> None.
+        assert ezdxf_bridge._aci_color(0) == 0
         assert ezdxf_bridge._aci_color(256) is None
         assert ezdxf_bridge._aci_color(None) is None
         assert ezdxf_bridge._aci_color(7) == 7

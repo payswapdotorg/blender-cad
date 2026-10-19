@@ -39,10 +39,10 @@ from __future__ import annotations
 CONTRACT_VERSION = "cad-tool-contract/v1"
 
 #: Advertised capabilities version — honest "v1 tool SUBSET implemented" marker.
-CAPABILITIES_VERSION = "1.0-m1"
+CAPABILITIES_VERSION = "1.1-m2"
 
-#: CAD application (extension) version at M1.
-APP_VERSION = "0.1.0"
+#: CAD application (extension) version at M2.
+APP_VERSION = "0.2.0"
 
 # ---------------------------------------------------------------------------
 # Modes and permission classes (glossary §6, permissions-and-execution-model §1-§3)

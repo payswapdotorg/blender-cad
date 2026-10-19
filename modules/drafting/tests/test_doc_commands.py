@@ -113,8 +113,12 @@ EXPECTED_COMMANDS = {
 
 
 def test_register_all_registers_every_m1_command(registry):
+    # M2 (W-D note): bcdraft now registers the drafting-core additions
+    # (SELECT, PLINE, RECTANG, ... LAYER, BLOCK, INSERT) and W-A appends the
+    # precision commands in parallel — the M1 set stays registered, so the
+    # exact-set assertion became a subset check (intent unchanged).
     names = set(registry.names())
-    assert names == set(EXPECTED_COMMANDS)
+    assert set(EXPECTED_COMMANDS) <= names
 
 
 def test_every_command_and_alias_resolves(registry):

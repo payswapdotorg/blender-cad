@@ -1,11 +1,14 @@
-"""bcshell — Blender integration shell for Blender CAD (milestone M1).
+"""bcshell — Blender integration shell for Blender CAD (milestone M2).
 
 The only package in the extension allowed to import bpy (contract §2). It
 hosts: the per-session bcdoc document + persistence (session.py), the
 "BlenderCAD" workspace (workspace.py), one-way document→scene display sync
-(sync.py), the modal command operator + scripted headless path (ops.py),
-the N-panel UI (ui.py), the Ctrl+Space keymap (keymaps.py), viewport picking
-+ rubberband (pick.py) and the load/save handlers (handlers.py).
+(sync.py — v2: all 13 entity kinds, layout-space collections, layer/color
+display rules, the local ACI palette in colors.py), the modal command
+operator + scripted headless path (ops.py), the v2 panel mutation logic
+(panel_ops.py — pure), the N-panel UI (ui.py — Layers / Layout-Space /
+Precision sections), the Ctrl+Space keymap (keymaps.py), viewport picking +
+rubberband (pick.py) and the load/save handlers (handlers.py).
 
 ``register()`` imports everything, registers bpy classes / UI / keymaps /
 handlers and ensures the session document; ``unregister()`` removes ALL of
@@ -25,7 +28,7 @@ registered: bool = False
 #: bpy classes registered by register() (operators + panels)
 classes = ()
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 
 def register() -> None:

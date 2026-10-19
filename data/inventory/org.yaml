@@ -2,19 +2,19 @@ area: ORG
 title: Layers, blocks, organization
 module: drafting
 entries:
-  - {id: FP-ORG-001, name: LAYER, desc: "Create layers, set current layer; layer property management", p: P0, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-ORG-002, name: "Layer states", desc: "On/off, freeze/thaw, lock/unlock and plot flags per layer", p: P0, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-ORG-003, name: "Layer properties", desc: "Per-layer color, linetype, lineweight, transparency, plot style", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-001, name: LAYER, desc: "Create layers, set current layer; layer property management", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: LAYER command (Make/Set/New/Color/... list flows) + full layer table + battery §3"}
+  - {id: FP-ORG-002, name: "Layer states", desc: "On/off, freeze/thaw, lock/unlock and plot flags per layer", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: on/off, freeze, lock, plot flags per layer, journaled + enforced (frozen excluded from select/osnap; locked skipped by modify)"}
+  - {id: FP-ORG-003, name: "Layer properties", desc: "Per-layer color, linetype, lineweight, transparency, plot style", p: P0, dep: [], status: partial, test: "TP-CAT-01", note: "M2: per-layer color/linetype/lineweight + display color + DXF round-trip verified; transparency + plot-style tables planned"}
   - {id: FP-ORG-004, name: "Layer filters", desc: "Property filters and group filters in the Layer Properties Manager", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-ORG-005, name: "Layer state manager", desc: "Save and restore named layer states including properties", p: P2, dep: [], status: planned, test: "", note: ""}
   - {id: FP-ORG-006, name: LAYERP, desc: "Restore the previous layer state", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-ORG-007, name: "Layer tools", desc: "Isolate, off, freeze, unisolate, merge, delete, walk utilities", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-ORG-008, name: LTYPE, desc: "Load linetypes from .lin libraries; LTSCALE and PSLTSCALE scaling", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-ORG-009, name: "Lineweight display", desc: "Lineweight display toggle, defaults and units; per-layer weights", p: P1, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-ORG-010, name: "Entity property overrides", desc: "Per-entity color, linetype, lineweight, transparency; ByLayer default", p: P0, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-ORG-011, name: BLOCK, desc: "Create block definitions from selected geometry with base point", p: P0, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-ORG-012, name: "Block redefinition", desc: "Redefining a block updates all its references", p: P1, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-ORG-013, name: INSERT, desc: "Insert block references with scale, rotation, attribute prompts", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-010, name: "Entity property overrides", desc: "Per-entity color, linetype, lineweight, transparency; ByLayer default", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: entity color/linetype/lineweight overrides incl. ByBlock/ByLayer resolution + MATCHPROP; transparency planned"}
+  - {id: FP-ORG-011, name: BLOCK, desc: "Create block definitions from selected geometry with base point", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: BLOCK command; definitions store copies; base point; battery §4"}
+  - {id: FP-ORG-012, name: "Block redefinition", desc: "Redefining a block updates all its references", p: P1, dep: [], status: verified, test: "TP-CAT-01", note: "M2: redefinition updates all references (by-name refs + display regen), undoable, survives save/reopen"}
+  - {id: FP-ORG-013, name: INSERT, desc: "Insert block references with scale, rotation, attribute prompts", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: INSERT with point/uniform scale/XYZ scale/rotation; battery §4; attribute prompts planned (P1, FP-ORG-016/017)"}
   - {id: FP-ORG-014, name: WBLOCK, desc: "Write selected blocks or geometry to separate drawing files", p: P1, dep: [ezdxf], status: planned, test: "", note: ""}
   - {id: FP-ORG-015, name: BEDIT, desc: "Block editor environment for in-place definition editing", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-ORG-016, name: ATTDEF, desc: "Attribute definitions with tag, prompt, default and modes", p: P1, dep: [], status: planned, test: "", note: ""}

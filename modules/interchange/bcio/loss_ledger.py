@@ -7,6 +7,12 @@ by the M1 contract:
 
 ``{"kind": "import" | "export", "dxf_type": str, "reason": str,
    "at": <ISO-8601 UTC date>}``
+
+M2 (m2-module-contracts.md §6) widens the *vocabulary* of the
+``dxf_type`` field beyond entity classes: table-level and file-level
+entries use :data:`TABLE_TYPES` names (LAYER, LTYPE, BLOCK, PAPER_SPACE,
+HEADER, DIMENSION, VIEWPORT, …). The entry SHAPE is unchanged — the M1
+assertions (kind ∈ import/export, dxf_type is a string) still hold.
 """
 
 from __future__ import annotations
@@ -14,8 +20,28 @@ from __future__ import annotations
 import json
 from datetime import datetime, timezone
 
-#: Allowed values for the ``kind`` field.
+#: Allowed values for the ``kind`` field (direction of the loss).
 KINDS = ("import", "export")
+
+#: M2 dxf_type vocabulary beyond entity classes (table/file/session-level
+#: entries). Entity classes (LINE, TEXT, LWPOLYLINE, …) keep their DXF
+#: names; entries about a whole table, a section or session state use one
+#: of these pseudo-types.
+TABLE_TYPES = (
+    "FILE",
+    "HEADER",       # a $SYSVAR we cannot express / did not find
+    "SETTINGS",     # document settings as a whole
+    "LAYER",        # layer-table record level
+    "LTYPE",        # linetype definition (dash pattern) level
+    "STYLE",        # text style table level
+    "DIMSTYLE",     # dim style table level
+    "BLOCK",        # block definition level
+    "LAYOUT",       # layout / paper space level
+    "PAPER_SPACE",  # paper-space routing level
+    "VIEWPORT",     # viewport presentation attributes
+    "DIMENSION",    # dimension definition level
+    "MODEL_SPACE",  # model-space routing level
+)
 
 
 class LossLedger:

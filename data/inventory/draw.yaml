@@ -3,22 +3,22 @@ title: 2D drawing entities
 module: drafting
 entries:
   - {id: FP-DRAW-001, name: LINE, desc: "Two-point chained lines with Close and Undo options", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M1 v0: chained LINE with Close/Undo; pytest drafting + in-Blender acceptance evidence"}
-  - {id: FP-DRAW-002, name: PLINE, desc: "Lightweight polylines chaining line and arc segments", p: P0, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-DRAW-003, name: "PLINE arcs", desc: "Arc segment options: center, angle, direction, second point, radius", p: P0, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-DRAW-004, name: "PLINE width", desc: "Global, half-width and per-vertex tapered width options", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-DRAW-002, name: PLINE, desc: "Lightweight polylines chaining line and arc segments", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: PLINE chained segments, one tx per segment, Close/Undo"}
+  - {id: FP-DRAW-003, name: "PLINE arcs", desc: "Arc segment options: center, angle, direction, second point, radius", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: Arc option (tangent continuation + included-angle) with AutoCAD bulge convention; center/direction sub-options planned"}
+  - {id: FP-DRAW-004, name: "PLINE width", desc: "Global, half-width and per-vertex tapered width options", p: P0, dep: [], status: partial, test: "TP-CAT-01", note: "M2: per-vertex start/end widths stored + persisted + DXF round-trip; width-applied display rendering planned (centerline shown)"}
   - {id: FP-DRAW-005, name: CIRCLE, desc: "Circle from center with radius or diameter prompts", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M1 v0: center+radius and Diameter option; tested via registry, driver + acceptance"}
-  - {id: FP-DRAW-006, name: "CIRCLE 2P/3P", desc: "Circle through two diameter points or three points", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-DRAW-006, name: "CIRCLE 2P/3P", desc: "Circle through two diameter points or three points", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: 2P diameter + 3P circumcircle with degenerate rejection"}
   - {id: FP-DRAW-007, name: "CIRCLE TTR", desc: "Tangent-tangent-radius and tangent-tangent-tangent circles", p: P1, dep: [occt], status: planned, test: "", note: ""}
   - {id: FP-DRAW-008, name: ARC, desc: "Eleven arc methods: 3-point, start/center/end, angle, direction, radius, tangent", p: P0, dep: [], status: partial, test: "TP-CAT-01", note: "M1 v0: 3-point + start-center-end methods; 9 of 11 methods planned"}
   - {id: FP-DRAW-009, name: "ARC continuation", desc: "Enter at first prompt continues tangent from last drawn curve", p: P1, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-DRAW-010, name: RECTANG, desc: "Rectangle by corners; fillet, chamfer, width, area, rotation options", p: P0, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-DRAW-011, name: POLYGON, desc: "Regular polygons inscribed, circumscribed or edge-defined; 3 to 1024 sides", p: P0, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-DRAW-012, name: ELLIPSE, desc: "Ellipse by axis endpoints or center with rotation ratio", p: P0, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-DRAW-010, name: RECTANG, desc: "Rectangle by corners; fillet, chamfer, width, area, rotation options", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: RECTANG -> closed 4-vertex polyline"}
+  - {id: FP-DRAW-011, name: POLYGON, desc: "Regular polygons inscribed, circumscribed or edge-defined; 3 to 1024 sides", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: POLYGON inscribed/circumscribed + Edge option, exact vertex math"}
+  - {id: FP-DRAW-012, name: ELLIPSE, desc: "Ellipse by axis endpoints or center with rotation ratio", p: P0, dep: [occt], status: partial, test: "TP-CAT-01", note: "M2: full ellipses (axis-endpoint + Center options) verified; elliptical arcs planned (entity carries start/end angles)"}
   - {id: FP-DRAW-013, name: "ELLIPSE arc", desc: "Elliptical arcs by axis endpoint and parameter angles", p: P1, dep: [occt], status: planned, test: "", note: ""}
   - {id: FP-DRAW-014, name: "ELLIPSE isocircle", desc: "Isometric circle representation on the active isoplane", p: P2, dep: [], status: planned, test: "", note: ""}
   - {id: FP-DRAW-015, name: SPLINE, desc: "Fit-point and control-point splines with method, degree, tolerance options", p: P0, dep: [occt], status: planned, test: "", note: ""}
   - {id: FP-DRAW-016, name: "SPLINE object", desc: "Convert spline-fit polylines into true splines", p: P1, dep: [occt], status: planned, test: "", note: ""}
-  - {id: FP-DRAW-017, name: POINT, desc: "Point objects with PDMODE and PDSIZE marker styles", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-DRAW-017, name: POINT, desc: "Point objects with PDMODE and PDSIZE marker styles", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: POINT entities + cross display"}
   - {id: FP-DRAW-018, name: DIVIDE, desc: "Place points or blocks at equal divisions along an entity", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-DRAW-019, name: MEASURE, desc: "Place points or blocks at fixed intervals along an entity", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-DRAW-020, name: HATCH, desc: "Associative hatching from picked internal points; island detection", p: P0, dep: [occt], status: planned, test: "", note: ""}
@@ -33,8 +33,8 @@ entries:
   - {id: FP-DRAW-029, name: REVCLOUD, desc: "Revision clouds: rectangular, polygonal, freehand; arc length control", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-DRAW-030, name: WIPEOUT, desc: "Masking areas hiding underlying geometry; frame toggle", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-DRAW-031, name: DONUT, desc: "Filled rings defined by inner and outer diameters", p: P1, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-DRAW-032, name: XLINE, desc: "Infinite construction lines through a base point", p: P0, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-DRAW-033, name: RAY, desc: "Semi-infinite rays from a base point", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-DRAW-032, name: XLINE, desc: "Infinite construction lines through a base point", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: XLINE stored + displayed (clipped segment) + DXF XLINE"}
+  - {id: FP-DRAW-033, name: RAY, desc: "Semi-infinite rays from a base point", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: RAY stored + displayed (clipped segment) + DXF RAY"}
   - {id: FP-DRAW-034, name: HELIX, desc: "3D helix with turns, height, taper and handedness", p: P2, dep: [occt], status: planned, test: "", note: ""}
   - {id: FP-DRAW-035, name: CONSTRUCTIONGEOMETRY, desc: "Toggle objects as non-plotting construction aids", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-DRAW-036, name: SKETCH, desc: "Freehand polyline sketching with pen up and down states", p: P2, dep: [], status: planned, test: "", note: ""}

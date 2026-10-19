@@ -2,8 +2,8 @@ area: ANN
 title: Annotation (text, dims, tables, hatches)
 module: drawings
 entries:
-  - {id: FP-ANN-001, name: DIMLINEAR, desc: "Horizontal and vertical linear dimensions; rotated option", p: P0, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-ANN-002, name: DIMALIGNED, desc: "Aligned linear dimensions parallel to measured edges", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-001, name: DIMLINEAR, desc: "Horizontal and vertical linear dimensions; rotated option", p: P0, dep: [], status: verified, test: "TP-CAT-03", note: "M2: DIMLINEAR golden geometry + H/V/Rotation options + battery §5 (modules/drawings/tests)"}
+  - {id: FP-ANN-002, name: DIMALIGNED, desc: "Aligned linear dimensions parallel to measured edges", p: P0, dep: [], status: verified, test: "TP-CAT-03", note: "M2: DIMALIGNED parallel to measured edge, golden values"}
   - {id: FP-ANN-003, name: DIMRADIUS, desc: "Radius dimensions with center mark option", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-ANN-004, name: DIMDIAMETER, desc: "Diameter dimensions across circles", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-ANN-005, name: DIMANGULAR, desc: "Angular dimensions between lines, at points, on arcs", p: P1, dep: [], status: planned, test: "", note: ""}
@@ -16,15 +16,15 @@ entries:
   - {id: FP-ANN-012, name: DIMBREAK, desc: "Break dimension lines crossing other dimensions", p: P2, dep: [], status: planned, test: "", note: ""}
   - {id: FP-ANN-013, name: DIMJOGLINE, desc: "Add jogs to linear dimension lines", p: P2, dep: [], status: planned, test: "", note: ""}
   - {id: FP-ANN-014, name: DIMREASSOCIATE, desc: "Re-associate orphaned dimensions to measured geometry", p: P1, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-ANN-015, name: "Dimension associativity", desc: "Dimensions update automatically when measured geometry changes; DIMREGEN rebuilds", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-015, name: "Dimension associativity", desc: "Dimensions update automatically when measured geometry changes; DIMREGEN rebuilds", p: P0, dep: [], status: verified, test: "TP-CAT-03", note: "M2: measured_id associativity; MOVE/SCALE of measured line refreshes measurement via regen chain; acceptance §5"}
   - {id: FP-ANN-016, name: DIMCENTER, desc: "Center marks and centerlines for circles and arcs", p: P1, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-ANN-017, name: DIMSTYLE, desc: "Dimension style dialog with per-type family sub-styles", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-017, name: DIMSTYLE, desc: "Dimension style dialog with per-type family sub-styles", p: P0, dep: [], status: partial, test: "TP-CAT-03", note: "M2: named dim styles (create/set/list: scale/text-height/arrow-size/ext-line offsets) via command line; style dialog UI + per-type family sub-styles planned"}
   - {id: FP-ANN-018, name: "Dimension overrides", desc: "Per-dimension variable overrides; apply and update style changes", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-ANN-019, name: "Dimension grips", desc: "Grip-edit dimension lines, text position, extension origins", p: P1, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-ANN-020, name: TEXT, desc: "Single-line dynamic text with justification options", p: P0, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-ANN-021, name: MTEXT, desc: "Multiline text: columns, stacked fractions, inline formatting, fields", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-020, name: TEXT, desc: "Single-line dynamic text with justification options", p: P0, dep: [], status: verified, test: "TP-CAT-03", note: "M2: TEXT command (start/height/rotation/content/Justify L-C-R), persistent + DXF; on-cursor dynamic placement is GUI"}
+  - {id: FP-ANN-021, name: MTEXT, desc: "Multiline text: columns, stacked fractions, inline formatting, fields", p: P0, dep: [], status: partial, test: "TP-CAT-03", note: "M2: MTEXT plain multiline content + width, persistent + DXF round-trip; columns/stacked fractions/inline formatting/fields planned"}
   - {id: FP-ANN-022, name: TEXTEDIT, desc: "Edit existing text, mtext and attribute content in place", p: P1, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-ANN-023, name: STYLE, desc: "Text styles: font, height, width factor, oblique angle", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-023, name: STYLE, desc: "Text styles: font, height, width factor, oblique angle", p: P0, dep: [], status: partial, test: "TP-CAT-03", note: "M2: STYLE create/set/list with height + width factor; font-file reference + oblique angle planned (Blender font objects at display)"}
   - {id: FP-ANN-024, name: FIELD, desc: "Auto-updating fields: date, plot, object, sheet set data", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-ANN-025, name: TABLE, desc: "Insert and edit tables; cell merge, formulas, formatting", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-ANN-026, name: "Table styles", desc: "Table styles: borders, text styles, per-cell formats", p: P2, dep: [], status: planned, test: "", note: ""}

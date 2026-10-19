@@ -1,25 +1,25 @@
 {
   "battery": "acceptance_m1",
-  "date": "2026-10-19T16:07:26Z",
+  "date": "2026-10-19T20:06:32Z",
   "blender_binary": "/home/z/runtime/blender-5.2.2-linux-x64/blender",
-  "extension_zip": "blender_cad-0.1.0.zip",
+  "extension_zip": "blender_cad-0.2.0.zip",
   "blender_version": "Blender 5.2.2 LTS",
   "phases": {
     "install": {
       "exit": 0,
-      "seconds": 0.8,
+      "seconds": 0.7,
       "output": "STATUS Installed \"blender_cad\""
     },
     "verify": {
       "exit": 0,
-      "seconds": 1.0,
-      "blend": "/tmp/bcad-accept-r8nui4hz/acceptance_m1.blend",
+      "seconds": 0.9,
+      "blend": "/tmp/bcad-accept-cotaij9s/acceptance_m1.blend",
       "phase_all_passed": true,
       "dxf_engine": "ezdxf"
     },
     "reopen": {
       "exit": 0,
-      "seconds": 0.7,
+      "seconds": 0.6,
       "phase_all_passed": true
     }
   },
@@ -117,12 +117,12 @@
     {
       "check": "verify.document.saved",
       "passed": true,
-      "detail": "/tmp/bcad-accept-r8nui4hz/acceptance_m1.blend"
+      "detail": "/tmp/bcad-accept-cotaij9s/acceptance_m1.blend"
     },
     {
       "check": "reopen.blend.reopened",
       "passed": true,
-      "detail": "/tmp/bcad-accept-r8nui4hz/acceptance_m1.blend"
+      "detail": "/tmp/bcad-accept-cotaij9s/acceptance_m1.blend"
     },
     {
       "check": "reopen.extension.active_after_reopen",
@@ -172,7 +172,7 @@
     {
       "check": "extension.uninstall",
       "passed": true,
-      "detail": "exit 0; [Errno 2] No such file or directory: '/tmp/bcad-accept-r8nui4hz/extensions/blender_org'\nSTATUS Removed \"blender_cad\""
+      "detail": "exit 0; [Errno 2] No such file or directory: '/tmp/bcad-accept-cotaij9s/extensions/blender_org'\nSTATUS Removed \"blender_cad\""
     }
   ],
   "all_passed": true,

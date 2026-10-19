@@ -183,12 +183,12 @@ class TestCapabilities:
             "cad.select.filter",
             "cad.geometry.create", "cad.geometry.get", "cad.geometry.query",
             "cad.geometry.transform",
-            "cad.layers.list",
+            "cad.layers.list", "cad.layers.set_props",
             "cad.io.export_dxf", "cad.io.import_dxf",
             "cad.system.capabilities",
         }
         assert caps["contract_version"] == CONTRACT_VERSION
-        assert caps["version"] == CAPABILITIES_VERSION == "1.0-m1"
+        assert caps["version"] == CAPABILITIES_VERSION == "1.1-m2"
         assert caps["implemented_subset"] is True
         assert caps["product_version"] == APP_VERSION
 
@@ -939,13 +939,57 @@ class TestLayersTools:
         create_line(adapter, prop, x2=5)
         env = call(adapter, ro, "cad.layers.list")
         result = env["result"]
-        assert result["names"] == ["0"]  # v0 single layer "0"
+        assert result["names"] == ["0"]  # fresh v2 doc: only layer "0"
         layer = result["layers"][0]
         assert layer["name"] == "0"
         assert layer["entity_count"] == 2
-        assert layer["state"] == {"on": True, "frozen": False, "locked": False}
-        # v0 has no per-layer color/linetype — omitted, never faked
-        assert "color" not in layer and "linetype" not in layer
+        assert layer["state"] == {
+            "on": True, "frozen": False, "locked": False, "plot": True,
+        }
+        # v2 records carry the real per-layer table (m2 contracts §8)
+        assert layer["color"] == 7
+        assert layer["linetype"] == "Continuous"
+        assert layer["lineweight"] is None
+        assert layer["current"] is True
+
+    def test_layers_list_reports_table(self, adapter, prop, ro):
+        """M2 §8: the full layer table is on the wire (records, not names)."""
+        env = call(adapter, prop, "cad.layers.set_props", {
+            "names": ["0"], "props": {"color": 3, "lineweight": 0.35,
+                                      "on": False, "frozen": True},
+            "base_doc_version": adapter.document.doc_version,
+        })
+        assert "error" not in env, env["error"]
+        env = call(adapter, ro, "cad.layers.list")
+        layer = env["result"]["layers"][0]
+        assert layer["color"] == 3
+        assert layer["lineweight"] == 0.35
+        assert layer["state"] == {
+            "on": False, "frozen": True, "locked": False, "plot": True,
+        }
+
+    def test_layers_set_props_gates_and_validates(self, adapter, prop, ro):
+        """set_props: propose+ gated, structured validation, one tx."""
+        env = call(adapter, ro, "cad.layers.set_props",
+                   {"names": ["0"], "props": {"color": 5}})
+        assert env["error"]["code"] == CAD_E_PERMISSION_DENIED
+        # transactional tool: integer base_doc_version required (contract §2)
+        env = call(adapter, prop, "cad.layers.set_props",
+                   {"names": ["nope"], "props": {"color": 5},
+                    "base_doc_version": adapter.document.doc_version})
+        assert env["error"]["code"] == "CAD_E_ENTITY_NOT_FOUND"
+        for bad in ({"color": 0}, {"colour": 1}, {"on": "yes"}, {}):
+            env = call(adapter, prop, "cad.layers.set_props",
+                       {"names": ["0"], "props": bad,
+                        "base_doc_version": adapter.document.doc_version})
+            assert env["error"]["code"] == "CAD_E_VALIDATION", bad
+        assert call(adapter, ro, "cad.layers.list")["result"]["layers"][0]["color"] == 7
+        env = call(adapter, prop, "cad.layers.set_props",
+                   {"names": ["0"], "props": {"color": 5, "locked": True},
+                    "base_doc_version": adapter.document.doc_version})
+        assert env["result"]["applied"] == {"color": 5, "locked": True}
+        layer = call(adapter, ro, "cad.layers.list")["result"]["layers"][0]
+        assert layer["color"] == 5 and layer["state"]["locked"] is True
 
     def test_list_pagination(self, adapter, ro):
         env = call(adapter, ro, "cad.layers.list", {"limit": 1})

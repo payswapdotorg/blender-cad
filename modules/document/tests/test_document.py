@@ -518,15 +518,23 @@ class TestEvents:
 # ---------------------------------------------------------------------------
 
 class TestSerialization:
-    def test_schema_is_bcdoc1(self):
+    """Schema assertions updated to the bcdoc/2 reality per m2 contracts
+    §2.7/§14 (M1 file amended — intent kept: schema exactness, tolerant
+    reads, byte-stability)."""
+
+    def test_schema_is_bcdoc2(self):
         import json
 
         doc = make_sample_doc()
         payload = json.loads(doc.serialize())
-        assert payload["schema"] == "bcdoc/1"
-        for key in ("name", "units", "doc_version", "next_handle", "layers",
-                    "entities", "undo", "redo", "selection"):
-            assert key in payload, key
+        assert payload["schema"] == "bcdoc/2"
+        # pinned v2 key order (m2-module-contracts §2.7)
+        assert list(payload) == [
+            "schema", "name", "units", "doc_version", "next_handle",
+            "settings", "layers", "current_layer", "text_styles",
+            "dim_styles", "blocks", "layouts", "entities", "undo",
+            "redo", "selection",
+        ]
 
     def test_byte_stable_round_trip(self):
         doc = make_sample_doc()
@@ -563,18 +571,22 @@ class TestSerialization:
 
     def test_load_rejects_unknown_schema(self):
         for bad in (
-            '{"schema": "bcdoc/2", "name": "x"}',
+            '{"schema": "bcdoc/3", "name": "x"}',  # newer unknown schema
             '{"schema": "acme/9", "name": "x"}',
             "not json at all",
             '["also", "not", "an", "object"]',
             "{}",  # missing schema key
-            '{"schema": "bcdoc/1"}',  # missing required keys
+            '{"schema": "bcdoc/1"}',  # v1 but missing required keys
+            '{"schema": "bcdoc/2"}',  # v2 but missing required keys
         ):
             with pytest.raises(errors.SerializationError):
                 Document.load(bad)
 
     def test_load_rejects_structural_garbage(self):
-        base = '{"schema": "bcdoc/1", "name": "x", "units": {}, "doc_version": 0, "next_handle": 1, "layers": ["0"], '
+        base = ('{"schema": "bcdoc/2", "name": "x", "units": {}, '
+                '"doc_version": 0, "next_handle": 1, "settings": {}, '
+                '"current_layer": "0", "text_styles": [], "dim_styles": [], '
+                '"blocks": [], "layouts": [], "layers": [{"name": "0"}], ')
         for bad in (
             base + '"entities": [{"kind": "triangle", "id": "a", "handle": 1, "layer": "0", "color": null, "linetype": "x"}], '
                    '"undo": [], "redo": [], "selection": {"ids": [], "epoch": 0}}',
@@ -591,7 +603,7 @@ class TestSerialization:
 
     def test_stable_json_key_order(self):
         doc = make_sample_doc()
-        assert doc.serialize().startswith('{"schema": "bcdoc/1", "name": "sample"')
+        assert doc.serialize().startswith('{"schema": "bcdoc/2", "name": "sample"')
         entity = doc.serialize().split('"entities": [', 1)[1]
         assert '"kind": "line", "id":' in entity, "entity dicts keep fixed field order"
 

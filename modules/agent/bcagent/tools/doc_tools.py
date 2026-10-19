@@ -33,6 +33,15 @@ def _doc_info(ctx: ToolContext, args: dict) -> dict:
             {"name": "WCS", "type": "world", "up": [0.0, 0.0, 1.0]},
         ],
         "app_version": APP_VERSION,
+        # M2 (m2-module-contracts §8): table counts, honest breadth markers
+        "counts": {
+            "layers": len(list(doc.layers)),
+            "blocks": len(doc.block_names()),
+            "layouts": len(doc.layouts()),
+            "text_styles": len(doc.text_styles()),
+            "dim_styles": len(doc.dim_styles()),
+        },
+        "spaces": ["MODEL"] + list(doc.layouts()),
     }
 
 

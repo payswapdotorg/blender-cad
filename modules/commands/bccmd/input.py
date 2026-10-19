@@ -1,4 +1,6 @@
-"""Input parsing — AutoCAD-familiar text forms (contract §4.4, ux-spec §3.3).
+"""Input parsing — AutoCAD-familiar text forms (contract §4.4, ux-spec §3.3;
+M2 additions per m2-module-contracts.md §3: osnap one-shot tokens and
+direct distance entry at point prompts).
 
 Accepted point forms::
 
@@ -9,10 +11,17 @@ Accepted point forms::
     "@3,4,5"     relative 3D       -> last_point + (3, 4, 5)
     "@"          last point        -> last_point (repeat)
     "@5<30"      relative polar    -> last_point + 5 units at 30°
+    "25"         direct distance   -> InputValue(kind="distance") when a
+                                  last point exists (M2 DDE — ask_point
+                                  converts via bcdraft.precision.dde_point);
+                                  still an error without a last point
+    "END" / "MID,CEN"  osnap one-shot override (M2, point prompts only,
+                       AFTER option matching) -> keyword "osnap:ENDPOINT"
 
 Plain numbers resolve per request kind: ``"42"`` is 42 drawing units at a
 distance prompt, 42 degrees at an angle prompt; at point prompts a lone
-number is invalid (AutoCAD requires two coordinates).
+number is direct distance entry when a last point exists (M2) and invalid
+otherwise (AutoCAD requires two coordinates).
 
 Keywords match per the AutoCAD convention: prefix-insensitive where
 unambiguous, case-insensitive, and the significant uppercase letters of an
@@ -89,6 +98,53 @@ def match_keyword(token: str, options: Iterable[str]) -> Optional[str]:
 
 
 # ---------------------------------------------------------------------------
+# osnap one-shot override tokens (M2, contract §3; ux-spec §3.4)
+# ---------------------------------------------------------------------------
+
+#: Typed token -> canonical osnap mode name (case-insensitive lookup).
+#: This is the single vocabulary for BOTH the prompt-line tokens parsed
+#: here and ``bcdraft.precision.parse_osnap_tokens`` (bcdraft imports
+#: bccmd, never the other way around — m2 contracts §1 dependency rule).
+OSNAP_TOKEN_ALIASES: dict = {
+    "END": "ENDPOINT",
+    "ENDP": "ENDPOINT",
+    "ENDPOINT": "ENDPOINT",
+    "MID": "MIDPOINT",
+    "MIDPOINT": "MIDPOINT",
+    "CEN": "CENTER",
+    "CENTER": "CENTER",
+    "QUA": "QUADRANT",
+    "QUADRANT": "QUADRANT",
+    "INT": "INTERSECTION",
+    "INTERSECTION": "INTERSECTION",
+    "INS": "INSERTION",
+    "INSERTION": "INSERTION",
+    "TAN": "TANGENT",
+    "TANGENT": "TANGENT",
+    "PER": "PERPENDICULAR",
+    "PERPENDICULAR": "PERPENDICULAR",
+}
+
+
+def osnap_tokens(text: str) -> List[str]:
+    """Parse a comma-separated osnap token list (``"END,MID"``, ``"mid"``)
+    into canonical mode names; ``[]`` when nothing matches.
+
+    Unknown pieces are skipped; duplicates collapse preserving order; input
+    is case-insensitive. "none"/"off" are NOT tokens — the OSNAP command
+    treats them specially before calling this.
+    """
+    if not isinstance(text, str):
+        return []
+    modes: List[str] = []
+    for piece in text.split(","):
+        mode = OSNAP_TOKEN_ALIASES.get(piece.strip().upper())
+        if mode is not None and mode not in modes:
+            modes.append(mode)
+    return modes
+
+
+# ---------------------------------------------------------------------------
 # the parser
 # ---------------------------------------------------------------------------
 
@@ -121,6 +177,18 @@ def parse(text: str, request: Request, last_point: Optional[Point] = None) -> In
             matched = match_keyword(token, options)
             if matched is not None:
                 return InputValue(kind="keyword", value=matched, raw=raw)
+        if request.kind == "point":
+            # M2 osnap one-shot override (contract §3) — AFTER option
+            # matching, so an option that shadows a token wins. Comma
+            # lists ("END,MID") are allowed; ask_point consumes the
+            # keyword, records the pending one-shot and re-asks.
+            modes = osnap_tokens(token)
+            if modes:
+                return InputValue(
+                    kind="keyword",
+                    value="osnap:" + ",".join(modes),
+                    raw=raw,
+                )
         if request.kind == "string":
             return InputValue(kind="string", value=token, raw=raw)
         if options:
@@ -162,9 +230,15 @@ def parse(text: str, request: Request, last_point: Optional[Point] = None) -> In
     if "," not in token:
         number = _number(token)
         if request.kind == "point":
-            raise InputParseError(
-                "A point needs two coordinates (x,y) — got a single number"
-            )
+            # M2 direct distance entry (contract §3): with a last point the
+            # number becomes a distance InputValue which ask_point converts
+            # through bcdraft.precision.dde_point (direction last_point ->
+            # pointer); without one it stays the M1 error.
+            if last_point is None:
+                raise InputParseError(
+                    "A point needs two coordinates (x,y) — got a single number"
+                )
+            return InputValue(kind="distance", value=number, raw=raw, source="typed")
         return InputValue(kind=request.kind, value=number, raw=raw)
 
     # absolute coordinate
@@ -197,24 +271,26 @@ def _as_kind(point: Point, request: Request, last_point: Optional[Point], raw: s
 # InputValue factories (used by tests, scripted providers and the shell)
 # ---------------------------------------------------------------------------
 
-def point_input(x: float, y: float, z: float = 0.0) -> InputValue:
-    return InputValue(kind="point", value=Point(float(x), float(y), float(z)))
+def point_input(x: float, y: float, z: float = 0.0, source: str = "typed") -> InputValue:
+    return InputValue(
+        kind="point", value=Point(float(x), float(y), float(z)), source=source
+    )
 
 
-def keyword_input(keyword: str) -> InputValue:
-    return InputValue(kind="keyword", value=keyword)
+def keyword_input(keyword: str, source: str = "typed") -> InputValue:
+    return InputValue(kind="keyword", value=keyword, source=source)
 
 
-def selection_input(ids: List[str]) -> InputValue:
-    return InputValue(kind="selection", value=list(ids))
+def selection_input(ids: List[str], source: str = "typed") -> InputValue:
+    return InputValue(kind="selection", value=list(ids), source=source)
 
 
-def distance_input(value: float) -> InputValue:
-    return InputValue(kind="distance", value=float(value))
+def distance_input(value: float, source: str = "typed") -> InputValue:
+    return InputValue(kind="distance", value=float(value), source=source)
 
 
-def angle_input(value: float) -> InputValue:
-    return InputValue(kind="angle", value=float(value))
+def angle_input(value: float, source: str = "typed") -> InputValue:
+    return InputValue(kind="angle", value=float(value), source=source)
 
 
 # ---------------------------------------------------------------------------

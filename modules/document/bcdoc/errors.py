@@ -1,4 +1,5 @@
-"""bcdoc exception types (contract: docs/00-architecture/m1-module-contracts.md §3).
+"""bcdoc exception types (contracts: m1-module-contracts.md §3 for the M1
+set, m2-module-contracts.md §2 for the v2 additions).
 
 Pure Python — this package must never import `bpy` (enforced by
 modules/document/tests/test_no_bpy.py).
@@ -88,6 +89,143 @@ class DuplicateLayer(BcdocError):
         self.name = name
 
 
+class LayerNotFound(BcdocError):
+    """A layer-table mutation referenced an unknown layer name."""
+
+    def __init__(self, name: str):
+        super().__init__(f"no layer named {name!r}")
+        self.name = name
+
+
+class LayerNotEmpty(BcdocError):
+    """A layer carrying entities cannot be removed (guard, contracts §2.2)."""
+
+    def __init__(self, name: str, count: int = 0):
+        super().__init__(
+            f"layer {name!r} still carries {count} entity(ies); "
+            "move or erase them before removing the layer"
+        )
+        self.name = name
+        self.count = count
+
+
+class ProtectedRecord(BcdocError):
+    """An always-present table record cannot be removed (the "0" layer and
+    the "Standard" text/dim styles — contracts §2.2/§2.6)."""
+
+    def __init__(self, kind: str, name: str):
+        super().__init__(f"{kind} {name!r} is always present and can never be removed")
+        self.kind = kind
+        self.name = name
+
+
+class BlockNotFound(BcdocError):
+    """A block operation referenced an unknown block definition."""
+
+    def __init__(self, name: str):
+        super().__init__(f"no block definition named {name!r}")
+        self.name = name
+
+
+class DuplicateBlock(BcdocError):
+    """``add_block`` was called with a name that already exists."""
+
+    def __init__(self, name: str):
+        super().__init__(f"block {name!r} already exists")
+        self.name = name
+
+
+class BlockInUse(BcdocError):
+    """The block definition is referenced by insert entities and cannot be
+    removed (scan the store for kind == "insert" with matching name)."""
+
+    def __init__(self, name: str, refs: int = 0):
+        super().__init__(
+            f"block {name!r} is referenced by {refs} insert entity(ies); "
+            "erase the references before removing the definition"
+        )
+        self.name = name
+        self.refs = refs
+
+
+class LayoutNotFound(BcdocError):
+    """A layout operation referenced an unknown layout name."""
+
+    def __init__(self, name: str):
+        super().__init__(f"no layout named {name!r}")
+        self.name = name
+
+
+class DuplicateLayout(BcdocError):
+    """A layout was created/renamed to a name that already exists."""
+
+    def __init__(self, name: str):
+        super().__init__(f"layout {name!r} already exists")
+        self.name = name
+
+
+class LayoutNotEmpty(BcdocError):
+    """A layout whose space still carries entities cannot be removed
+    (invariant: entities never reference a removed layout)."""
+
+    def __init__(self, name: str, count: int = 0):
+        super().__init__(
+            f"layout {name!r} still carries {count} entity(ies) in its space; "
+            "move or erase them before removing the layout"
+        )
+        self.name = name
+        self.count = count
+
+
+class InvalidSpace(BcdocError):
+    """An entity/space operation referenced a space that is neither
+    "MODEL" nor an existing layout name."""
+
+    def __init__(self, space: str):
+        super().__init__(
+            f"unknown space {space!r} (expected 'MODEL' or an existing layout name)"
+        )
+        self.space = space
+
+
+class UnknownSetting(BcdocError):
+    """A settings operation referenced a name outside SETTING_DEFS."""
+
+    def __init__(self, name: str):
+        super().__init__(f"unknown setting {name!r}")
+        self.name = name
+
+
+class InvalidSettingValue(BcdocError):
+    """A settings value failed type/choices validation for its name."""
+
+    def __init__(self, name: str, value, reason: str = ""):
+        message = f"invalid value for setting {name!r}: {value!r}"
+        if reason:
+            message += f" ({reason})"
+        super().__init__(message)
+        self.name = name
+        self.value = value
+
+
+class StyleNotFound(BcdocError):
+    """A style operation referenced an unknown text/dim style name."""
+
+    def __init__(self, kind: str, name: str):
+        super().__init__(f"no {kind} style named {name!r}")
+        self.kind = kind
+        self.name = name
+
+
+class DuplicateStyle(BcdocError):
+    """A style was created with a name that already exists."""
+
+    def __init__(self, kind: str, name: str):
+        super().__init__(f"{kind} style {name!r} already exists")
+        self.kind = kind
+        self.name = name
+
+
 class JournalConflict(BcdocError):
     """An undo/redo journal operation could not be applied because the
     document state does not match the journal's expectations (corrupted or
@@ -95,6 +233,6 @@ class JournalConflict(BcdocError):
 
 
 class SerializationError(BcdocError):
-    """``Document.load`` received text that is not a valid ``bcdoc/1``
-    document (unknown schema, malformed JSON, or structurally invalid
-    content)."""
+    """``Document.load`` received text that is not a valid ``bcdoc/1`` or
+    ``bcdoc/2`` document (unknown schema, malformed JSON, or structurally
+    invalid content)."""

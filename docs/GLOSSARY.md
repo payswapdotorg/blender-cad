@@ -252,3 +252,26 @@ Read the worklog tail BEFORE starting (prior context) and append AFTER finishing
 - **ZCode fork alignment (facts, supersede §2's fork note):** fork `main` was carrying 35 legacy "Gen"-program commits (2026-10-04→09, unrelated closed program) and lacked 2 upstream commits (`aac4755` v3.15.1, `0a1fc56` the pin). Resolved: `main` reset to the exact upstream pin `0a1fc56` (now identical to `zai-org/ZCode` main), legacy history preserved verbatim on branch `gen/archive` (head `c3cc34f`), immutable annotated tag `upstream-pin-0a1fc56` created at the pin, product patch branch `cad-adaptation` created at the pin (patch series empty; patches per zcode-adaptation-plan §4.3 with a PATCHES.md ledger). Details: ADR-0007.
 - **Blender fork:** branch `product/main` created at the pinned upstream ref `bf200615` (patch series empty ⇒ branch == pin). Fork Actions enabled.
 - **Interop honesty (binding):** no lossless native Archicad/Revit round-trip claims — IFC/DXF/DWG exchange with loss ledger only (FP-IO-028/029 record the limitation; FP-IO-030 is the supported IFC path).
+
+## 16. M2 amendment record (TL-owned; supersedes conflicting M0/M1 text)
+
+- **Date:** 2026-10-19 (M2 entry). **Author:** TL. Scope: M2 drafting-core
+  implementation (operator-directed acceptance: precision input, layers and
+  blocks, annotations and dimensions, layouts) + ADR-0008 scope re-baseline.
+- **Module dependencies (§4 amendment):** `drawings` depends on
+  `document, drafting, commands, kernel` — the M2 `bcdraw` package defines
+  CommandSpecs (annotation + layout commands) and therefore imports `bccmd`,
+  mirroring the §15 `commands`-inversion amendment (`drafting` gained the same
+  edge at M1). `modules/modules.json` updated in the same change set.
+- **Serialization:** `bcdoc/2` (M1 §14 of the module contracts amended):
+  `serialize()` writes `bcdoc/2`; `load()` accepts both `bcdoc/1` (deterministic
+  upgrade) and `bcdoc/2`. Layer records, blocks, layouts, settings (19 sysvars,
+  persisted, NOT journaled — the documented undo-policy exception), and style
+  tables join the schema.
+- **Status vocabulary unchanged:** every inventory flip carries a TP id;
+  55 verified / 25 partial / 481 planned at M2 exit. Nothing flips without
+  a test + evidence artifact (§11 rule enforced throughout).
+- **Kernel-bound deferral (ADR-0008, binding):** TRIM/EXTEND/FILLET/CHAMFER/
+  PEDIT/HATCH/SPLINE are M3 kernel work (ADR-0002); "TP-CAT-01 full category
+  green" is NOT claimed at M2. xrefs, PDF publish and grip-mode cycling are
+  rescheduled (M3), not silently dropped.

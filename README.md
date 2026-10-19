@@ -109,8 +109,27 @@ Details: [docs/30-process/upstream-update-ci.md](docs/30-process/upstream-update
 
 ## Status honesty
 
+- **M2 (2026-10-19): drafting core IMPLEMENTED and test-verified** — on top of
+  the M1 baseline: the precision-input engine (7 osnap modes, running + one-shot,
+  ORTHO, grid snap, direct distance entry, full coordinate grammar — mouse
+  input resolves, typed input never does), the full layer/block model
+  (properties, states with enforcement, blocks + INSERT + redefinition), the
+  annotation engine (associative DIMLINEAR/DIMALIGNED with units-aware
+  formatting, TEXT/MTEXT, styles), layouts + viewports (model vs paper space,
+  MSPACE/PSPACE), and 20 drafting-core commands (PLINE, POLYGON, ELLIPSE,
+  MIRROR, OFFSET, ARRAYRECT, BREAK, JOIN, EXPLODE, STRETCH, MATCHPROP,
+  selection modes…). The extension (`dist/blender_cad-0.2.0.zip`) installs
+  into **Blender 5.2.2 LTS** through Blender's extension system and all of it
+  is exercised there. Evidence:
+  `modules/testing/blender/acceptance_m2_result.json` (59/59),
+  M1 acceptance re-run 30/30, TP-CAT-06 `result-m2.json` (zero native
+  regressions), shell driver 44/44 + 53/53, **1127 pytest tests**.
+  See [docs/30-process/completion-graph-m2.md](docs/30-process/completion-graph-m2.md)
+  and [ADR-0008](docs/30-process/adr/0008-m2-scope-rebaseline.md) for the
+  explicit deferred list (TRIM/EXTEND/FILLET/CHAMFER/PEDIT/HATCH/SPLINE are
+  M3 kernel work — deliberately not claimed here).
 - **M1 (2026-10-19): walking skeleton IMPLEMENTED and test-verified** — the
-  extension builds (`scripts/build_extension.py` → `dist/blender_cad-0.1.0.zip`),
+  extension builds (`scripts/build_extension.py` → `dist/blender_cad-0.2.0.zip`),
   installs into **Blender 5.2.2 LTS** through Blender's extension system, opens
   the CAD workspace, runs LINE/CIRCLE/ARC and MOVE/COPY/ROTATE/SCALE/ERASE
   through the command interface, persists documents across .blend save/reopen,
@@ -118,13 +137,12 @@ Details: [docs/30-process/upstream-update-ci.md](docs/30-process/upstream-update
   (TP-CAT-06 baseline). Evidence:
   `modules/testing/blender/acceptance_m1_result.json` (30/30),
   `modules/testing/blender-regression/result-m1.json`,
-  `modules/shell/tests/blender_driver_result.json` (53/53), 440 pytest tests.
+  `modules/shell/tests/blender_driver_result.json` (53/53).
   See [docs/30-process/completion-graph-m1.md](docs/30-process/completion-graph-m1.md).
-- **Inventory truth:** 561 entries across 17 areas — **8 verified**, **12 partial**
-  (explicit notes on what remains), **541 planned**. The entire M2+ scope —
-  precision input, layers/blocks UI, annotations, layouts, xrefs, DWG, IFC/BIM,
-  QTO, reality capture, the live agent sidecar — is `planned` and none of it is
-  claimed.
+- **Inventory truth:** 561 entries across 17 areas — **55 verified**, **25 partial**
+  (explicit notes on what remains), **481 planned**. The remaining M3+ scope —
+  the kernel-bound drafting commands, xrefs, DWG write, IFC/BIM, QTO, reality
+  capture, the live agent sidecar — is `planned` and none of it is claimed.
 - **M0: architecture handoff** (2026-10-19, earlier the same day) — all 11
   deliverables; at that point every feature was `planned`.
 - A feature status flips only with a test id + recorded evidence artifact

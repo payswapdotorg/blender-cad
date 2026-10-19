@@ -1,22 +1,30 @@
-"""Transactions (contract: m1-module-contracts.md §3.3).
+"""Transactions (contract: m1-module-contracts.md §3.3; m2 §2.8).
 
 ``with doc.transaction(label) as tx:`` — on clean exit the transaction's
 journal is committed (an :class:`~bcdoc.undo.UndoGroup` is pushed,
 ``doc_version`` bumps, ``on_change`` fires); on exception the document is
 restored bit-identically from the ``__enter__`` snapshot (entity store in
-insertion order, layers, next_handle, selection ids+epoch).
+insertion order, ALL v2 tables — layers, blocks, layouts, text/dim
+styles — next_handle, selection ids+epoch).
 
 Rollback strategy: full snapshot restore (the alternative — op-journal
-reversal — would not cover in-place entity field changes as robustly for
-v0). A mid-transaction failure therefore leaves the document
+reversal — would not cover in-place entity field changes as robustly).
+A mid-transaction failure therefore leaves the document content
 serialize()-bit-identical; that invariant is asserted by tests.
+
+SETTINGS EXCEPTION (contracts §2.5, binding): ``doc.settings`` is NOT part
+of the snapshot — sysvar changes made inside a failing transaction
+deliberately survive (UNDO does not revert sysvars, matching AutoCAD for
+out-of-command changes). Session state (``current_space`` /
+``active_layout`` / ``last_selection_ids``) is likewise not rolled back.
 
 Identity note (honest scope): undo/redo restore the SAME Python objects
 (journal ops carry the live entities); a FAILED transaction restores
-pre-existing entities as equal copies (same id/handle/values, new object) —
-nothing in the M1 contract or the command layer holds object identity
-across a rollback, and id-keyed access (CommandResult, display sync) is
-unaffected.
+pre-existing entities as equal copies (same id/handle/values, new
+object), and the same holds for block-definition members (no identity
+contract). Nothing in the M1/M2 contracts or the command layer holds
+object identity across a rollback, and id-keyed access (CommandResult,
+display sync) is unaffected.
 """
 
 from __future__ import annotations

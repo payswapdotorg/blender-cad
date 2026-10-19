@@ -2,10 +2,10 @@
  "all_passed": true,
  "blender": "5.2.2 LTS",
  "driver_phase": "reopen",
- "dxf_engine": "r12-minimal",
+ "dxf_engine": "ezdxf",
  "phases": {
   "main": {
-   "blend": "/tmp/blender_cad_driver_dhi90r8b/blender_cad_driver.blend",
+   "blend": "/tmp/blender_cad_driver_120ofgz1/blender_cad_driver.blend",
    "checks": [
     {
      "detail": "",
@@ -13,7 +13,7 @@
      "ok": true
     },
     {
-     "detail": "10 operators",
+     "detail": "16 operators",
      "name": "all operators registered",
      "ok": true
     },
@@ -178,17 +178,17 @@
      "ok": true
     },
     {
-     "detail": "engine=r12-minimal/r12-minimal losses=0",
+     "detail": "engine=ezdxf/ezdxf losses=0",
      "name": "DXF round-trip document compare (in Blender)",
      "ok": true
     },
     {
-     "detail": "export=r12-minimal import=r12-minimal",
+     "detail": "export=ezdxf import=ezdxf",
      "name": "DXF round-trip stats recorded",
      "ok": true
     },
     {
-     "detail": "/tmp/blender_cad_driver_dhi90r8b/blender_cad_driver.blend",
+     "detail": "/tmp/blender_cad_driver_120ofgz1/blender_cad_driver.blend",
      "name": ".blend saved",
      "ok": true
     },
@@ -199,7 +199,7 @@
     },
     {
      "detail": "",
-     "name": "text block content is bcdoc/1 JSON",
+     "name": "text block content is bcdoc/2 JSON",
      "ok": true
     },
     {
@@ -234,7 +234,7 @@
      {
       "color": null,
       "handle": 4097,
-      "id": "85f25be43b7b4df7b7ed094f64a227c8",
+      "id": "ecb0d12dc7cb40b8802b54786059dab3",
       "kind": "line",
       "layer": "0",
       "linetype": "ByLayer",
@@ -252,7 +252,7 @@
      {
       "color": null,
       "handle": 4098,
-      "id": "e156db1b640f42f0bf787018cfcb9423",
+      "id": "cb6edcbad8d749baa8d604208d9a0d4e",
       "kind": "line",
       "layer": "0",
       "linetype": "ByLayer",
@@ -275,7 +275,7 @@
       ],
       "color": null,
       "handle": 4099,
-      "id": "13604b390b1745acab738c869847b450",
+      "id": "05a237d53dbf4055a8f314f5ef5946dc",
       "kind": "circle",
       "layer": "0",
       "linetype": "ByLayer",
@@ -290,7 +290,7 @@
       "color": null,
       "end_angle": 180.0,
       "handle": 4100,
-      "id": "0b26740fa3024d0e835459df26595af4",
+      "id": "5a8f591d920947adb6c42e8b6e199ac8",
       "kind": "arc",
       "layer": "0",
       "linetype": "ByLayer",
@@ -305,7 +305,7 @@
       ],
       "color": null,
       "handle": 4102,
-      "id": "593af2537cec42769ef4844dfdcd4ecc",
+      "id": "54be009cd0b640bd97e0166d72a54a2b",
       "kind": "circle",
       "layer": "0",
       "linetype": "ByLayer",

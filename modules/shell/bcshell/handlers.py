@@ -1,11 +1,13 @@
 """bcshell.handlers — .blend load/save persistence hooks (contract §6.2).
 
 ``load_post``: restore the session document from the
-``blender_cad_document.json`` text block (save/reopen gate); ``save_pre``:
-flush the document right before Blender writes the .blend so native Ctrl+S
-persists CAD content. Both handlers are @persistent (they must survive file
-loads — verified headless on the 5.2.2 build: non-persistent handlers are
-dropped on load without firing).
+``blender_cad_document.json`` text block (save/reopen gate) — then refresh
+DIMENSION caches (bcdraw, feature-detected) and rebuild the display, the
+same refresh-dims-then-sync chain the per-transaction on_change subscriber
+runs (contract §7). ``save_pre``: flush the document right before Blender
+writes the .blend so native Ctrl+S persists CAD content. Both handlers are
+@persistent (they must survive file loads — verified headless on the 5.2.2
+build: non-persistent handlers are dropped on load without firing).
 """
 
 from __future__ import annotations
@@ -22,7 +24,11 @@ def _on_load_post(_dummy=None):
         session.restore_on_load()
         from . import sync
 
-        sync.sync_display(session.active_document())
+        doc = session.active_document()
+        # contract §7 chain: dimension caches first (bcdraw,
+        # feature-detected — a no-op until W-C lands), then the display
+        sync.refresh_document_dims(doc)
+        sync.sync_display(doc)
     except Exception:
         # Persistence must never break file loading — a broken text block
         # degrades to a fresh document (recorded in the command history).
