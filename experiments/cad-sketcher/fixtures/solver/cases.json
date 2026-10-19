@@ -1,0 +1,1411 @@
+{
+  "provenance": {
+    "note": "self-authored implementation of TL2 W1 fixture semantics, transcribed exactly; per-case equivalence marks are binding",
+    "source": "tl2/solidcraft-evaluation @ 685f7c453409d470998394e27dcbad3a53a384ef experiments/solidcraft/harness/src/bin/w1_sketch.rs (read-only)",
+    "w1_identical_cases": 17,
+    "new_cases": "coverage_probes group + scale_performance group are NEW (beyond W1; PAR list, document-model \u00a73.8)",
+    "upstream_pin": "hlorus/CAD_Sketcher v0.32.1 @ e7db7e6f94ad9dcaf2be03e849e1d3a2ac82e7a4",
+    "solver_binary": "slvs-3.2 cp313 manylinux wheel, sha256 9ee04ff5a00482cef1751eed71658f4b01f605de42c56786373c7da9e5b25f80 (byte-identical to PyPI)",
+    "solver_source": "solvespace/solvespace @ 477d4c8",
+    "generated_by": "experiments/cad-sketcher/scripts/gen_solver_cases.py (never hand-edited; regenerate)",
+    "generated_utc": "2026-10-19T21:55:31Z"
+  },
+  "cases": [
+    {
+      "id": "bare_line",
+      "group": "mapping",
+      "description": "single line, no constraints: unknowns = 4 point coordinates",
+      "equivalence": {
+        "mark": "identical",
+        "reason": "same entities + zero constraints; slvs lines carry no params of their own (endpoints carry the 4 unknowns), like SolidCraft"
+      },
+      "source": "tl2 w1_sketch.rs case_bare_line @ 685f7c453409d470998394e27dcbad3a53a384ef",
+      "expected": {
+        "dof": 4,
+        "status": "solved"
+      },
+      "notes": "a line contributes only its two end points as unknowns; DOF = 4",
+      "inputs": {
+        "points": [
+          {
+            "id": "l1.start"
+          },
+          {
+            "id": "l1.end"
+          }
+        ],
+        "curves": [
+          {
+            "id": "l1",
+            "kind": "line"
+          }
+        ],
+        "constraints": []
+      },
+      "checks_declared": [
+        "dof_4",
+        "solved_no_constraints",
+        "geometry_untouched"
+      ]
+    },
+    {
+      "id": "bare_circle",
+      "group": "mapping",
+      "description": "single circle, no constraints: unknowns = centre (2) + radius (1)",
+      "equivalence": {
+        "mark": "identical",
+        "reason": "circle = 2D centre point + radius as explicit distance param (slvs circles store radius via a distance entity) \u2014 SolidCraft models the radius as an explicit rvar too"
+      },
+      "source": "tl2 w1_sketch.rs case_bare_circle @ 685f7c453409d470998394e27dcbad3a53a384ef",
+      "expected": {
+        "dof": 3,
+        "status": "solved",
+        "radius": 5.0
+      },
+      "notes": "the radius is an explicit solver variable for circles (a slvs distance entity param), like SolidCraft's Layout::rvar",
+      "inputs": {
+        "points": [
+          {
+            "id": "c1.center"
+          }
+        ],
+        "curves": [
+          {
+            "id": "c1",
+            "kind": "circle"
+          }
+        ],
+        "constraints": []
+      },
+      "checks_declared": [
+        "dof_3",
+        "solved",
+        "radius_is_explicit_param",
+        "center_untouched"
+      ]
+    },
+    {
+      "id": "bare_arc",
+      "group": "mapping",
+      "description": "single arc, no constraints: unknowns = 3 points (6 coords) minus the arc's |start-centre|==|end-centre| equation (1)",
+      "equivalence": {
+        "mark": "identical",
+        "reason": "same 3-point construction; slvs arcs also enforce |start-c|==|end-c| with NO radius variable"
+      },
+      "source": "tl2 w1_sketch.rs case_bare_arc @ 685f7c453409d470998394e27dcbad3a53a384ef",
+      "expected": {
+        "dof": 5,
+        "status": "solved",
+        "radius": 5.0
+      },
+      "notes": "an arc has NO radius variable; radius is derived \u2014 a bcdoc Arc(center,radius,start,end) maps through the derived values",
+      "inputs": {
+        "points": [
+          {
+            "id": "a1.center"
+          },
+          {
+            "id": "a1.start"
+          },
+          {
+            "id": "a1.end"
+          }
+        ],
+        "curves": [
+          {
+            "id": "a1",
+            "kind": "arc"
+          }
+        ],
+        "constraints": []
+      },
+      "checks_declared": [
+        "dof_5",
+        "solved",
+        "radius_is_derived",
+        "endpoints_untouched"
+      ]
+    },
+    {
+      "id": "circle_origin_radius",
+      "group": "fully_constrained",
+      "description": "circle: centre coincident with the fixed origin + radius dimension",
+      "equivalence": {
+        "mark": "adapted",
+        "reason": "TL2 Radius{5} expressed as slvs DIAMETER=10 (no radius primitive; the addon's diameter.py does the same); point_determined checked via perturbed re-solve"
+      },
+      "source": "tl2 w1_sketch.rs case_circle_origin_radius @ 685f7c453409d470998394e27dcbad3a53a384ef",
+      "expected": {
+        "dof": 0,
+        "status": "solved",
+        "center": [
+          0.0,
+          0.0
+        ],
+        "radius": 5.0
+      },
+      "notes": "Coincident with the group-1 fixed origin point == TL2's point 0",
+      "inputs": {
+        "points": [
+          {
+            "id": "c1.center"
+          }
+        ],
+        "curves": [
+          {
+            "id": "c1",
+            "kind": "circle"
+          }
+        ],
+        "constraints": [
+          {
+            "label": "k1",
+            "kind": "coincident_to_origin",
+            "detail": "c1.center <-> fixed origin"
+          },
+          {
+            "label": "d1",
+            "kind": "diameter",
+            "detail": "diameter(c1) = 10.0"
+          }
+        ]
+      },
+      "checks_declared": [
+        "solved",
+        "dof_0",
+        "center_at_origin",
+        "radius_5",
+        "all_determined_via_perturbed_resolve"
+      ]
+    },
+    {
+      "id": "triangle_constrained",
+      "group": "fully_constrained",
+      "description": "rough triangle; A on origin, l1 horizontal, |AB|=50, |BC|=45, angle(l1,l3)=60deg interior at A",
+      "equivalence": {
+        "mark": "adapted",
+        "reason": "TL2 Angle{a:l1,b:l3,60deg,flip:true} expressed as slvs angle(l1,l3,60,inverse=True) \u2014 the direction-cosine form with entityA's vector flipped (constrainteq.cpp:890-910); formulation probe-verified to select the same branch"
+      },
+      "source": "tl2 w1_sketch.rs case_triangle (oracle 25) @ 685f7c453409d470998394e27dcbad3a53a384ef",
+      "expected": {
+        "dof": 0,
+        "status": "solved",
+        "A": [
+          0,
+          0
+        ],
+        "B": [
+          50,
+          0
+        ],
+        "C": [
+          18.623724356957947,
+          32.257236812409175
+        ]
+      },
+      "notes": "analytic far branch t=25+5*sqrt(6)=37.24744871391589; near branch 12.75 rejected by the seed",
+      "inputs": {
+        "points": [
+          {
+            "id": "A"
+          },
+          {
+            "id": "B"
+          },
+          {
+            "id": "C"
+          }
+        ],
+        "curves": [
+          {
+            "id": "l1",
+            "kind": "line"
+          },
+          {
+            "id": "l2",
+            "kind": "line"
+          },
+          {
+            "id": "l3",
+            "kind": "line"
+          }
+        ],
+        "constraints": [
+          {
+            "label": "k1",
+            "kind": "coincident_to_origin",
+            "detail": "A <-> fixed origin"
+          },
+          {
+            "label": "k2",
+            "kind": "horizontal",
+            "detail": "l1"
+          },
+          {
+            "label": "d1",
+            "kind": "distance",
+            "detail": "|A B| = 50.0"
+          },
+          {
+            "label": "d2",
+            "kind": "distance",
+            "detail": "|B C| = 45.0"
+          },
+          {
+            "label": "d3",
+            "kind": "angle",
+            "detail": "angle(l1,l3) = 60.0 deg, inverse=True"
+          }
+        ]
+      },
+      "checks_declared": [
+        "solved",
+        "dof_0",
+        "a_at_origin",
+        "b_at_50_0",
+        "c_matches_analytic_60deg_far_branch",
+        "all_points_determined_via_perturbed_resolve"
+      ]
+    },
+    {
+      "id": "triangle_value_edit",
+      "group": "value_edit",
+      "description": "triangle solved, then |AB| edited 50->40 and re-solved from the previous solution",
+      "equivalence": {
+        "mark": "adapted",
+        "reason": "slvs exposes NO constraint-value mutation API; the edit is performed by rebuilding the system from the previous solution with the new value \u2014 exactly CAD Sketcher's own edit path (curve_solver.py rebuilds the full system on every solve)"
+      },
+      "source": "tl2 w1_sketch.rs case_triangle_value_edit @ 685f7c453409d470998394e27dcbad3a53a384ef",
+      "expected": {
+        "dof": 0,
+        "B": [
+          40,
+          0
+        ],
+        "C": [
+          24.36140661634508,
+          42.19519400335427
+        ]
+      },
+      "notes": "anchored vertex never moves; the rest follows the driving dimension",
+      "inputs": null,
+      "checks_declared": [
+        "solved_after_edit",
+        "dof_still_0",
+        "b_moved_to_40_0",
+        "c_matches_analytic_after_edit",
+        "anchored_point_immovable",
+        "no_orientation_flip",
+        "first_solve_was_solved_dof0"
+      ]
+    },
+    {
+      "id": "l_bracket_constrained",
+      "group": "fully_constrained",
+      "description": "6-line L outline, H/V constraints, corner on origin, 4 dimensions (60/8/40/8)",
+      "equivalence": {
+        "mark": "adapted",
+        "reason": "TL2 DistanceX/DistanceY are UNSIGNED magnitudes; slvs PROJ distances are signed dp.axis \u2014 signs chosen to reproduce TL2's expected corners exactly (d3=-40, d4=-8; magnitudes identical). The binding's distance_proj helper is broken (entityA=E_NONE aborts, probe-verified); raw add_constraint with fixed +x/+y reference lines is used"
+      },
+      "source": "tl2 w1_sketch.rs case_l_bracket(True) (oracle 19) @ 685f7c453409d470998394e27dcbad3a53a384ef",
+      "expected": {
+        "dof": 0,
+        "status": "solved",
+        "corners": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            60.0,
+            0.0
+          ],
+          [
+            60.0,
+            8.0
+          ],
+          [
+            8.0,
+            8.0
+          ],
+          [
+            8.0,
+            40.0
+          ],
+          [
+            0.0,
+            40.0
+          ]
+        ]
+      },
+      "notes": "expected corners (0,0)(60,0)(60,8)(8,8)(8,40)(0,40)",
+      "inputs": {
+        "points": [
+          {
+            "id": "p0"
+          },
+          {
+            "id": "p1"
+          },
+          {
+            "id": "p2"
+          },
+          {
+            "id": "p3"
+          },
+          {
+            "id": "p4"
+          },
+          {
+            "id": "p5"
+          }
+        ],
+        "curves": [
+          {
+            "id": "l1",
+            "kind": "line"
+          },
+          {
+            "id": "l2",
+            "kind": "line"
+          },
+          {
+            "id": "l3",
+            "kind": "line"
+          },
+          {
+            "id": "l4",
+            "kind": "line"
+          },
+          {
+            "id": "l5",
+            "kind": "line"
+          },
+          {
+            "id": "l6",
+            "kind": "line"
+          }
+        ],
+        "constraints": [
+          {
+            "label": "k1",
+            "kind": "horizontal",
+            "detail": "l1"
+          },
+          {
+            "label": "k3",
+            "kind": "horizontal",
+            "detail": "l3"
+          },
+          {
+            "label": "k5",
+            "kind": "horizontal",
+            "detail": "l5"
+          },
+          {
+            "label": "k2",
+            "kind": "vertical",
+            "detail": "l2"
+          },
+          {
+            "label": "k4",
+            "kind": "vertical",
+            "detail": "l4"
+          },
+          {
+            "label": "k6",
+            "kind": "vertical",
+            "detail": "l6"
+          },
+          {
+            "label": "k7",
+            "kind": "coincident_to_origin",
+            "detail": "p0 <-> fixed origin"
+          },
+          {
+            "label": "d1",
+            "kind": "distance_x",
+            "detail": "X(p0->p1) = 60.0"
+          },
+          {
+            "label": "d2",
+            "kind": "distance_y",
+            "detail": "Y(p1->p2) = 8.0"
+          },
+          {
+            "label": "d3",
+            "kind": "distance_y",
+            "detail": "Y(p5->p0) = -40.0"
+          },
+          {
+            "label": "d4",
+            "kind": "distance_x",
+            "detail": "X(p4->p5) = -8.0"
+          }
+        ]
+      },
+      "checks_declared": [
+        "solved",
+        "dof_0",
+        "corner_0_at_0.0,0.0",
+        "corner_1_at_60.0,0.0",
+        "corner_2_at_60.0,8.0",
+        "corner_3_at_8.0,8.0",
+        "corner_4_at_8.0,40.0",
+        "corner_5_at_0.0,40.0",
+        "all_points_determined_via_perturbed_resolve"
+      ]
+    },
+    {
+      "id": "l_bracket_no_dims",
+      "group": "underconstrained",
+      "description": "6-line L outline, H/V constraints, corner on origin, no dimensions",
+      "equivalence": {
+        "mark": "identical",
+        "reason": "H/V + coincident-only fixture: identical constraint set"
+      },
+      "source": "tl2 w1_sketch.rs case_l_bracket(False) (oracle 19) @ 685f7c453409d470998394e27dcbad3a53a384ef",
+      "expected": {
+        "dof": 4,
+        "status": "solved",
+        "corners": null
+      },
+      "notes": "H/V + coincident only: dof 4 (the L can shear); only the origin-anchored corner is determined",
+      "inputs": {
+        "points": [
+          {
+            "id": "p0"
+          },
+          {
+            "id": "p1"
+          },
+          {
+            "id": "p2"
+          },
+          {
+            "id": "p3"
+          },
+          {
+            "id": "p4"
+          },
+          {
+            "id": "p5"
+          }
+        ],
+        "curves": [
+          {
+            "id": "l1",
+            "kind": "line"
+          },
+          {
+            "id": "l2",
+            "kind": "line"
+          },
+          {
+            "id": "l3",
+            "kind": "line"
+          },
+          {
+            "id": "l4",
+            "kind": "line"
+          },
+          {
+            "id": "l5",
+            "kind": "line"
+          },
+          {
+            "id": "l6",
+            "kind": "line"
+          }
+        ],
+        "constraints": [
+          {
+            "label": "k1",
+            "kind": "horizontal",
+            "detail": "l1"
+          },
+          {
+            "label": "k3",
+            "kind": "horizontal",
+            "detail": "l3"
+          },
+          {
+            "label": "k5",
+            "kind": "horizontal",
+            "detail": "l5"
+          },
+          {
+            "label": "k2",
+            "kind": "vertical",
+            "detail": "l2"
+          },
+          {
+            "label": "k4",
+            "kind": "vertical",
+            "detail": "l4"
+          },
+          {
+            "label": "k6",
+            "kind": "vertical",
+            "detail": "l6"
+          },
+          {
+            "label": "k7",
+            "kind": "coincident_to_origin",
+            "detail": "p0 <-> fixed origin"
+          }
+        ]
+      },
+      "checks_declared": [
+        "solved",
+        "dof_4",
+        "anchored_corner_determined",
+        "free_corners_recorded",
+        "underconstrained_landing_perturbation_stability_recorded"
+      ]
+    },
+    {
+      "id": "slot_constrained",
+      "group": "fully_constrained",
+      "description": "obround: 2 arcs + 2 lines sharing end points, 4 endpoint tangencies, equal radii, horizontal line, a1 centre on origin, radius 6, centre distance 40",
+      "equivalence": {
+        "mark": "adapted",
+        "reason": "tangent() requires (arc,line) order + structurally shared endpoints (same topology as TL2); Radius{6} expressed as DIAMETER=12; DistanceX via PROJ onto the fixed +x reference line"
+      },
+      "source": "tl2 w1_sketch.rs case_slot (oracle 20) @ 685f7c453409d470998394e27dcbad3a53a384ef",
+      "expected": {
+        "dof": 0,
+        "status": "solved",
+        "positions": {
+          "a1c": [
+            0.0,
+            0.0
+          ],
+          "a1s": [
+            0.0,
+            6.0
+          ],
+          "a1e": [
+            0.0,
+            -6.0
+          ],
+          "a2c": [
+            40.0,
+            0.0
+          ],
+          "a2s": [
+            40.0,
+            -6.0
+          ],
+          "a2e": [
+            40.0,
+            6.0
+          ]
+        },
+        "radii": [
+          6,
+          6
+        ]
+      },
+      "notes": "12 unknowns (6 points) vs 12 independent equations; tangency at the shared end points replaces a symmetry constraint",
+      "inputs": {
+        "points": [
+          {
+            "id": "a1c"
+          },
+          {
+            "id": "a1s"
+          },
+          {
+            "id": "a1e"
+          },
+          {
+            "id": "a2c"
+          },
+          {
+            "id": "a2s"
+          },
+          {
+            "id": "a2e"
+          }
+        ],
+        "curves": [
+          {
+            "id": "a1",
+            "kind": "arc"
+          },
+          {
+            "id": "a2",
+            "kind": "arc"
+          },
+          {
+            "id": "l1",
+            "kind": "line"
+          },
+          {
+            "id": "l2",
+            "kind": "line"
+          }
+        ],
+        "constraints": [
+          {
+            "label": "k1",
+            "kind": "coincident_to_origin",
+            "detail": "a1c <-> fixed origin"
+          },
+          {
+            "label": "k2",
+            "kind": "tangent_arc_line",
+            "detail": "tangent(a1,l1) (ARC_LINE_TANGENT, endpoint auto-selected by shared point)"
+          },
+          {
+            "label": "k3",
+            "kind": "tangent_arc_line",
+            "detail": "tangent(a2,l1) (ARC_LINE_TANGENT, endpoint auto-selected by shared point)"
+          },
+          {
+            "label": "k4",
+            "kind": "tangent_arc_line",
+            "detail": "tangent(a2,l2) (ARC_LINE_TANGENT, endpoint auto-selected by shared point)"
+          },
+          {
+            "label": "k5",
+            "kind": "tangent_arc_line",
+            "detail": "tangent(a1,l2) (ARC_LINE_TANGENT, endpoint auto-selected by shared point)"
+          },
+          {
+            "label": "k6",
+            "kind": "equal",
+            "detail": "equal(a1,a2)"
+          },
+          {
+            "label": "k7",
+            "kind": "horizontal",
+            "detail": "l1"
+          },
+          {
+            "label": "d1",
+            "kind": "diameter",
+            "detail": "diameter(a1) = 12.0"
+          },
+          {
+            "label": "d2",
+            "kind": "distance_x",
+            "detail": "X(a1c->a2c) = 40.0"
+          }
+        ]
+      },
+      "checks_declared": [
+        "solved",
+        "dof_0",
+        "a1c_at_0.0,0.0",
+        "a1s_at_0.0,6.0",
+        "a1e_at_0.0,-6.0",
+        "a2c_at_40.0,0.0",
+        "a2s_at_40.0,-6.0",
+        "a2e_at_40.0,6.0",
+        "radius_6_both_caps",
+        "no_redundancy_reported_for_endpoint_tangency"
+      ]
+    },
+    {
+      "id": "line_horizontal_only",
+      "group": "underconstrained",
+      "description": "single line, horizontal only: 3 DOF remain",
+      "equivalence": {
+        "mark": "identical",
+        "reason": "same line + Horizontal constraint; the recorded motion split is the behavioral comparison datum"
+      },
+      "source": "tl2 w1_sketch.rs case_line_horizontal_only @ 685f7c453409d470998394e27dcbad3a53a384ef",
+      "expected": {
+        "dof": 3,
+        "status": "solved"
+      },
+      "notes": "remaining DOF: translation x, translation y, length",
+      "inputs": {
+        "points": [
+          {
+            "id": "l1.start"
+          },
+          {
+            "id": "l1.end"
+          }
+        ],
+        "curves": [
+          {
+            "id": "l1",
+            "kind": "line"
+          }
+        ],
+        "constraints": [
+          {
+            "label": "k1",
+            "kind": "horizontal",
+            "detail": "l1"
+          }
+        ]
+      },
+      "checks_declared": [
+        "solved",
+        "dof_3",
+        "horizontalized",
+        "underconstrained_motion_split_recorded"
+      ]
+    },
+    {
+      "id": "circle_radius_only_edit",
+      "group": "underconstrained",
+      "description": "circle with only a radius dimension (centre free); edit radius 5->8 and re-solve",
+      "equivalence": {
+        "mark": "adapted",
+        "reason": "Radius{5}/Radius{8} as DIAMETER 10/16; edit via rebuild seeded from the previous solution"
+      },
+      "source": "tl2 w1_sketch.rs case_circle_radius_only_and_edit @ 685f7c453409d470998394e27dcbad3a53a384ef",
+      "expected": {
+        "dof": 2,
+        "radius_after_edit": 8.0,
+        "center_bitwise_stable": true
+      },
+      "notes": "which DOF remain: centre x/y; the radius edit does not touch the centre params (no equation references them)",
+      "inputs": null,
+      "checks_declared": [
+        "solved_radius_only",
+        "dof_2_center_free",
+        "radius_applied_5",
+        "center_undetermined_left_at_seed",
+        "solved_after_edit",
+        "dof_still_2",
+        "radius_now_8",
+        "free_center_does_not_move"
+      ]
+    },
+    {
+      "id": "rect_redundant_duplicate_dimension",
+      "group": "redundancy",
+      "description": "fully constrained rectangle + duplicate Vertical on the same side (case id verbatim from TL2; the fixture is a duplicate Vertical)",
+      "equivalence": {
+        "mark": "adapted",
+        "reason": "TL2 Length{l} expressed as endpoint distance; the duplicate Vertical is identical"
+      },
+      "source": "tl2 w1_sketch.rs case_rect_redundant @ 685f7c453409d470998394e27dcbad3a53a384ef",
+      "expected": {
+        "dof": 0,
+        "status": "solved",
+        "corners": [
+          [
+            0,
+            0
+          ],
+          [
+            40,
+            0
+          ],
+          [
+            40,
+            30
+          ],
+          [
+            0,
+            30
+          ]
+        ],
+        "redundant": [
+          "k6"
+        ],
+        "note": "W1/SolidCraft expectation; slvs does not meet it \u2014 see checks and findings"
+      },
+      "notes": "HONEST FAILURE RECORD: SolveSpace's exposed path fails exactly-redundant systems (probe-verified: duplicate V and duplicate H variants both return flag 1; a trivial duplicate-Horizontal on a single line returns OKAY with dof 2 \u2014 not the rank-accurate 3). CAD Sketcher itself treats implied redundancy as a failure mode to engineer around: curve_solver.py:335-352 (issue #674) \u2014 'Submitting them consumes a DOF and, when the quantity is already implied, forces REDUNDANT_OK and flags the group failed' \u2014 and gates reference dimensions out of the system; its UI does define a REDUNDANT_OK info state (global_data.py:96-105). SolidCraft solves the same fixture and names the duplicate (TL2 redundant=['k8']).",
+      "inputs": {
+        "points": [
+          {
+            "id": "p0"
+          },
+          {
+            "id": "p1"
+          },
+          {
+            "id": "p2"
+          },
+          {
+            "id": "p3"
+          }
+        ],
+        "curves": [
+          {
+            "id": "l0",
+            "kind": "line"
+          },
+          {
+            "id": "l1",
+            "kind": "line"
+          },
+          {
+            "id": "l2",
+            "kind": "line"
+          },
+          {
+            "id": "l3",
+            "kind": "line"
+          }
+        ],
+        "constraints": [
+          {
+            "label": "k1",
+            "kind": "horizontal",
+            "detail": "l0"
+          },
+          {
+            "label": "k2",
+            "kind": "horizontal",
+            "detail": "l2"
+          },
+          {
+            "label": "k3",
+            "kind": "vertical",
+            "detail": "l1"
+          },
+          {
+            "label": "k4",
+            "kind": "vertical",
+            "detail": "l3"
+          },
+          {
+            "label": "k5",
+            "kind": "coincident_to_origin",
+            "detail": "p0 <-> fixed origin"
+          },
+          {
+            "label": "d1",
+            "kind": "length",
+            "detail": "|l0| = 40.0"
+          },
+          {
+            "label": "d2",
+            "kind": "length",
+            "detail": "|l1| = 30.0"
+          },
+          {
+            "label": "k6",
+            "kind": "vertical",
+            "detail": "l1"
+          }
+        ]
+      },
+      "checks_declared": [
+        "solved_despite_redundancy",
+        "dof_0",
+        "redundant_listed",
+        "failure_leaves_geometry_at_input",
+        "w1_corners_expected_but_not_reached"
+      ]
+    },
+    {
+      "id": "conflicting_distances",
+      "group": "conflict",
+      "description": "the same pair of points given two different distances (10 and 20)",
+      "equivalence": {
+        "mark": "identical",
+        "reason": "identical entities + constraints (Horizontal + two point-point distances)"
+      },
+      "source": "tl2 w1_sketch.rs case_conflicting_distances @ 685f7c453409d470998394e27dcbad3a53a384ef",
+      "expected": {
+        "status": "failed",
+        "bad_contains": [
+          "d1",
+          "d2"
+        ],
+        "geometry_unchanged": true
+      },
+      "notes": "failure surface: result flag + bad list naming BOTH conflicting dimensions (d1, d2). No residual surface is exposed by the binding (TL2 measured per-constraint residuals; not measurable here).",
+      "inputs": null,
+      "checks_declared": [
+        "fails",
+        "bad_lists_conflicting_dims",
+        "geometry_unchanged_bitwise_on_failure"
+      ]
+    },
+    {
+      "id": "coincident_plus_distance",
+      "group": "failure",
+      "description": "genuinely unsolvable: two points forced coincident AND dimensioned 5 apart",
+      "equivalence": {
+        "mark": "identical",
+        "reason": "identical entities + constraints (Coincident + point-point Distance 5)"
+      },
+      "source": "tl2 w1_sketch.rs case_coincident_plus_distance @ 685f7c453409d470998394e27dcbad3a53a384ef",
+      "expected": {
+        "status": "failed",
+        "geometry_unchanged": true
+      },
+      "notes": "the canonical unsolvable case: the solver terminates with a failure flag and names the violated constraint(s); geometry untouched (no partial write-back). No residual surface exposed.",
+      "inputs": null,
+      "checks_declared": [
+        "fails",
+        "constraints_named_in_bad",
+        "geometry_unchanged_bitwise_on_failure"
+      ]
+    },
+    {
+      "id": "triangle_edit_unsolvable",
+      "group": "failure",
+      "description": "driving dimension edited to a value with no real solution (d1=55; t^2-55t+1000 discriminant<0)",
+      "equivalence": {
+        "mark": "adapted",
+        "reason": "edit via rebuild (no mutation API); expected FAILED regardless \u2014 same logical fixture as TL2"
+      },
+      "source": "tl2 w1_sketch.rs case_triangle_edit_unsolvable @ 685f7c453409d470998394e27dcbad3a53a384ef",
+      "expected": {
+        "status": "failed",
+        "geometry_unchanged": true
+      },
+      "notes": "SolveSpace names the constraints unsatisfied at Newton's final internal iterate, which is NOT necessarily every logically conflicting constraint (TL2/SolidCraft names k3+k4+k5 for this fixture; compare in findings). No residual/iteration surface is exposed by the binding \u2014 per-constraint residuals are NOT measurable.",
+      "inputs": null,
+      "checks_declared": [
+        "fails",
+        "bad_list_nonempty",
+        "geometry_unchanged_bitwise_on_failure"
+      ]
+    },
+    {
+      "id": "determinism_inprocess_5x",
+      "group": "determinism",
+      "description": "the same constrained triangle built and solved 5 times in one process",
+      "equivalence": {
+        "mark": "identical",
+        "reason": "same 5x protocol; iteration-count/residual comparison impossible (slvs exposes no iteration or residual surface \u2014 recorded as an API gap)"
+      },
+      "source": "tl2 w1_sketch.rs case_determinism_inprocess @ 685f7c453409d470998394e27dcbad3a53a384ef",
+      "expected": {
+        "bitwise_identical": true,
+        "runs": 5
+      },
+      "notes": "SolveSpace's Newton + SVD-based least squares is deterministic in process; the digest is FNV-1a-64 over coordinate BITS (TL2's algorithm, applied to this solver's entity layout)",
+      "inputs": null,
+      "checks_declared": [
+        "bitwise_identical_geometry_5x",
+        "identical_status_and_dof",
+        "identical_digests"
+      ]
+    },
+    {
+      "id": "determinism_crossprocess_3x",
+      "group": "determinism",
+      "description": "the canonical cases (triangle, L-bracket, slot) solved in 3 separate OS processes (self re-exec, TL2's hash submode)",
+      "equivalence": {
+        "mark": "identical",
+        "reason": "same 3x cross-process digest protocol"
+      },
+      "source": "tl2 w1_sketch.rs case_determinism_crossprocess @ 685f7c453409d470998394e27dcbad3a53a384ef",
+      "expected": {
+        "bitwise_identical": true,
+        "runs": 3
+      },
+      "notes": "cross-process determinism of the pinned wheel at the bit level",
+      "inputs": null,
+      "checks_declared": [
+        "all_child_processes_exit_0",
+        "hashes_identical_across_processes"
+      ]
+    },
+    {
+      "id": "parallel_offset",
+      "group": "coverage_probes",
+      "description": "line B parallel to a fully-constrained horizontal line A, offset 3 in y, length 9: exercises slvs.parallel directly",
+      "equivalence": {
+        "mark": "new",
+        "reason": "beyond W1; PAR-area coverage probe with exact expected values (1e-6)"
+      },
+      "source": "m3-eval phase 2a new case (PAR list, document-model \u00a73.8)",
+      "expected": {
+        "dof": 0,
+        "status": "solved"
+      },
+      "notes": "",
+      "inputs": {
+        "points": [
+          {
+            "id": "A0"
+          },
+          {
+            "id": "A1"
+          },
+          {
+            "id": "B0"
+          },
+          {
+            "id": "B1"
+          }
+        ],
+        "curves": [
+          {
+            "id": "lA",
+            "kind": "line"
+          },
+          {
+            "id": "lB",
+            "kind": "line"
+          }
+        ],
+        "constraints": [
+          {
+            "label": "kA1",
+            "kind": "coincident_to_origin",
+            "detail": "A0 <-> fixed origin"
+          },
+          {
+            "label": "kA2",
+            "kind": "horizontal",
+            "detail": "lA"
+          },
+          {
+            "label": "kA3",
+            "kind": "distance_x",
+            "detail": "X(A0->A1) = 10.0"
+          },
+          {
+            "label": "k1",
+            "kind": "parallel",
+            "detail": "parallel(lB,lA)"
+          },
+          {
+            "label": "k2",
+            "kind": "distance_y",
+            "detail": "Y(A0->B0) = 3.0"
+          },
+          {
+            "label": "k3",
+            "kind": "distance_x",
+            "detail": "X(A0->B0) = 0.0"
+          },
+          {
+            "label": "d1",
+            "kind": "length",
+            "detail": "|lB| = 9.0"
+          }
+        ]
+      },
+      "checks_declared": [
+        "solved",
+        "dof_0",
+        "A0_at_0.0,0.0",
+        "A1_at_10.0,0.0",
+        "B0_at_0.0,3.0",
+        "B1_at_9.0,3.0"
+      ]
+    },
+    {
+      "id": "perpendicular_pair",
+      "group": "coverage_probes",
+      "description": "line B through (5,0) perpendicular to a fully-constrained horizontal A, length 4: exercises slvs.perpendicular directly",
+      "equivalence": {
+        "mark": "new",
+        "reason": "beyond W1; PAR-area coverage probe with exact expected values (1e-6)"
+      },
+      "source": "m3-eval phase 2a new case (PAR list, document-model \u00a73.8)",
+      "expected": {
+        "dof": 0,
+        "status": "solved"
+      },
+      "notes": "",
+      "inputs": {
+        "points": [
+          {
+            "id": "A0"
+          },
+          {
+            "id": "A1"
+          },
+          {
+            "id": "B0"
+          },
+          {
+            "id": "B1"
+          }
+        ],
+        "curves": [
+          {
+            "id": "lA",
+            "kind": "line"
+          },
+          {
+            "id": "lB",
+            "kind": "line"
+          }
+        ],
+        "constraints": [
+          {
+            "label": "kA1",
+            "kind": "coincident_to_origin",
+            "detail": "A0 <-> fixed origin"
+          },
+          {
+            "label": "kA2",
+            "kind": "horizontal",
+            "detail": "lA"
+          },
+          {
+            "label": "kA3",
+            "kind": "distance_x",
+            "detail": "X(A0->A1) = 10.0"
+          },
+          {
+            "label": "k1",
+            "kind": "distance_x",
+            "detail": "X(A0->B0) = 5.0"
+          },
+          {
+            "label": "k2",
+            "kind": "distance_y",
+            "detail": "Y(A0->B0) = 0.0"
+          },
+          {
+            "label": "k3",
+            "kind": "perpendicular",
+            "detail": "perp(lB,lA)"
+          },
+          {
+            "label": "d1",
+            "kind": "length",
+            "detail": "|lB| = 4.0"
+          }
+        ]
+      },
+      "checks_declared": [
+        "solved",
+        "dof_0",
+        "A0_at_0.0,0.0",
+        "A1_at_10.0,0.0",
+        "B0_at_5.0,0.0",
+        "B1_at_5.0,4.0"
+      ]
+    },
+    {
+      "id": "diameter_dim",
+      "group": "coverage_probes",
+      "description": "circle on origin with diameter=10 -> r=5: exercises slvs.diameter directly",
+      "equivalence": {
+        "mark": "new",
+        "reason": "beyond W1; PAR-area coverage probe with exact expected values (1e-6)"
+      },
+      "source": "m3-eval phase 2a new case (PAR list, document-model \u00a73.8)",
+      "expected": {
+        "dof": 0,
+        "status": "solved"
+      },
+      "notes": "",
+      "inputs": {
+        "points": [
+          {
+            "id": "c.center"
+          }
+        ],
+        "curves": [
+          {
+            "id": "c",
+            "kind": "circle"
+          }
+        ],
+        "constraints": [
+          {
+            "label": "k1",
+            "kind": "coincident_to_origin",
+            "detail": "c.center <-> fixed origin"
+          },
+          {
+            "label": "d1",
+            "kind": "diameter",
+            "detail": "diameter(c) = 10.0"
+          }
+        ]
+      },
+      "checks_declared": [
+        "solved",
+        "dof_0",
+        "c.center_at_0.0,0.0",
+        "c_radius_5.0"
+      ]
+    },
+    {
+      "id": "symmetric_points",
+      "group": "coverage_probes",
+      "description": "two points symmetric about the origin, p fully determined: symmetric-about-point DERIVED as AT_MIDPOINT of the connecting segment (slvs exposes symmetric about line/plane only)",
+      "equivalence": {
+        "mark": "new",
+        "reason": "beyond W1; PAR-area coverage probe with exact expected values (1e-6)"
+      },
+      "source": "m3-eval phase 2a new case (PAR list, document-model \u00a73.8)",
+      "expected": {
+        "dof": 0,
+        "status": "solved"
+      },
+      "notes": "",
+      "inputs": {
+        "points": [
+          {
+            "id": "p"
+          },
+          {
+            "id": "q"
+          }
+        ],
+        "curves": [
+          {
+            "id": "lM",
+            "kind": "line"
+          }
+        ],
+        "constraints": [
+          {
+            "label": "k1",
+            "kind": "midpoint",
+            "detail": "fixed origin at midpoint of lM (derived point symmetry)"
+          },
+          {
+            "label": "d1",
+            "kind": "distance_x",
+            "detail": "X(p->q) = -4.0"
+          },
+          {
+            "label": "d2",
+            "kind": "distance_y",
+            "detail": "Y(p->q) = -6.0"
+          }
+        ]
+      },
+      "checks_declared": [
+        "solved",
+        "dof_0",
+        "p_at_2.0,3.0",
+        "q_at_-2.0,-3.0"
+      ]
+    },
+    {
+      "id": "midpoint_case",
+      "group": "coverage_probes",
+      "description": "point m at the midpoint of a fully-constrained horizontal line: exercises slvs.midpoint (AT_MIDPOINT) directly",
+      "equivalence": {
+        "mark": "new",
+        "reason": "beyond W1; PAR-area coverage probe with exact expected values (1e-6)"
+      },
+      "source": "m3-eval phase 2a new case (PAR list, document-model \u00a73.8)",
+      "expected": {
+        "dof": 0,
+        "status": "solved"
+      },
+      "notes": "",
+      "inputs": {
+        "points": [
+          {
+            "id": "l0"
+          },
+          {
+            "id": "l1"
+          },
+          {
+            "id": "m"
+          }
+        ],
+        "curves": [
+          {
+            "id": "ll",
+            "kind": "line"
+          }
+        ],
+        "constraints": [
+          {
+            "label": "k1",
+            "kind": "coincident_to_origin",
+            "detail": "l0 <-> fixed origin"
+          },
+          {
+            "label": "k2",
+            "kind": "horizontal",
+            "detail": "ll"
+          },
+          {
+            "label": "d1",
+            "kind": "distance_x",
+            "detail": "X(l0->l1) = 10.0"
+          },
+          {
+            "label": "k3",
+            "kind": "midpoint",
+            "detail": "m at midpoint of ll"
+          }
+        ]
+      },
+      "checks_declared": [
+        "solved",
+        "dof_0",
+        "l0_at_0.0,0.0",
+        "l1_at_10.0,0.0",
+        "m_at_5.0,0.0"
+      ]
+    },
+    {
+      "id": "concentric_circles",
+      "group": "coverage_probes",
+      "description": "two concentric circles (DERIVED: coincident centres \u2014 slvs has no concentric primitive), radii 3 and 5",
+      "equivalence": {
+        "mark": "new",
+        "reason": "beyond W1; PAR-area coverage probe with exact expected values (1e-6)"
+      },
+      "source": "m3-eval phase 2a new case (PAR list, document-model \u00a73.8)",
+      "expected": {
+        "dof": 0,
+        "status": "solved"
+      },
+      "notes": "",
+      "inputs": {
+        "points": [
+          {
+            "id": "c1.center"
+          },
+          {
+            "id": "c2.center"
+          }
+        ],
+        "curves": [
+          {
+            "id": "c1",
+            "kind": "circle"
+          },
+          {
+            "id": "c2",
+            "kind": "circle"
+          }
+        ],
+        "constraints": [
+          {
+            "label": "k1",
+            "kind": "coincident_to_origin",
+            "detail": "c1.center <-> fixed origin"
+          },
+          {
+            "label": "k2",
+            "kind": "coincident",
+            "detail": "c2.center <-> c1.center"
+          },
+          {
+            "label": "d1",
+            "kind": "diameter",
+            "detail": "diameter(c1) = 6.0"
+          },
+          {
+            "label": "d2",
+            "kind": "diameter",
+            "detail": "diameter(c2) = 10.0"
+          }
+        ]
+      },
+      "checks_declared": [
+        "solved",
+        "dof_0",
+        "c1.center_at_0.0,0.0",
+        "c2.center_at_0.0,0.0",
+        "c1_radius_3.0",
+        "c2_radius_5.0"
+      ]
+    }
+  ]
+}
