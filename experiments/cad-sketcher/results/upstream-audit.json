@@ -1,0 +1,234 @@
+{
+  "experiment": "upstream-audit",
+  "issue_ref": "m3-eval phase 1 (CAD Sketcher evaluation)",
+  "command": "python3 experiments/cad-sketcher/scripts/gen_upstream_audit.py",
+  "started_utc": "2026-10-19T21:21:20Z",
+  "upstream": {
+    "repo": "https://github.com/hlorus/CAD_Sketcher",
+    "sha": "e7db7e6f94ad9dcaf2be03e849e1d3a2ac82e7a4",
+    "tag": "v0.32.1",
+    "tag_object": "6a5a34001efcdec05381b6f419cc4d0394a24ab5",
+    "version": "0.32.1",
+    "pin_choice": "newest versioned release tag (v0.32.1); the `latest` tag is a moving pointer at main HEAD (efd255190\u2026 at capture, 2026-10-20) and main already carries dev 0.32.2"
+  },
+  "host": {
+    "cpus": 2,
+    "mem_gb": 3.9,
+    "note": "sandbox container"
+  },
+  "findings": {
+    "manifest": {
+      "id": "CAD_Sketcher",
+      "version": "0.32.1",
+      "license": "SPDX:GPL-3.0-or-later",
+      "blender_version_min": "5.0.0",
+      "platforms": [
+        "windows-x64",
+        "macos-x64",
+        "macos-arm64",
+        "linux-x64"
+      ],
+      "wheel_count": 10,
+      "wheel_python_tags": [
+        "cp311",
+        "cp313"
+      ],
+      "wheel_libc_tags": [
+        "manylinux_2_17_x86_64.manylinux2014",
+        "musllinux_1_2",
+        "macosx",
+        "win_amd64"
+      ],
+      "release_channels": [
+        "github-releases",
+        "extensions.blender.org",
+        "self-hosted stable/latest (hlorus/CAD_Sketcher-extensions)"
+      ]
+    },
+    "release_pipeline": {
+      "build_command": "blender --background --command extension build --split-platforms --output-dir dist",
+      "validate_command": "blender --background --command extension validate",
+      "wheels_rebuilt_by_ci": false,
+      "wheels_source": "committed in-repo (wheels/), byte-identical to PyPI slvs 3.2",
+      "assets_linux_x64_zip": {
+        "name": "CAD_Sketcher-0.32.1-linux_x64.zip",
+        "size": 13968966,
+        "sha256": "c679cccd8ae955c440787e6be4a8eaebfb77cb1909eb8de04ffc182e97774541"
+      }
+    },
+    "changelog": {
+      "v0.32.1": [
+        "coincident/midpoint constraint no longer crashes Blender",
+        "constraint labels/icons draw in the active viewport, not one view of a quad view"
+      ],
+      "v0.32.0_headline": [
+        "parts and assemblies (sketch geometry + workplanes; groups, instances, outliner)",
+        "sketch result is a real mesh object (modifiers, export, mesh tools)",
+        "Exact vs Manifold boolean solver choice",
+        "circular/linear arrays, endpoint arc, chained drawing, auto-constraints at joints",
+        "large-sketch performance work; under-constrained drift fix"
+      ]
+    },
+    "structure": {
+      "py_files": 356,
+      "loc_by_dir": {
+        "model": 7624,
+        "operators": 11733,
+        "utilities": 12404,
+        "drawing": 2334,
+        "gizmos": 1589,
+        "stateful_operator": 3210,
+        "ui": 1407
+      },
+      "seam": "curve_solver.py CurveSolver (lazy `import slvs` :67; workplane from sketch empty :90-138; entities from curve attributes :140-246; float32-precision write-back :494)",
+      "legacy_entity_layer": "model/group_entities.py SlvsEntities + group_constraints.py SlvsConstraints + serialize.py snapshots",
+      "own_persistence": "serialize.py scene_to_dict/scene_from_dict over ['entities', 'constraints']",
+      "constraint_classes": [
+        "coincident",
+        "horizontal",
+        "vertical",
+        "parallel",
+        "perpendicular",
+        "tangent",
+        "equal",
+        "midpoint",
+        "symmetry",
+        "ratio",
+        "distance",
+        "diameter",
+        "angle"
+      ],
+      "vendored_third_party": {
+        "path": "units.py",
+        "origin": "MeasureIt_ARCH measureit_arch_units.py (GPL-2.0-or-later header dropped in copy)"
+      }
+    },
+    "solver_diagnostics_surface": {
+      "result_flags": [
+        "OKAY",
+        "INCONSISTENT",
+        "DIDNT_CONVERGE",
+        "TOO_MANY_UNKNOWNS",
+        "REDUNDANT_OKAY"
+      ],
+      "dof": "per-sketch IntProperty (model/sketch.py:26) + SolveResult.dof",
+      "failed_constraints": "model/base_constraint.py:114 failed BoolProperty; curve_solver.py:329-361"
+    }
+  },
+  "wheel_inventory": {
+    "slvs-3.2-cp311-cp311-macosx_10_12_x86_64.whl": {
+      "size": 278694,
+      "sha256": "f21bbdf67b9baed14c12e9dcb4981a67149ee4802bf5b135b78208749b79399e",
+      "matches_pypi": true
+    },
+    "slvs-3.2-cp311-cp311-macosx_11_0_arm64.whl": {
+      "size": 246046,
+      "sha256": "8694977a5e7b6644a8825a105f9493c79db2bb935c81b4f035f98465f477d567",
+      "matches_pypi": true
+    },
+    "slvs-3.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": {
+      "size": 2830650,
+      "sha256": "69bcaba2e57e2eeba369200d08cf699f77fbdd3925324d60ca9dc10f699e11db",
+      "matches_pypi": true
+    },
+    "slvs-3.2-cp311-cp311-musllinux_1_2_x86_64.whl": {
+      "size": 3768257,
+      "sha256": "9ae9ebc44d04bee76da0812501093db9a7e6a6e1dc8afd34d43efeadb93e1cfb",
+      "matches_pypi": true
+    },
+    "slvs-3.2-cp311-cp311-win_amd64.whl": {
+      "size": 286886,
+      "sha256": "a1f61065ddadd51dcc35e35e2941876c88f81e0d52536cc0c5e9a693a466e28b",
+      "matches_pypi": true
+    },
+    "slvs-3.2-cp313-cp313-macosx_10_13_x86_64.whl": {
+      "size": 278414,
+      "sha256": "d1c066311f0e79e82afb9179047b6ee8c4c8cfda5581f9d8d1a9d315b70de686",
+      "matches_pypi": true
+    },
+    "slvs-3.2-cp313-cp313-macosx_11_0_arm64.whl": {
+      "size": 247106,
+      "sha256": "afdc4874127d8bf6cd293b332a0b69fa023f742cf73726c999a898770bdcb874",
+      "matches_pypi": true
+    },
+    "slvs-3.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": {
+      "size": 2861309,
+      "sha256": "9ee04ff5a00482cef1751eed71658f4b01f605de42c56786373c7da9e5b25f80",
+      "matches_pypi": true
+    },
+    "slvs-3.2-cp313-cp313-musllinux_1_2_x86_64.whl": {
+      "size": 3797388,
+      "sha256": "d130bdc47251ace22b2224dd42ef31dba1d47bd4a05c51a5ba3eb89b142c4412",
+      "matches_pypi": true
+    },
+    "slvs-3.2-cp313-cp313-win_amd64.whl": {
+      "size": 285833,
+      "sha256": "86159bc0c5e749eb04d94cbf28b6d38ace795e802b8131be36870502e336f4fa",
+      "matches_pypi": true
+    }
+  },
+  "pypi_digest_capture_date": "2026-10-20",
+  "checks": [
+    {
+      "name": "pin.tag_resolves",
+      "pass": true,
+      "detail": "v0.32.1 -> tag 6a5a34001\u2026 commit e7db7e6f9\u2026"
+    },
+    {
+      "name": "pin.head_detached_at_pin",
+      "pass": true,
+      "detail": "HEAD == pin commit"
+    },
+    {
+      "name": "manifest.version_is_0_32_1",
+      "pass": true,
+      "detail": "version = 0.32.1"
+    },
+    {
+      "name": "manifest.license_gpl3_or_later",
+      "pass": true,
+      "detail": "license = SPDX:GPL-3.0-or-later"
+    },
+    {
+      "name": "manifest.blender_min_5_0",
+      "pass": true,
+      "detail": "blender_version_min = 5.0.0"
+    },
+    {
+      "name": "wheels.ten_committed",
+      "pass": true,
+      "detail": "10 wheels in wheels/"
+    },
+    {
+      "name": "wheels.all_match_pypi_slvs_3_2",
+      "pass": true,
+      "detail": "10/10 sha256 byte-identical to PyPI slvs 3.2 files (digests captured 2026-10-20)"
+    },
+    {
+      "name": "release.wheels_not_rebuilt_by_ci",
+      "pass": true,
+      "detail": "wheel-build command lines found: none (wheels are committed in-repo)"
+    },
+    {
+      "name": "sources.single_provenance_header",
+      "pass": true,
+      "detail": "provenance hits: ['units.py:1'] (units.py:1 MeasureIt_ARCH only; no SPDX/copyright headers)"
+    },
+    {
+      "name": "changelog.entries_present",
+      "pass": true,
+      "detail": "CHANGELOG.md has ## 0.32.1 and ## 0.32.0 sections"
+    },
+    {
+      "name": "addon.license_is_gplv3_text",
+      "pass": true,
+      "detail": "LICENSE = full GPLv3 text (674 lines); 'or later' via manifest SPDX"
+    }
+  ],
+  "failures": [],
+  "summary": {
+    "all_passed": true,
+    "pin": "v0.32.1 @ e7db7e6f94ad9dcaf2be03e849e1d3a2ac82e7a4"
+  },
+  "finished_utc": "2026-10-19T21:21:20Z"
+}

@@ -1,0 +1,177 @@
+{
+  "experiment": "license-supply-chain",
+  "issue_ref": "m3-eval phase 1 (CAD Sketcher evaluation)",
+  "command": "python3 experiments/cad-sketcher/scripts/gen_license_record.py",
+  "started_utc": "2026-10-19T21:22:14Z",
+  "upstream": {
+    "repo": "https://github.com/hlorus/CAD_Sketcher",
+    "tag": "v0.32.1",
+    "sha": "e7db7e6f94ad9dcaf2be03e849e1d3a2ac82e7a4"
+  },
+  "verdict_policy": "NO COMPATIBILITY VERDICT IS PRODUCED HERE \u2014 the TL owns the license-inventory row and the adoption/evaluation verdict. Unresolved items are blockers below, never assumptions.",
+  "artifacts": {
+    "cad_sketcher_addon_v0.32.1": {
+      "license": "GPL-3.0-or-later",
+      "source_of_truth": "blender_manifest.toml:12 ('SPDX:GPL-3.0-or-later') + LICENSE (full GPLv3 text, 674 lines)",
+      "quote": "license = [\"SPDX:GPL-3.0-or-later\"]",
+      "verified": true,
+      "notes": "no per-file SPDX/copyright headers in 356 py files; units.py re-distributes MeasureIt_ARCH code (GPL-2.0-or-later) with the license block dropped, only a URL comment kept"
+    },
+    "slvs_wheel_3.2_cp313_manylinux_x86_64": {
+      "license_evidence": "CONFLICTING: METADATA classifier 'MIT' vs shipped licenses/COPYING.txt = GPLv3 text",
+      "source_of_truth": "slvs-3.2.dist-info/METADATA; slvs-3.2.dist-info/licenses/COPYING.txt",
+      "quotes": {
+        "metadata": "Classifier: License :: OSI Approved :: MIT License",
+        "shipping_license": "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 (full text)"
+      },
+      "sha256": "9ee04ff5a00482cef1751eed71658f4b01f605de42c56786373c7da9e5b25f80",
+      "verified": true,
+      "notes": "governing terms for the binary are presented in findings/license-supply-chain.md \u00a73.4: the .so is a compiled derivative of GPLv3-or-later solver code (no linking exception), with Eigen MPL-2.0 and mimalloc MIT statically linked in"
+    },
+    "solvespace_source_of_slvs_3.2": {
+      "license": "GPL-3.0-or-later",
+      "source_of_truth": "README.md:355-356; CONTRIBUTING.md:20-21; COPYING.txt at solvespace@477d4c8",
+      "quotes": {
+        "README.md:356": "SolveSpace is distributed under the terms of the [GPL v3](COPYING.txt) or later.",
+        "CONTRIBUTING.md:20-21": "SolveSpace is licensed under the GPLv3 or later and any contributions must be made available under the terms of that license.",
+        "COPYING.txt": "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 \u2014 full text, NO appended exception/linking-permission clause"
+      },
+      "repo": "https://github.com/solvespace/solvespace",
+      "sha": "477d4c87ca51b9727fbc0765cbd94253c3968b8b",
+      "provenance": "slvs-3.2 sdist embeds .git/HEAD and .git/refs/tags/v3.2 == 477d4c8 (pyproject sdist.include); commit confirmed present in solvespace/solvespace via git fetch --depth 1",
+      "tag_drift": "solvespace v3.2 tag moved to 27b6a08 on 2026-03-26, AFTER the 2026-03-23 PyPI upload; 477d4c8 is an ancestor of 27b6a08 (merge-base --is-ancestor verified)",
+      "verified": true
+    },
+    "eigen_in_so": {
+      "license": "MPL-2.0 (UNVERIFIED AT PIN)",
+      "source_of_truth": "gitlink 3147391d946bb4b6c68edd901f2add6ac1f31f8c in solvespace@477d4c8 extlib/eigen -> gitlab.com/libeigen/eigen",
+      "verified": false,
+      "notes": "gitlab raw endpoint Cloudflare-blocked in this sandbox; GitHub mirrors lack the commit \u2014 BLOCKER"
+    },
+    "mimalloc_in_so": {
+      "license": "MIT",
+      "source_of_truth": "LICENSE at mimalloc@f81bf1b31af819a31195e08f9546dc80f8931587 (raw file fetched at that SHA)",
+      "quote": "MIT License / Copyright (c) 2018-2025 Microsoft Corporation, Daan Leijen",
+      "verified": true
+    },
+    "pypi_slvs_project_urls": {
+      "project_urls": null,
+      "author_email": "Koen Schmeets <koen@schmeets.de>",
+      "summary": "SolveSpace solver wrapped with Cython",
+      "upload_3_2": "2026-03-23T15:04:46Z\u2026T15:05:55Z (48 files)"
+    },
+    "pypi_py_slvs_distinct_project": {
+      "note": "py-slvs 1.0.6 (realthunder/slvs_py, Zheng Lei) is a DIFFERENT older binding; CAD_Sketcher docs reference it historically; v0.32.1 ships only `slvs` 3.2",
+      "verified": true
+    }
+  },
+  "inconsistencies": [
+    {
+      "id": "slvs-wheel-metadatavs-copying",
+      "severity": "blocker for any adoption/derivation; supply-chain scan risk",
+      "facts": "wheel METADATA says 'License :: OSI Approved :: MIT License' while the same wheel ships licenses/COPYING.txt = full GPLv3 (byte-identical to solvespace's COPYING.txt) and wraps GPLv3-or-later solver code with no linking exception",
+      "resolution_owner": "TL (verdict) + upstream (classifier fix); recorded here as evidence only"
+    }
+  ],
+  "open_questions": [
+    {
+      "id": "eigen-license-at-pin",
+      "blocker": true,
+      "question": "Eigen's license text must be read at gitlink 3147391d (gitlab raw blocked in this sandbox)",
+      "until": "verify before any decision that ships the wheel"
+    },
+    {
+      "id": "binding-wrapper-per-file-license",
+      "blocker": false,
+      "question": "src/slvs/lib.pyx + python/slvs carry no license headers; if the author ever states the wrapper-only is MIT (as the classifier hints), the .so remains GPLv3+ as a combined work; per-file status matters only for extracting wrapper patterns",
+      "until": "upstream statement or future commit"
+    },
+    {
+      "id": "solvespace-tag-drift",
+      "blocker": false,
+      "question": "solvespace v3.2 tag moved after the PyPI upload; always take slvs provenance from the sdist's embedded .git refs, never from the upstream tag",
+      "until": "standing policy, re-checked per future slvs release"
+    },
+    {
+      "id": "units.py-notice-gap",
+      "blocker": false,
+      "question": "CAD_Sketcher ships MeasureIt_ARCH GPL-2.0+-derived units.py without the license block; if we ever adapt that file we must restore the block + attribution",
+      "until": "only relevant if code is derived"
+    }
+  ],
+  "verification_log": [
+    "2026-10-20 \u00b7 CAD_Sketcher v0.32.1 LICENSE + blender_manifest.toml (pinned checkout) \u00b7 license/manifest file read \u00b7 E1 (m3-eval) \u00b7 GPL-3.0-or-later (high)",
+    "2026-10-20 \u00b7 solvespace@477d4c8 COPYING.txt/README.md:355-356/CONTRIBUTING.md:20-21 (slvs-3.2 sdist, sha256 cf7c00fb17a2d100\u2026) \u00b7 license file read + repo statements \u00b7 E1 (m3-eval) \u00b7 GPL-3.0-or-later (high); NO linking exception (full read + grep)",
+    "2026-10-20 \u00b7 slvs-3.2 wheel METADATA vs licenses/COPYING.txt (pinned wheel) \u00b7 metadata vs license-file comparison \u00b7 E1 (m3-eval) \u00b7 INCONSISTENT: classifier MIT vs shipped GPLv3 text (high confidence in the inconsistency)",
+    "2026-10-20 \u00b7 mimalloc LICENSE @f81bf1b (raw file at SHA) \u00b7 license file read \u00b7 E1 (m3-eval) \u00b7 MIT (high)",
+    "2026-10-20 \u00b7 eigen COPYING.MPL2 @3147391d \u00b7 NOT VERIFIED \u2014 gitlab raw Cloudflare-blocked; mirrors lack the commit \u00b7 E1 (m3-eval) \u00b7 MPL-2.0 unverified ((verify) blocker)",
+    "2026-10-20 \u00b7 MeasureIt_ARCH measureit_arch_units.py GPL block + repo LICENSE (branch development) \u00b7 license file read \u00b7 E1 (m3-eval) \u00b7 units.py content GPL-2.0-or-later-derived, notice block dropped by upstream (high)"
+  ],
+  "checks": [
+    {
+      "name": "wheel.pinned_digest",
+      "pass": true,
+      "detail": "slvs-3.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl sha256 matches pin"
+    },
+    {
+      "name": "wheel.metadata_claims_mit",
+      "pass": true,
+      "detail": "METADATA carries 'License :: OSI Approved :: MIT License'"
+    },
+    {
+      "name": "wheel.shipped_license_is_gplv3",
+      "pass": true,
+      "detail": "dist-info/licenses/COPYING.txt = full GPLv3 text \u2014 contradicts the MIT classifier"
+    },
+    {
+      "name": "addon.manifest_gpl3_or_later",
+      "pass": true,
+      "detail": "blender_manifest.toml license field"
+    },
+    {
+      "name": "addon.license_text_is_gplv3",
+      "pass": true,
+      "detail": "LICENSE = full GPLv3 text (no 'or later' wording inside; grant = manifest SPDX)"
+    },
+    {
+      "name": "addon.units_provenance_header",
+      "pass": true,
+      "detail": "units.py:1-2 = '# Code from MeasureIt_ARCH, see:\\n# https://github.com/kevancress/MeasureIt_ARCH/blob/development/measureit_arch_units.py'"
+    },
+    {
+      "name": "sdist.git_provenance",
+      "pass": true,
+      "detail": ".git/HEAD == .git/refs/tags/v3.2 == solvespace@477d4c87c\u2026"
+    },
+    {
+      "name": "sdist.copying_no_linking_exception",
+      "pass": true,
+      "detail": "COPYING.txt = plain GPLv3, no appended exception clause (grep 'special exception' negative)"
+    },
+    {
+      "name": "sdist.statements_gplv3_or_later",
+      "pass": true,
+      "detail": "README.md:356 'GPL v3 or later'; CONTRIBUTING.md:20 'GPLv3 or later'"
+    },
+    {
+      "name": "sdist.wheel_license_matches_solvespace",
+      "pass": true,
+      "detail": "wheel licenses/COPYING.txt byte-identical to solvespace COPYING.txt"
+    },
+    {
+      "name": "sdist.pyproject_mit_classifier_source",
+      "pass": true,
+      "detail": "the MIT classifier originates in pyproject.toml (no SPDX license field present)"
+    }
+  ],
+  "failures": [],
+  "summary": {
+    "all_machine_checks_passed": true,
+    "human_blockers": [
+      "eigen-license-at-pin",
+      "slvs-wheel-metadatavs-copying (TL-owned resolution)"
+    ],
+    "sdist_reverified_this_run": true
+  },
+  "finished_utc": "2026-10-19T21:22:14Z"
+}
