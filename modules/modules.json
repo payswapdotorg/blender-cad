@@ -48,10 +48,11 @@
     },
     "drawings": {
       "owner": "W1",
-      "status": "planned",
+      "status": "in-progress",
       "depends_on": [
         "document",
         "drafting",
+        "commands",
         "kernel"
       ],
       "fp_areas": [

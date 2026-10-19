@@ -1,0 +1,352 @@
+{
+  "battery": "acceptance_m2",
+  "date": "2026-10-19T20:06:23Z",
+  "blender_binary": "/home/z/runtime/blender-5.2.2-linux-x64/blender",
+  "extension_zip": "blender_cad-0.2.0.zip",
+  "blender_version": "Blender 5.2.2 LTS",
+  "phases": {
+    "install": {
+      "exit": 0,
+      "seconds": 0.8,
+      "output": "STATUS Installed \"blender_cad\""
+    },
+    "verify": {
+      "exit": 0,
+      "seconds": 1.1,
+      "blend": "/tmp/bcad-accept-m2-029fg7fg/acceptance_m2.blend",
+      "phase_all_passed": true,
+      "state": {
+        "layers": [
+          "0",
+          "FROZ",
+          "LOCKED",
+          "WALLS"
+        ],
+        "blocks": [
+          "MYBLOCK"
+        ],
+        "layouts": [
+          "Sheet1"
+        ],
+        "kinds": {
+          "line": 21,
+          "circle": 1,
+          "arc": 1,
+          "insert": 1,
+          "dim": 1,
+          "text": 1,
+          "mtext": 1,
+          "viewport": 1
+        },
+        "current_layer": "WALLS",
+        "dim_id": "7b0c91a175ad4f57b76331d55d37f14f",
+        "insert_id": "bfff68a6092c4aee9ecd3ae58af83cd5",
+        "viewport_id": "5983f26ac94848c8b924bd47c487b848"
+      }
+    },
+    "reopen": {
+      "exit": 0,
+      "seconds": 0.6,
+      "phase_all_passed": true
+    }
+  },
+  "checks": [
+    {
+      "check": "blender.version",
+      "passed": true,
+      "detail": "Blender 5.2.2 LTS"
+    },
+    {
+      "check": "extension.install",
+      "passed": true,
+      "detail": "exit 0; STATUS Installed \"blender_cad\""
+    },
+    {
+      "check": "verify.extension.loaded_at_startup",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "verify.workspace.opens",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "verify.m1.command.LINE",
+      "passed": true,
+      "detail": "LINE: 3 segment(s) [closed]"
+    },
+    {
+      "check": "verify.m1.command.CIRCLE",
+      "passed": true,
+      "detail": "CIRCLE: radius 4 at (20, 5)"
+    },
+    {
+      "check": "verify.m1.command.ARC",
+      "passed": true,
+      "detail": "ARC: 3-point through (20, 30), (10, 40), (0, 30)"
+    },
+    {
+      "check": "verify.m1.command.MOVE",
+      "passed": true,
+      "detail": "MOVE: 1 object(s) by (5, 5, 0)"
+    },
+    {
+      "check": "verify.m1.command.COPY",
+      "passed": true,
+      "detail": "COPY: 1 new object(s) in 1 placement(s)"
+    },
+    {
+      "check": "verify.m1.command.ROTATE",
+      "passed": true,
+      "detail": "ROTATE: 1 object(s) 90\u00b0 CCW about base point"
+    },
+    {
+      "check": "verify.m1.command.SCALE",
+      "passed": true,
+      "detail": "SCALE: 1 object(s) \u00d7 2 about base point"
+    },
+    {
+      "check": "verify.m1.command.ERASE",
+      "passed": true,
+      "detail": "ERASE: removed 1 object(s)"
+    },
+    {
+      "check": "verify.m1.command.UNDO",
+      "passed": true,
+      "detail": "UNDO: one step undone, 9 step(s) left"
+    },
+    {
+      "check": "verify.m1.native_cube_coexists",
+      "passed": true,
+      "detail": "cube added alongside CAD entities"
+    },
+    {
+      "check": "verify.precision.mouse_endpoint_snap_exact",
+      "passed": true,
+      "detail": "raw mouse (10.35, 0.2) -> resolved (10.0, 0.0, 0.0)"
+    },
+    {
+      "check": "verify.precision.ortho_constrained_mouse_point",
+      "passed": true,
+      "detail": "raw mouse (5, 3) -> resolved (5.0, 0.0, 0.0)"
+    },
+    {
+      "check": "verify.precision.typed_dde_relative_then_distance",
+      "passed": true,
+      "detail": "DDE distance 5 -> (8.0, 4.0, 0.0)"
+    },
+    {
+      "check": "verify.precision.oneshot_osnap_keyword",
+      "passed": true,
+      "detail": "one-shot END mouse (20.4, -0.2) -> (20.0, 0.0, 0.0)"
+    },
+    {
+      "check": "verify.precision.invalid_input_recovery",
+      "passed": true,
+      "detail": "created after re-ask: LINE: 1 segment(s)"
+    },
+    {
+      "check": "verify.precision.cancel_leaves_doc_version_unchanged",
+      "passed": true,
+      "detail": "status=cancelled version 18==18"
+    },
+    {
+      "check": "verify.layers.command_available",
+      "passed": true,
+      "detail": "LAYER registered"
+    },
+    {
+      "check": "verify.layers.new_set_color",
+      "passed": true,
+      "detail": "LAYER: done"
+    },
+    {
+      "check": "verify.layers.entity_on_layer",
+      "passed": true,
+      "detail": "entity created on layer 'WALLS'"
+    },
+    {
+      "check": "verify.layers.off_hides_display_objects",
+      "passed": true,
+      "detail": "1 display object(s) for the off-layer entity"
+    },
+    {
+      "check": "verify.layers.frozen_excluded_from_osnap",
+      "passed": true,
+      "detail": "frozen-endpoint mouse (50.05, 0.05) -> (50.05, 0.05, 0.0)"
+    },
+    {
+      "check": "verify.layers.locked_move_feedback_skip",
+      "passed": true,
+      "detail": "move summary: MOVE: no objects selected"
+    },
+    {
+      "check": "verify.blocks.command_available",
+      "passed": true,
+      "detail": "BLOCK/INSERT registered"
+    },
+    {
+      "check": "verify.blocks.create_and_insert",
+      "passed": true,
+      "detail": "BLOCK: 'MYBLOCK' defined with 1 member(s)"
+    },
+    {
+      "check": "verify.blocks.insert_reference",
+      "passed": true,
+      "detail": "INSERT: 'MYBLOCK' reference created"
+    },
+    {
+      "check": "verify.blocks.move_reference",
+      "passed": true,
+      "detail": "MOVE: 1 object(s) by (2, 3, 0)"
+    },
+    {
+      "check": "verify.blocks.redefine_updates_display",
+      "passed": true,
+      "detail": "1 member display object(s) after redefine"
+    },
+    {
+      "check": "verify.ann.dimlinear_measurement_and_display",
+      "passed": true,
+      "detail": "DIMLINEAR: 10.0000"
+    },
+    {
+      "check": "verify.ann.dim_display_objects",
+      "passed": true,
+      "detail": "roles ['dim', 'dim-text']"
+    },
+    {
+      "check": "verify.ann.regen_updates_dim_text",
+      "passed": true,
+      "detail": "dim text after SCALE+regen: '14.0000'"
+    },
+    {
+      "check": "verify.ann.text",
+      "passed": true,
+      "detail": "TEXT: 'M2TEXT'"
+    },
+    {
+      "check": "verify.ann.mtext",
+      "passed": true,
+      "detail": "MTEXT: 2 line(s)"
+    },
+    {
+      "check": "verify.ann.dimstyle_style_new_set",
+      "passed": true,
+      "detail": "dimstyles=['Standard', 'TIGHT'] textstyles=['Standard', 'SERIF']"
+    },
+    {
+      "check": "verify.lay.layout_new_set",
+      "passed": true,
+      "detail": "LAYOUT: created 'Sheet1'"
+    },
+    {
+      "check": "verify.lay.layout_activates_paper_space",
+      "passed": true,
+      "detail": "LAYOUT: set current 'Sheet1'"
+    },
+    {
+      "check": "verify.lay.paper_space_frame",
+      "passed": true,
+      "detail": "4 frame segments in Sheet1"
+    },
+    {
+      "check": "verify.lay.mview_fit",
+      "passed": true,
+      "detail": "MVIEW: viewport in 'Sheet1'"
+    },
+    {
+      "check": "verify.lay.layout_collection_visible",
+      "passed": true,
+      "detail": "collection present"
+    },
+    {
+      "check": "verify.lay.mspace_pspace",
+      "passed": true,
+      "detail": "mspace: MSPACE: model space active; pspace: PSPACE: active layout 'Sheet1'"
+    },
+    {
+      "check": "verify.lay.model_collection_hidden_in_paper_space",
+      "passed": true,
+      "detail": "hide_viewport=True"
+    },
+    {
+      "check": "verify.blocks.dxf_roundtrip",
+      "passed": true,
+      "detail": "engine ezdxf/ezdxf; kinds doc={'line': 21, 'circle': 1, 'arc': 1, 'insert': 1, 'dim': 1, 'text': 1, 'mtext': 1, 'viewport': 1} roundtrip={'line': 21, 'circle': 1, 'arc': 1, 'insert': 1, 'dim': 1, 'text': 1, 'mtext': 1, 'viewport': 1}; losses=2"
+    },
+    {
+      "check": "verify.ann.dxf_roundtrip",
+      "passed": true,
+      "detail": "engine ezdxf/ezdxf; kinds doc={'line': 21, 'circle': 1, 'arc': 1, 'insert': 1, 'dim': 1, 'text': 1, 'mtext': 1, 'viewport': 1} roundtrip={'line': 21, 'circle': 1, 'arc': 1, 'insert': 1, 'dim': 1, 'text': 1, 'mtext': 1, 'viewport': 1}; losses=2"
+    },
+    {
+      "check": "verify.lay.dxf_paper_space",
+      "passed": true,
+      "detail": "engine ezdxf/ezdxf; kinds doc={'line': 21, 'circle': 1, 'arc': 1, 'insert': 1, 'dim': 1, 'text': 1, 'mtext': 1, 'viewport': 1} roundtrip={'line': 21, 'circle': 1, 'arc': 1, 'insert': 1, 'dim': 1, 'text': 1, 'mtext': 1, 'viewport': 1}; losses=2"
+    },
+    {
+      "check": "verify.document.saved",
+      "passed": true,
+      "detail": "/tmp/bcad-accept-m2-029fg7fg/acceptance_m2.blend"
+    },
+    {
+      "check": "reopen.blend.reopened",
+      "passed": true,
+      "detail": "/tmp/bcad-accept-m2-029fg7fg/acceptance_m2.blend"
+    },
+    {
+      "check": "reopen.reopen.document_restored",
+      "passed": true,
+      "detail": "v43, 28 entities"
+    },
+    {
+      "check": "reopen.reopen.layers_kept",
+      "passed": true,
+      "detail": "layers ['0', 'WALLS', 'FROZ', 'LOCKED'] (expected superset of ['0', 'FROZ', 'LOCKED', 'WALLS'])"
+    },
+    {
+      "check": "reopen.reopen.current_layer_kept",
+      "passed": true,
+      "detail": "current_layer WALLS"
+    },
+    {
+      "check": "reopen.reopen.blocks_kept",
+      "passed": true,
+      "detail": "blocks ['MYBLOCK']"
+    },
+    {
+      "check": "reopen.reopen.layouts_kept",
+      "passed": true,
+      "detail": "layouts ['Sheet1']"
+    },
+    {
+      "check": "reopen.reopen.kinds_kept",
+      "passed": true,
+      "detail": "kinds {'line': 21, 'circle': 1, 'arc': 1, 'insert': 1, 'dim': 1, 'text': 1, 'mtext': 1, 'viewport': 1} (had {'line': 21, 'circle': 1, 'arc': 1, 'insert': 1, 'dim': 1, 'text': 1, 'mtext': 1, 'viewport': 1})"
+    },
+    {
+      "check": "reopen.reopen.display_synced",
+      "passed": true,
+      "detail": "model objects=24"
+    },
+    {
+      "check": "reopen.reopen.native_functions_usable",
+      "passed": true,
+      "detail": "cube add OK after reopen"
+    },
+    {
+      "check": "reopen.reopen.clean_unload_reload",
+      "passed": true,
+      "detail": "unregister() then register() both clean"
+    },
+    {
+      "check": "extension.uninstall",
+      "passed": true,
+      "detail": "exit 0; [Errno 2] No such file or directory: '/tmp/bcad-accept-m2-029fg7fg/extensions/blender_org'\nSTATUS Removed \"blender_cad\""
+    }
+  ],
+  "all_passed": true,
+  "platform": "Linux-5.10.134-013.15.kangaroo.al8.x86_64-x86_64-with-glibc2.41"
+}

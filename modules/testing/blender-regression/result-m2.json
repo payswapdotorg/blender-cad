@@ -1,0 +1,138 @@
+{
+  "suite": "TP-CAT-06 native Blender regression",
+  "label": "m2",
+  "date": "2026-10-19T20:07:41Z",
+  "blender": "/home/z/runtime/blender-5.2.2-linux-x64/blender",
+  "extension_zip": "blender_cad-0.2.0.zip",
+  "runs": {
+    "stock": {
+      "seconds": 0.8,
+      "ops": [
+        {
+          "op": "mesh.primitive_cube_add",
+          "ok": true,
+          "ms": 1
+        },
+        {
+          "op": "mesh.primitive_cylinder_add",
+          "ok": true,
+          "ms": 0
+        },
+        {
+          "op": "object.transform",
+          "ok": true,
+          "ms": 0
+        },
+        {
+          "op": "data.material_new",
+          "ok": true,
+          "ms": 0
+        },
+        {
+          "op": "data.curve_new",
+          "ok": true,
+          "ms": 0
+        },
+        {
+          "op": "object.modifier_add",
+          "ok": true,
+          "ms": 0
+        },
+        {
+          "op": "render.frame_set",
+          "ok": true,
+          "ms": 76
+        }
+      ],
+      "startup_s": 0.0
+    },
+    "loaded": {
+      "seconds": 0.9,
+      "ops": [
+        {
+          "op": "mesh.primitive_cube_add",
+          "ok": true,
+          "ms": 1
+        },
+        {
+          "op": "mesh.primitive_cylinder_add",
+          "ok": true,
+          "ms": 0
+        },
+        {
+          "op": "object.transform",
+          "ok": true,
+          "ms": 0
+        },
+        {
+          "op": "data.material_new",
+          "ok": true,
+          "ms": 0
+        },
+        {
+          "op": "data.curve_new",
+          "ok": true,
+          "ms": 0
+        },
+        {
+          "op": "object.modifier_add",
+          "ok": true,
+          "ms": 0
+        },
+        {
+          "op": "render.frame_set",
+          "ok": true,
+          "ms": 76
+        }
+      ],
+      "startup_s": 0.0,
+      "extension_registered": true,
+      "clean_unload": true
+    }
+  },
+  "checks": [
+    {
+      "check": "stock.native_ops",
+      "passed": true,
+      "detail": "7/7 ops in 0.8s"
+    },
+    {
+      "check": "stock.blend_save_reload",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "extension.install_for_battery",
+      "passed": true,
+      "detail": "STATUS Installed \"blender_cad\""
+    },
+    {
+      "check": "loaded.native_ops",
+      "passed": true,
+      "detail": "7/7 ops in 0.9s"
+    },
+    {
+      "check": "loaded.blend_save_reload",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "loaded.extension_registered",
+      "passed": true,
+      "detail": "registered=True"
+    },
+    {
+      "check": "loaded.clean_unload",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "no_native_regressions",
+      "passed": true,
+      "detail": "regressed=[]"
+    }
+  ],
+  "all_passed": true,
+  "startup_delta_s": 0.0,
+  "platform": "Linux-5.10.134-013.15.kangaroo.al8.x86_64-x86_64-with-glibc2.41"
+}
