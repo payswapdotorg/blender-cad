@@ -1,0 +1,35 @@
+area: CMD
+title: Command system
+module: commands
+entries:
+  - {id: FP-CMD-001, name: "Command line entry", desc: "Typed, case-insensitive command names execute with Enter or Space", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-002, name: "Autocomplete suggestions", desc: "Suggests commands and system variables while typing; accept with arrows", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-003, name: "Command aliases", desc: "Short pgp-style aliases expand to full commands; user-editable", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-004, name: "acad.pgp import", desc: "Import existing AutoCAD alias definitions into the registry", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-005, name: "Transparent commands", desc: "Apostrophe-prefixed commands (ZOOM, PAN, OSNAP) run inside active commands", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-006, name: "Prompt state machine", desc: "Sequenced prompts with bracketed options and angle-bracket defaults", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-007, name: "Option cycling", desc: "Arrow keys cycle bracketed command options at the prompt", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-008, name: "Default acceptance", desc: "Enter accepts the default value shown in angle brackets", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-009, name: "Input history", desc: "Prompt input persists; Up and Down arrows recall previous entries", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-010, name: "Recent-input menu", desc: "Right-click menu lists recently entered points and values", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-011, name: "ESC cancel", desc: "Escape cancels the active command and restores idle state", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-012, name: "Repeat last command", desc: "Enter, Space or right-click repeats the most recent command", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-013, name: UNDO, desc: "Grouped undo with Mark, Back, step counts and Control modes", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-014, name: U, desc: "Undo a single operation", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-015, name: REDO, desc: "Redo the most recently undone operations", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-016, name: MREDO, desc: "Advanced redo modes: All, Last, Mark", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-017, name: OOPS, desc: "Restore objects erased by the last ERASE after command end", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-018, name: SCRIPT, desc: "Execute .scr script files as batched command input", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-019, name: "Command search", desc: "Keyword search over commands and system variables with descriptions", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-020, name: "Custom command registration", desc: "Modules register commands, prompts and options in one registry", p: P0, dep: [], status: planned, test: "", note: "registry hook consumed by toolsets and skills"}
+  - {id: FP-CMD-021, name: "System variable access", desc: "Type variable names to set values; SETVAR lists all", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-022, name: "Dynamic input toggle", desc: "Switch between command line and on-cursor prompting", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-023, name: "Quick Properties toggle", desc: "Selection shows compact quick-properties popup near the cursor", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-024, name: "Right-click modes", desc: "Configurable right-click: Enter/repeat or context shortcut menus", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-025, name: "Noun-verb selection", desc: "PICKFIRST: preselected objects feed the next compatible command", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-026, name: "Invalid input handling", desc: "Invalid entries warn and re-prompt without aborting the command", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-027, name: "Command-line variants", desc: "Dashed variants (e.g. -LAYER) run dialog commands as prompts", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-028, name: "Launch arguments", desc: "Application launch flags open drawings and run scripts", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-029, name: "Autocomplete configuration", desc: "Search delay, list length, system-variable suggestions, case match", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-030, name: "Alias conflict policy", desc: "Defined precedence when imported and custom aliases collide", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-CMD-031, name: "Command API invocation", desc: "Programmatic command execution with pause and resume for callers", p: P1, dep: [], status: planned, test: "", note: "bridge used by skills and agent"}

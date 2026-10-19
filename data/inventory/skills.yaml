@@ -1,0 +1,20 @@
+area: SKL
+title: Skills & automation
+module: skills
+entries:
+  - {id: FP-SKL-001, name: "Record workflow", desc: "Capture user command sequences into draft skill steps", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-SKL-002, name: "Generalize with agent", desc: "Agent abstracts recordings into typed parameter workflows", p: P1, dep: [zcode-runtime], status: planned, test: "", note: ""}
+  - {id: FP-SKL-003, name: "Typed inputs", desc: "JSON-schema-compatible typed skill parameters with validation", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-SKL-004, name: "Workflow editor", desc: "Declarative workflow steps: tool_call, set, branch, foreach, while, try, validate", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-SKL-005, name: "Fixture testing", desc: "Run skills against fixtures with assertions before publishing", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-SKL-006, name: "Preview diff", desc: "Preview intended changes before a skill writes to the document", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-SKL-007, name: "Packaging", desc: "skill.yaml manifest, semver versions, docs layout", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-SKL-008, name: "Publishing tiers", desc: "Publish to local, team or public trust tiers", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-SKL-009, name: "Discovery", desc: "Search installed and registry skills by keyword or capability", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-SKL-010, name: "Command-line invocation", desc: "Run skills by name at the command line via registration hook", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-SKL-011, name: "Palette and ribbon invocation", desc: "Run skills from palette and ribbon surfaces", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-SKL-012, name: "Permissions declaration", desc: "Skills declare required permission classes in manifest and UI", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-SKL-013, name: "Revocation", desc: "Revoke installed skills and remove their access grants", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-SKL-014, name: "skills-lock pinning", desc: "skills-lock.json pins skill and dependency versions for reproducibility", p: P1, dep: [zcode-runtime], status: planned, test: "", note: ""}
+  - {id: FP-SKL-015, name: "Provenance and integrity", desc: "Provenance metadata plus SHA-256 integrity verification", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-SKL-016, name: "Script sandboxing", desc: "Exceptional imperative scripts sandboxed and permission-gated (ADR-0006)", p: P2, dep: [], status: planned, test: "", note: ""}

@@ -1,0 +1,108 @@
+area: TS
+title: Specialist toolsets
+module: toolsets
+entries:
+  - {id: FP-TS-001, name: "Bolts and screws library", desc: "Parametric DIN and ISO bolts, screws; sizes, lengths, strength classes", p: P1, dep: [occt], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-002, name: "Nuts library", desc: "Parametric hex, flange and lock nuts to DIN and ISO", p: P1, dep: [occt], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-003, name: "Pins, keys, washers", desc: "Standard pins, keys, washers and retaining rings libraries", p: P1, dep: [occt], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-004, name: "Bearings library", desc: "Ball, roller and needle bearings by designation lookup", p: P1, dep: [occt], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-005, name: "Steel shape profiles", desc: "Structural sections: beams, channels, angles, tubes (DIN/ISO)", p: P2, dep: [occt], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-006, name: "Standard holes", desc: "Drill, tap, counterbore, countersink holes with thread callouts", p: P1, dep: [occt], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-007, name: "Hole charts", desc: "Hole tables with extracted coordinates placed on drawings", p: P2, dep: [], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-008, name: "Shaft generator", desc: "Shaft sections: cylinders, cones, threads, grooves, chamfers", p: P2, dep: [occt], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-009, name: "Springs generator", desc: "Compression, extension and torsion springs from parameters", p: P2, dep: [occt], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-010, name: "Screw connections", desc: "Assembled screw connections with washer and nut selection", p: P2, dep: [occt], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-011, name: "Power dimensions", desc: "Standards-aware smart dimensioning for mechanical drawings", p: P1, dep: [], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-012, name: "Fits and tolerances", desc: "Hole and shaft fit annotations per ISO 286-like system", p: P1, dep: [], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-013, name: "BOM generation", desc: "Bill of material assembled from component references", p: P1, dep: [], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-014, name: "Balloons", desc: "Item balloons linked to parts list entries", p: P1, dep: [], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-015, name: "Part references", desc: "Component data references (PARTREF-like) driving BOM rows", p: P1, dep: [], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-016, name: "Layer standards", desc: "Mechanical layer and linetype conventions (ISO 13567-like)", p: P1, dep: [], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-017, name: "Mechanical browser", desc: "Structure tree of parts and subassemblies", p: P1, dep: [], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-018, name: "Calculation tools", desc: "Mass moment, section properties, beam deflection basics", p: P2, dep: [], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-019, name: "Detail views", desc: "Circular and rectangular detail enlargements with scale labels", p: P1, dep: [], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-020, name: "Construction lines", desc: "Symmetry lines, centerlines and construction circles", p: P1, dep: [], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-021, name: "2D hide", desc: "Hidden-line computation for overlapping 2D parts", p: P1, dep: [occt], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-022, name: "Title blocks and borders", desc: "DIN and ISO drawing frames, title blocks, revision blocks", p: P1, dep: [], status: planned, test: "", note: "", toolset: mechanical}
+  - {id: FP-TS-023, name: "IEC symbol libraries", desc: "Schematic symbols per IEC: contacts, coils, motors, sensors", p: P1, dep: [], status: planned, test: "", note: "", toolset: electrical}
+  - {id: FP-TS-024, name: "ANSI symbol libraries", desc: "ANSI-standard alternative symbol sets", p: P2, dep: [], status: planned, test: "", note: "", toolset: electrical}
+  - {id: FP-TS-025, name: "Symbol builder", desc: "Create custom schematic symbols with attribute templates", p: P2, dep: [], status: planned, test: "", note: "", toolset: electrical}
+  - {id: FP-TS-026, name: "Wire numbering", desc: "Automatic wire numbering: sequential, reference-based, ladder runs", p: P1, dep: [], status: planned, test: "", note: "", toolset: electrical}
+  - {id: FP-TS-027, name: "Wire types", desc: "Wire color and gauge conventions with type data", p: P1, dep: [], status: planned, test: "", note: "", toolset: electrical}
+  - {id: FP-TS-028, name: "Component tagging", desc: "Component tags with family-based auto increment", p: P1, dep: [], status: planned, test: "", note: "", toolset: electrical}
+  - {id: FP-TS-029, name: "Cross-referencing", desc: "Parent and child component cross references (coils, contacts)", p: P1, dep: [], status: planned, test: "", note: "", toolset: electrical}
+  - {id: FP-TS-030, name: "Panel layouts", desc: "Panel footprint layouts populated from schematic components", p: P1, dep: [], status: planned, test: "", note: "", toolset: electrical}
+  - {id: FP-TS-031, name: "PLC I/O", desc: "PLC module drawings with I/O addressing and spacing", p: P1, dep: [], status: planned, test: "", note: "", toolset: electrical}
+  - {id: FP-TS-032, name: "Terminal plans", desc: "Terminal placement and terminal-strip plans and schedules", p: P1, dep: [], status: planned, test: "", note: "", toolset: electrical}
+  - {id: FP-TS-033, name: "Cable schedules", desc: "Cable and wire schedules with from-to lists", p: P2, dep: [], status: planned, test: "", note: "", toolset: electrical}
+  - {id: FP-TS-034, name: "Circuit builder", desc: "Insert parameterized common circuits (starters, drives)", p: P2, dep: [], status: planned, test: "", note: "", toolset: electrical}
+  - {id: FP-TS-035, name: "Catalog browser", desc: "Manufacturer part catalog lookup for component data", p: P1, dep: [], status: planned, test: "", note: "", toolset: electrical}
+  - {id: FP-TS-036, name: "Title block integration", desc: "Project schematic data flows into title block fields", p: P1, dep: [], status: planned, test: "", note: "", toolset: electrical}
+  - {id: FP-TS-037, name: "Electrical reports", desc: "Wire lists, component BOM and pin reports from project data", p: P1, dep: [], status: planned, test: "", note: "", toolset: electrical}
+  - {id: FP-TS-038, name: "Project error checking", desc: "Audit for missing wire numbers, duplicate tags, broken references", p: P2, dep: [], status: planned, test: "", note: "", toolset: electrical}
+  - {id: FP-TS-039, name: "Ladder construction", desc: "Ladder rung spacing, bus lines and rung numbering", p: P1, dep: [], status: planned, test: "", note: "", toolset: electrical}
+  - {id: FP-TS-040, name: "Duct routing", desc: "Route rectangular and round ducts with automatic connections", p: P1, dep: [occt], status: planned, test: "", note: "", toolset: mep}
+  - {id: FP-TS-041, name: "Duct fittings", desc: "Elbows, tees, transitions and taps with sizing rules", p: P1, dep: [occt], status: planned, test: "", note: "", toolset: mep}
+  - {id: FP-TS-042, name: "Pipe routing", desc: "Route supply, return and drain pipes with slope and elevation", p: P1, dep: [occt], status: planned, test: "", note: "", toolset: mep}
+  - {id: FP-TS-043, name: "Pipe fittings", desc: "Elbows, tees, couplings and valves with spec lookup", p: P1, dep: [occt], status: planned, test: "", note: "", toolset: mep}
+  - {id: FP-TS-044, name: "MEP systems", desc: "System definitions (supply, return, exhaust, drainage) with color coding", p: P1, dep: [], status: planned, test: "", note: "", toolset: mep}
+  - {id: FP-TS-045, name: "MEP schedules", desc: "Duct, pipe and equipment schedules with quantities", p: P1, dep: [ifcopenshell], status: planned, test: "", note: "", toolset: mep}
+  - {id: FP-TS-046, name: "Equipment placement", desc: "HVAC and plumbing equipment with connection points", p: P1, dep: [], status: planned, test: "", note: "", toolset: mep}
+  - {id: FP-TS-047, name: "MEP tagging", desc: "Tags for ducts, pipes, fittings carrying property data", p: P1, dep: [], status: planned, test: "", note: "", toolset: mep}
+  - {id: FP-TS-048, name: "Display modes", desc: "Single and double-line MEP display representations", p: P1, dep: [], status: planned, test: "", note: "", toolset: mep}
+  - {id: FP-TS-049, name: "Slope annotations", desc: "Slope arrows and labels on pipes and ducts", p: P2, dep: [], status: planned, test: "", note: "", toolset: mep}
+  - {id: FP-TS-050, name: "MEP sections", desc: "Sections and details generated from MEP models", p: P2, dep: [ifcopenshell], status: planned, test: "", note: "", toolset: mep}
+  - {id: FP-TS-051, name: "Clash detection", desc: "Basic clash checking between systems via BIM data", p: P2, dep: [ifcopenshell, bonsai], status: planned, test: "", note: "", toolset: mep}
+  - {id: FP-TS-052, name: "Insulation", desc: "Duct and pipe insulation with thickness representation", p: P2, dep: [occt], status: planned, test: "", note: "", toolset: mep}
+  - {id: FP-TS-053, name: "Hangers and supports", desc: "Hanger and support placement library", p: P2, dep: [], status: planned, test: "", note: "", toolset: mep}
+  - {id: FP-TS-054, name: "Plumbing fixtures", desc: "Fixture libraries with connection data", p: P2, dep: [], status: planned, test: "", note: "", toolset: mep}
+  - {id: FP-TS-055, name: "Hydraulic sizing", desc: "Basic duct and pipe sizing from flow parameters", p: P2, dep: [], status: planned, test: "", note: "", toolset: mep}
+  - {id: FP-TS-056, name: "Coordination models", desc: "Link IFC and BIM models as coordination references", p: P1, dep: [ifcopenshell], status: planned, test: "", note: "", toolset: mep}
+  - {id: FP-TS-057, name: "Riser diagrams", desc: "Vertical riser diagrams for building systems", p: P2, dep: [], status: planned, test: "", note: "", toolset: mep}
+  - {id: FP-TS-058, name: "P&ID equipment symbols", desc: "Vessels, pumps, exchangers and tank symbols", p: P1, dep: [], status: planned, test: "", note: "", toolset: plant}
+  - {id: FP-TS-059, name: "P&ID lines", desc: "Instrumented pipelines with continuity and flow direction", p: P1, dep: [], status: planned, test: "", note: "", toolset: plant}
+  - {id: FP-TS-060, name: "P&ID instrument symbols", desc: "Instrument bubbles with tag data (ISA-like conventions)", p: P1, dep: [], status: planned, test: "", note: "", toolset: plant}
+  - {id: FP-TS-061, name: "P&ID validation", desc: "Checks for tag, connectivity and class consistency", p: P2, dep: [], status: planned, test: "", note: "", toolset: plant}
+  - {id: FP-TS-062, name: "Plant tagging", desc: "Equipment and line tags with data extraction", p: P1, dep: [], status: planned, test: "", note: "", toolset: plant}
+  - {id: FP-TS-063, name: "Spec-driven components", desc: "Spec and catalog browser driving fitting selection", p: P2, dep: [], status: planned, test: "", note: "", toolset: plant}
+  - {id: FP-TS-064, name: "3D pipelines", desc: "Route 3D pipe runs from P&ID data with specs", p: P2, dep: [occt], status: planned, test: "", note: "", toolset: plant}
+  - {id: FP-TS-065, name: "Plant equipment placement", desc: "Place 3D equipment: vessels, exchangers, pumps", p: P2, dep: [occt], status: planned, test: "", note: "", toolset: plant}
+  - {id: FP-TS-066, name: "Isometric extraction", desc: "Generate basic piping isometrics from 3D models", p: P2, dep: [occt], status: planned, test: "", note: "", toolset: plant}
+  - {id: FP-TS-067, name: "Orthographic views", desc: "Auto-generated orthographic plans and sections from plant models", p: P1, dep: [occt], status: planned, test: "", note: "", toolset: plant}
+  - {id: FP-TS-068, name: "P&ID to 3D linking", desc: "Data continuity between P&ID symbols and 3D components", p: P2, dep: [], status: planned, test: "", note: "", toolset: plant}
+  - {id: FP-TS-069, name: "Line lists and reports", desc: "Line lists, equipment lists, tie-in schedules", p: P1, dep: [], status: planned, test: "", note: "", toolset: plant}
+  - {id: FP-TS-070, name: "Supports library", desc: "Pipe support and hanger placement library", p: P2, dep: [], status: planned, test: "", note: "", toolset: plant}
+  - {id: FP-TS-071, name: "Line numbering", desc: "Automatic pipeline numbering from service, area, class data", p: P1, dep: [], status: planned, test: "", note: "", toolset: plant}
+  - {id: FP-TS-072, name: "Plant templates", desc: "P&ID class definitions and project templates", p: P2, dep: [], status: planned, test: "", note: "", toolset: plant}
+  - {id: FP-TS-073, name: "Alignments", desc: "Horizontal alignments from tangents and curves (PI-based)", p: P1, dep: [occt], status: planned, test: "", note: "", toolset: civil}
+  - {id: FP-TS-074, name: "Vertical profiles", desc: "Profile views along alignments with PVI-based design", p: P1, dep: [occt], status: planned, test: "", note: "", toolset: civil}
+  - {id: FP-TS-075, name: "TIN surfaces", desc: "Surfaces from points, breaklines and boundaries", p: P1, dep: [pdal], status: planned, test: "", note: "", toolset: civil}
+  - {id: FP-TS-076, name: "Surface analysis", desc: "Contours, elevation bands, slope arrows, watershed display", p: P1, dep: [pdal], status: planned, test: "", note: "", toolset: civil}
+  - {id: FP-TS-077, name: "Corridors", desc: "Basic corridor modeling from alignments, profiles, assemblies", p: P2, dep: [occt], status: planned, test: "", note: "", toolset: civil}
+  - {id: FP-TS-078, name: "Grading", desc: "Basic grading objects with slope criteria to targets", p: P2, dep: [occt], status: planned, test: "", note: "", toolset: civil}
+  - {id: FP-TS-079, name: "COGO points", desc: "Survey points with styles, elevations and descriptions", p: P1, dep: [], status: planned, test: "", note: "", toolset: civil}
+  - {id: FP-TS-080, name: "Point groups", desc: "Point groups by query with per-group display styles", p: P1, dep: [], status: planned, test: "", note: "", toolset: civil}
+  - {id: FP-TS-081, name: "Point import/export", desc: "PNEZD and text exchange for survey data", p: P1, dep: [], status: planned, test: "", note: "", toolset: civil}
+  - {id: FP-TS-082, name: "Cross sections", desc: "Sections sampled along alignments and corridors", p: P2, dep: [occt], status: planned, test: "", note: "", toolset: civil}
+  - {id: FP-TS-083, name: "Quantities takeoff", desc: "Earthwork volumes and cut-fill reports between surfaces", p: P2, dep: [shapely], status: planned, test: "", note: "", toolset: civil}
+  - {id: FP-TS-084, name: "Design checkpoints", desc: "Station checks: minimum radii, K values, clearances", p: P2, dep: [], status: planned, test: "", note: "", toolset: civil}
+  - {id: FP-TS-085, name: "Contour labeling", desc: "Contour labels, spot elevations and slope labels", p: P1, dep: [], status: planned, test: "", note: "", toolset: civil}
+  - {id: FP-TS-086, name: "Station/offset labels", desc: "Label station and offset from baselines", p: P1, dep: [], status: planned, test: "", note: "", toolset: civil}
+  - {id: FP-TS-087, name: "Coordinate systems", desc: "CRS assignment, reprojection and transformation (EPSG registry)", p: P1, dep: [gdal], status: planned, test: "", note: "", toolset: gis}
+  - {id: FP-TS-088, name: "Shapefile connect", desc: "Read shapefile geometry and attributes as drawing data", p: P1, dep: [gdal], status: planned, test: "", note: "", toolset: gis}
+  - {id: FP-TS-089, name: "GeoJSON connect", desc: "Read GeoJSON features with properties", p: P1, dep: [gdal], status: planned, test: "", note: "", toolset: gis}
+  - {id: FP-TS-090, name: "GeoPackage connect", desc: "Read OGC GeoPackage layers", p: P2, dep: [gdal], status: planned, test: "", note: "", toolset: gis}
+  - {id: FP-TS-091, name: "Image georeference", desc: "Georeference raster imagery via world files and correlation", p: P1, dep: [gdal], status: planned, test: "", note: "", toolset: gis}
+  - {id: FP-TS-092, name: "Drawing georeference", desc: "Assign CRS to drawings with coordinate tracking readout", p: P1, dep: [gdal], status: planned, test: "", note: "", toolset: gis}
+  - {id: FP-TS-093, name: "Thematic symbology", desc: "Classify features by attributes into styled ranges", p: P2, dep: [gdal], status: planned, test: "", note: "", toolset: gis}
+  - {id: FP-TS-094, name: "Attribute tables", desc: "View and edit feature attribute data with joins", p: P1, dep: [], status: planned, test: "", note: "", toolset: gis}
+  - {id: FP-TS-095, name: "Map import/export", desc: "SHP, GeoJSON and GeoPackage round trips with attributes", p: P1, dep: [gdal], status: planned, test: "", note: "", toolset: gis}
+  - {id: FP-TS-096, name: "Feature queries", desc: "Select features by attribute and spatial filters", p: P2, dep: [shapely], status: planned, test: "", note: "", toolset: gis}
+  - {id: FP-TS-097, name: "Raster insert and clip", desc: "Insert images, polygonal clip, invert, frame toggles", p: P1, dep: [], status: planned, test: "", note: "base image entity support lives in IO area", toolset: raster}
+  - {id: FP-TS-098, name: "Image correlation", desc: "Rubber-sheet images to control points with triangular warp", p: P2, dep: [gdal], status: planned, test: "", note: "", toolset: raster}
+  - {id: FP-TS-099, name: "Image adjust", desc: "Contrast, brightness, fade and transparent color handling", p: P1, dep: [blender-native], status: planned, test: "", note: "", toolset: raster}
+  - {id: FP-TS-100, name: "Vectorization", desc: "Basic raster-to-vector conversion for lines and contours", p: P2, dep: [gdal], status: planned, test: "", note: "", toolset: raster}
+  - {id: FP-TS-101, name: "Raster tracing", desc: "Interactive semi-automatic line tracing over imagery", p: P2, dep: [], status: planned, test: "", note: "", toolset: raster}
+  - {id: FP-TS-102, name: "Contour vectorization", desc: "Follow elevation contours producing labeled polylines", p: P2, dep: [gdal], status: planned, test: "", note: "", toolset: raster}
+  - {id: FP-TS-103, name: "Raster cleanup", desc: "Deskew, bias removal and speckle cleanup (basic)", p: P2, dep: [gdal], status: planned, test: "", note: "", toolset: raster}
+  - {id: FP-TS-104, name: "Raster export", desc: "Save adjusted imagery in standard georeferenced formats", p: P2, dep: [gdal], status: planned, test: "", note: "", toolset: raster}

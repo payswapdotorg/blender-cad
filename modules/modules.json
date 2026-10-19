@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "modules": {
+    "document": {
+      "owner": "W2",
+      "status": "planned",
+      "depends_on": [],
+      "fp_areas": [],
+      "summary": "CAD document model, entities, layers, blocks, transactions, undo, units"
+    },
+    "kernel": {
+      "owner": "W2",
+      "status": "planned",
+      "depends_on": [
+        "document"
+      ],
+      "fp_areas": [],
+      "summary": "OCCT precise geometry kernel and display tessellation"
+    },
+    "drafting": {
+      "owner": "W1",
+      "status": "planned",
+      "depends_on": [
+        "document",
+        "kernel"
+      ],
+      "fp_areas": [
+        "DRAW",
+        "MOD",
+        "PREC",
+        "ORG"
+      ],
+      "summary": "2D drafting, precision input, selection, grips"
+    },
+    "parametric": {
+      "owner": "W2",
+      "status": "planned",
+      "depends_on": [
+        "document",
+        "kernel",
+        "drafting"
+      ],
+      "fp_areas": [
+        "PAR"
+      ],
+      "summary": "Constraints and parametric editing"
+    },
+    "drawings": {
+      "owner": "W1",
+      "status": "planned",
+      "depends_on": [
+        "document",
+        "drafting",
+        "kernel"
+      ],
+      "fp_areas": [
+        "ANN",
+        "LAY"
+      ],
+      "summary": "Annotation, layouts, plot and publish"
+    },
+    "interchange": {
+      "owner": "W2",
+      "status": "planned",
+      "depends_on": [
+        "document",
+        "kernel",
+        "drafting",
+        "drawings"
+      ],
+      "fp_areas": [
+        "IO"
+      ],
+      "summary": "DXF/DWG/IFC/STEP IO, xrefs, conformance"
+    },
+    "bim": {
+      "owner": "W2",
+      "status": "planned",
+      "depends_on": [
+        "document",
+        "kernel",
+        "interchange"
+      ],
+      "fp_areas": [
+        "IO"
+      ],
+      "summary": "BIM workflows via Bonsai and IfcOpenShell"
+    },
+    "toolsets": {
+      "owner": "W1",
+      "status": "planned",
+      "depends_on": [
+        "document",
+        "drafting",
+        "drawings",
+        "parametric",
+        "kernel"
+      ],
+      "fp_areas": [
+        "TS"
+      ],
+      "summary": "Mechanical, electrical, MEP, plant, civil, GIS, raster toolsets"
+    },
+    "commands": {
+      "owner": "W1",
+      "status": "planned",
+      "depends_on": [
+        "document",
+        "drafting",
+        "drawings",
+        "parametric",
+        "interchange",
+        "toolsets"
+      ],
+      "fp_areas": [
+        "CMD"
+      ],
+      "summary": "Command registry, aliases, prompt state machine, history"
+    },
+    "agent": {
+      "owner": "W3",
+      "status": "planned",
+      "depends_on": [
+        "document"
+      ],
+      "fp_areas": [
+        "AGT"
+      ],
+      "summary": "CAD tool contract, MCP adapter, runtime sidecar bridge"
+    },
+    "skills": {
+      "owner": "W3",
+      "status": "planned",
+      "depends_on": [
+        "agent",
+        "document",
+        "commands"
+      ],
+      "fp_areas": [
+        "SKL"
+      ],
+      "summary": "Skill authoring, package format, execution, registry"
+    },
+    "shell": {
+      "owner": "W1",
+      "status": "planned",
+      "depends_on": [
+        "commands",
+        "drafting",
+        "drawings",
+        "toolsets",
+        "agent",
+        "skills",
+        "document"
+      ],
+      "fp_areas": [
+        "UX"
+      ],
+      "summary": "CAD workspace: ribbon, palettes, status bar, command line, layout tabs"
+    },
+    "testing": {
+      "owner": "TL",
+      "status": "planned",
+      "depends_on": [
+        "document",
+        "kernel",
+        "drafting",
+        "parametric",
+        "drawings",
+        "interchange",
+        "bim",
+        "toolsets",
+        "commands",
+        "agent",
+        "skills",
+        "shell"
+      ],
+      "fp_areas": [],
+      "summary": "Cross-module regression, interop, usability and security suites (test-only)"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+area: UX
+title: AutoCAD-familiar interface conventions
+module: shell
+entries:
+  - {id: FP-UX-001, name: "Ribbon", desc: "Tabbed ribbon: Home, Insert, Annotate, Parametric, View, Manage, Output", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-002, name: "Toolset ribbon tabs", desc: "Contextual specialist tabs appear when toolsets are active", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-003, name: "Quick Access Toolbar", desc: "Save, undo, redo, print plus user-added commands", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-004, name: "Dockable command line", desc: "Command line docks, anchors, collapses; semi-transparency", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-005, name: "Command history window", desc: "Scrollable transcript of commands and prompts (F2)", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-006, name: "Status bar", desc: "SNAP, GRID, ORTHO, POLAR, OSNAP, OTRACK, DUCS, DYN toggles; coordinates and annotation scale", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-007, name: "Dynamic input tooltips", desc: "On-cursor prompts, dimension fields, tooltips during entry", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-008, name: "Properties palette", desc: "View and edit entity properties; per-selection context", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-009, name: "Layer Properties Manager", desc: "Palette listing all layers with sortable property columns", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-010, name: "Layer dropdown control", desc: "Ribbon control: current layer and quick layer state toggles", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-011, name: "Tool palettes UI", desc: "Palettes of tools, blocks, hatches with drag placement", p: P1, dep: [], status: planned, test: "", note: "content organization entry in ORG area"}
+  - {id: FP-UX-012, name: "Palette framework", desc: "Common dock, anchor, auto-hide, transparency for all palettes", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-013, name: "Context menus", desc: "Default, edit and command-mode shortcut menus with options", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-014, name: "F-key conventions", desc: "Standard F-key map: help, history, osnap, grid, ortho, snap, polar, tracking, dynamic input", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-015, name: "Workspace switching", desc: "Save and restore interface layouts per workspace type", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-016, name: "Layout tabs UI", desc: "Model and Layout tab strip: reorder, rename, publish from tab", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-017, name: "Crosshair and pickbox", desc: "Crosshair style, pickbox and aperture sizing controls", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-018, name: "Drawing-area themes", desc: "Dark and light UI themes; model-space background colors", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-019, name: "Customization import", desc: "Alias .pgp import supported; partial CUIx import", p: P2, dep: [], status: planned, test: "", note: "CUIx support level (verify); declared partial at M0"}
+  - {id: FP-UX-020, name: "Ribbon search", desc: "Type-to-search command launcher box in the ribbon", p: P1, dep: [], status: planned, test: "", note: "search engine entry in CMD area"}
+  - {id: FP-UX-021, name: "Blender workspace integration", desc: "CAD workspace coexists with native Blender workspaces; nothing removed", p: P1, dep: [blender-native], status: planned, test: "", note: ""}
+  - {id: FP-UX-022, name: "Navigation bar", desc: "Zoom, pan, orbit and view controls strip on canvas", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-023, name: "Drawing tabs", desc: "Multiple open drawings as tabs (MDI); per-tab close and save", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-024, name: "Classic menu bar", desc: "Optional pull-down menu bar (File, Edit, View)", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-025, name: "Options dialog", desc: "Profiles for display, open-save, drafting and plot settings", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-026, name: "Plugin manager", desc: "Load and unload Python CAD API plugins; startup set", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-027, name: "Mouse conventions", desc: "Wheel zoom, middle-button pan, double-click behaviors", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-028, name: "Selection visuals", desc: "Dashed highlight, window and crossing colors, grip colors", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-029, name: "Entity drag", desc: "Drag entities with the mouse; modifier keys switch move/copy", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-UX-030, name: "Contextual help", desc: "F1 opens help for the active command or prompt", p: P2, dep: [], status: planned, test: "", note: ""}

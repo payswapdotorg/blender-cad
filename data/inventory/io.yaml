@@ -1,0 +1,31 @@
+area: IO
+title: Interchange & file compatibility
+module: interchange
+entries:
+  - {id: FP-IO-001, name: "DXF read", desc: "Read DXF R12 through 2027 with entity and property mapping", p: P0, dep: [ezdxf], status: planned, test: "", note: ""}
+  - {id: FP-IO-002, name: "DXF write", desc: "Write DXF 2018, 2000 and R12 tiers with entity fidelity", p: P0, dep: [ezdxf], status: planned, test: "", note: ""}
+  - {id: FP-IO-003, name: "DXF version conversion", desc: "Save-as across supported DXF versions with entity warnings", p: P1, dep: [ezdxf], status: planned, test: "", note: ""}
+  - {id: FP-IO-004, name: "DWG read", desc: "Read DWG via LibreDWG; M3 target, conformance-gated", p: P1, dep: [libredwg], status: planned, test: "", note: ""}
+  - {id: FP-IO-005, name: "DWG write", desc: "Write DWG; M4 target, conformance-gated before enablement", p: P1, dep: [libredwg], status: planned, test: "", note: ""}
+  - {id: FP-IO-006, name: "PDF export engine", desc: "Vector PDF: geometry, layer bookmarks, fonts, page mapping", p: P1, dep: [], status: planned, test: "", note: "plot workflow entry in LAY area"}
+  - {id: FP-IO-007, name: "PDF underlay import", desc: "Attach PDFs as snappable underlays; clip, fade, frame toggles", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-IO-008, name: "Image attach", desc: "Raster image entities: attach, path handling, reload, quality", p: P1, dep: [], status: planned, test: "", note: "toolset-level insert and clip live in TS raster area"}
+  - {id: FP-IO-009, name: "OLE handling", desc: "OLE objects rasterized as static images; no OLE embedding", p: P2, dep: [], status: planned, test: "", note: "declared exclusion: OLE embedding out of scope at M0"}
+  - {id: FP-IO-010, name: "IFC import", desc: "Import IFC4 models via bim module (IfcOpenShell, Bonsai)", p: P1, dep: [ifcopenshell, bonsai], status: planned, test: "", note: ""}
+  - {id: FP-IO-011, name: "IFC export", desc: "Export IFC4 via bim module with entity mapping tiers", p: P1, dep: [ifcopenshell, bonsai], status: planned, test: "", note: ""}
+  - {id: FP-IO-012, name: "STEP import", desc: "Import STEP AP203 and AP214 data via OCCT", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-IO-013, name: "STEP export", desc: "Export solids to STEP via OCCT", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-IO-014, name: "IGES exchange", desc: "Import and export legacy IGES via OCCT", p: P2, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-IO-015, name: "STL exchange", desc: "STL import and export for meshes via Blender-native bridge", p: P1, dep: [blender-native], status: planned, test: "", note: ""}
+  - {id: FP-IO-016, name: "OBJ exchange", desc: "OBJ import and export via Blender-native bridge", p: P2, dep: [blender-native], status: planned, test: "", note: ""}
+  - {id: FP-IO-017, name: "Data extraction", desc: "Extract block attributes, counts, properties to tables and CSV", p: P1, dep: [], status: planned, test: "", note: "DATAEXTRACTION-like; table objects in ANN area"}
+  - {id: FP-IO-018, name: "Drawing compare", desc: "Compare drawing revisions; highlight adds, removes, changes", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-IO-019, name: HYPERLINK, desc: "Attach URLs to entities; Ctrl-click to follow", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-IO-020, name: "Sheet set data format", desc: "Read and write DST-like sheet set data", p: P2, dep: [], status: planned, test: "", note: "(verify) format feasibility; manager workflow in LAY area"}
+  - {id: FP-IO-021, name: "Action recorder", desc: "Record command sequences into replayable macros", p: P1, dep: [], status: planned, test: "", note: "declared limited tier at M0"}
+  - {id: FP-IO-022, name: "LISP-like API", desc: "Command-invocation plus entity-data-access subset, conformance-tested", p: P1, dep: [], status: planned, test: "", note: "declared subset; never claimed as full AutoLISP"}
+  - {id: FP-IO-023, name: "Python CAD API", desc: "Documented product API for automation and plugins", p: P1, dep: [], status: planned, test: "", note: "distinct from AutoCAD .NET API; no false compatibility claim"}
+  - {id: FP-IO-024, name: "Undo journal", desc: "Transaction journal enabling undo, recovery and audit trails", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-IO-025, name: "Template files", desc: "Read and write .dwt-like template drawings with styles and layouts", p: P1, dep: [ezdxf], status: planned, test: "", note: ""}
+  - {id: FP-IO-026, name: "Round-trip loss ledger", desc: "Every importer and exporter records unsupported entities and losses", p: P1, dep: [], status: planned, test: "", note: "ledger format defined in file-compatibility-matrix.md"}
+  - {id: FP-IO-027, name: "Proxy entities", desc: "Preserve unknown custom entities as round-trip-safe proxies", p: P1, dep: [ezdxf, libredwg], status: planned, test: "", note: ""}

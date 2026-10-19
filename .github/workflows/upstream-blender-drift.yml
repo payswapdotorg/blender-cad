@@ -1,0 +1,72 @@
+name: Upstream drift — Blender
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  drift-check:
+    name: Compare pinned Blender ref with upstream main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run upstream drift check (blender)
+        run: python scripts/check_upstream_drift.py --component blender
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Open or update drift issue (deduped by title)
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = "Upstream drift: blender/blender";
+            const label = "upstream-drift";
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = [
+              "The scheduled upstream drift check failed.",
+              "",
+              `- Workflow run: ${runUrl}`,
+              "- This issue is deduplicated by title; repeat failures comment here instead of opening new issues.",
+              "- Update procedure: docs/00-architecture/repo-and-upstream-sync.md (overview: docs/30-process/upstream-update-ci.md).",
+              "",
+              "Check the run log to distinguish real drift (exit code 2) from a GitHub API error (exit code 1).",
+            ].join("\n");
+            const open = await github.paginate(github.rest.issues.listForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: label,
+              per_page: 100,
+            });
+            const existing = open.find((issue) => issue.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body: `Repeat failure — see ${runUrl}`,
+              });
+              core.info(`Commented on existing issue #${existing.number}`);
+            } else {
+              const created = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: [label],
+              });
+              core.info(`Created issue #${created.data.number}`);
+            }

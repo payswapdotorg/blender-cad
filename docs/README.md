@@ -1,0 +1,49 @@
+# Documentation Index
+
+- **Status:** Active — M0 handoff document set complete
+- **Owner:** TL
+- **Date:** 2026-10-19 (UTC)
+- **Vocabulary:** docs/GLOSSARY.md (binding)
+
+**Read `docs/GLOSSARY.md` first.** It is the binding vocabulary; every other
+document defers to it. Suggested reading order after the glossary:
+
+1. Root `README.md` — mission, repo map, honest M0 status.
+2. `docs/00-architecture/` — how the system is built, synced and licensed.
+3. `docs/10-product/` — what we are building (inventory, compatibility, UX).
+4. `docs/20-agent/` — agent runtime, tool contract, skills.
+5. `docs/30-process/` — how we verify and deliver.
+
+## Index
+
+| Path | One-liner |
+|---|---|
+| `GLOSSARY.md` | **Binding vocabulary**: mission, repo map, modules, inventory schema, agent/skill terms, manifest schema, workers, milestones (read first, always) |
+| `00-architecture/repo-and-upstream-sync.md` | The three-repo layout, upstream pins, and the full upstream update procedure |
+| `00-architecture/document-model-and-geometry-kernel.md` | CAD document model (entities, transactions, undo, checkpoints) and the OCCT-based kernel design |
+| `00-architecture/component-adoption-matrix.md` | Candidate components (OCCT, ezdxf, LibreDWG, …) with adoption gates, alternatives and decisions |
+| `00-architecture/license-inventory.md` | License facts with confidence tags; the GPL-compliance record |
+| `10-product/feature-parity-inventory.md` | Inventory methodology: areas, priorities, status/evidence rules (hand-authored) |
+| `10-product/inventory-tables.md` | **Generated** feature tables from `data/inventory/*.yaml` — do not edit by hand |
+| `10-product/file-compatibility-matrix.md` | Which file formats/versions we read, write and round-trip, and how losses are ledgered |
+| `10-product/ux-specification.md` | AutoCAD-familiar interface specification: command line, ribbon, palettes, drafting behavior |
+| `10-product/usability-validation-plan.md` | Comparative usability program: participants, task batteries, thresholds, evidence |
+| `20-agent/zcode-adaptation-plan.md` | How the ZCode runtime becomes our agent sidecar (candidate/excluded packages, seams) |
+| `20-agent/cad-tool-contract-v1.md` | The `cad.*` tool namespaces, versioned contract v1 |
+| `20-agent/permissions-and-execution-model.md` | Agent modes, permission classes, execution pipeline states, shared-document terms |
+| `20-agent/skill-format-v1.md` | Skill package format: skill.yaml, workflow.yaml, tests/, typed inputs, provenance |
+| `20-agent/skill-execution-and-publishing.md` | Skill pipeline (draft→published), sandboxing, trust tiers, registry |
+| `30-process/adr/0001`–`0006` | Architecture decision records: naming, OCCT kernel, DXF-first, ZCode interface-first, GPL strategy, declarative skills |
+| `30-process/test-plan.md` | Executable test plan: TP-CAT-00…12, gates, evidence policy |
+| `30-process/upstream-update-ci.md` | The three CI workflows, drift-alert issue policy, local commands, audit checklist |
+| `30-process/milestone-plan.md` | M0–M7 objectives, entry/exit criteria, risk register, estimation honesty |
+| `30-process/completion-graph-m0.md` | The M0 completion graph — ticks with TP-CAT-00 evidence only |
+
+## Conventions
+
+- Every document starts with a status block (status / owner / date / glossary
+  link) per glossary §13.
+- Features are cited by name + area; concrete feature ids are forbidden in
+  hand-authored docs (a CI test enforces traceability).
+- Generated files (`10-product/inventory-tables.md`) are never edited by
+  hand; regenerate with `python3 scripts/render_inventory.py`.

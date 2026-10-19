@@ -1,0 +1,35 @@
+area: ORG
+title: Layers, blocks, organization
+module: drafting
+entries:
+  - {id: FP-ORG-001, name: LAYER, desc: "Create layers, set current layer; layer property management", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-002, name: "Layer states", desc: "On/off, freeze/thaw, lock/unlock and plot flags per layer", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-003, name: "Layer properties", desc: "Per-layer color, linetype, lineweight, transparency, plot style", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-004, name: "Layer filters", desc: "Property filters and group filters in the Layer Properties Manager", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-005, name: "Layer state manager", desc: "Save and restore named layer states including properties", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-006, name: LAYERP, desc: "Restore the previous layer state", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-007, name: "Layer tools", desc: "Isolate, off, freeze, unisolate, merge, delete, walk utilities", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-008, name: LTYPE, desc: "Load linetypes from .lin libraries; LTSCALE and PSLTSCALE scaling", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-009, name: "Lineweight display", desc: "Lineweight display toggle, defaults and units; per-layer weights", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-010, name: "Entity property overrides", desc: "Per-entity color, linetype, lineweight, transparency; ByLayer default", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-011, name: BLOCK, desc: "Create block definitions from selected geometry with base point", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-012, name: "Block redefinition", desc: "Redefining a block updates all its references", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-013, name: INSERT, desc: "Insert block references with scale, rotation, attribute prompts", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-014, name: WBLOCK, desc: "Write selected blocks or geometry to separate drawing files", p: P1, dep: [ezdxf], status: planned, test: "", note: ""}
+  - {id: FP-ORG-015, name: BEDIT, desc: "Block editor environment for in-place definition editing", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-016, name: ATTDEF, desc: "Attribute definitions with tag, prompt, default and modes", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-017, name: ATTEDIT, desc: "Edit attribute values in inserted references", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-018, name: ATTSYNC, desc: "Update block references after attribute definition changes", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-019, name: "Dynamic block analog", desc: "Parameter and action behavior on block definitions", p: P2, dep: [], status: planned, test: "", note: "must be built; no OSS equivalent identified at M0 (see scope honesty)"}
+  - {id: FP-ORG-020, name: GROUP, desc: "Named and unnamed selectable object groups", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-021, name: "XREF attach/overlay", desc: "Attach versus overlay distinction for drawing references", p: P1, dep: [ezdxf], status: planned, test: "", note: ""}
+  - {id: FP-ORG-022, name: "XREF bind/insert", desc: "Bind references into host drawing; bind and insert naming modes", p: P1, dep: [ezdxf], status: planned, test: "", note: ""}
+  - {id: FP-ORG-023, name: "XREF detach/unload/reload", desc: "Manage reference load state without deleting definitions", p: P1, dep: [ezdxf], status: planned, test: "", note: ""}
+  - {id: FP-ORG-024, name: "XREF manager", desc: "Tree of nested references, status, path types, missing-reference reporting", p: P1, dep: [ezdxf], status: planned, test: "", note: ""}
+  - {id: FP-ORG-025, name: XBIND, desc: "Bind named objects (layers, styles, blocks) from references", p: P2, dep: [ezdxf], status: planned, test: "", note: ""}
+  - {id: FP-ORG-026, name: "Content browser", desc: "DesignCenter-like browser for blocks, layers, styles across drawings", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-027, name: "Tool palette content", desc: "Organize blocks, hatches, commands into shared palette groups", p: P1, dep: [], status: planned, test: "", note: "palette UI lives in UX area"}
+  - {id: FP-ORG-028, name: PURGE, desc: "Remove unused named objects: layers, blocks, styles, linetypes", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-029, name: RENAME, desc: "Rename named objects: blocks, layers, styles, views, UCS", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-030, name: LAYWALK, desc: "Walk layers, isolating each in a temporary preview", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ORG-031, name: "CAD standards", desc: "Standards file (.dws-like) checking against naming and property conventions", p: P2, dep: [], status: planned, test: "", note: "(verify) format feasibility; declared limited tier at M0"}

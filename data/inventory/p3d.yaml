@@ -1,0 +1,47 @@
+area: P3D
+title: 3D modeling
+module: kernel
+entries:
+  - {id: FP-P3D-001, name: "3D navigation", desc: "Orbit and constrained orbit; Blender-native navigation preserved alongside", p: P1, dep: [blender-native], status: planned, test: "", note: "Blender-native nav is not replaced"}
+  - {id: FP-P3D-002, name: "Orientation cube", desc: "Viewcube-like orientation widget with standard views and home", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-P3D-003, name: "Named views", desc: "Save and restore named views with category and clip settings", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-P3D-004, name: UCS, desc: "Define UCS: origin, 3point, object, face, view, previous, named", p: P1, dep: [], status: planned, test: "", note: "dynamic UCS input mode lives in PREC area"}
+  - {id: FP-P3D-005, name: UCSICON, desc: "UCS icon display: on/off, origin placement, selectability", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-P3D-006, name: "Named UCS management", desc: "Orthographic presets, restore and dialog management (UCSMAN)", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-P3D-007, name: PLAN, desc: "Plan view aligned to current or named UCS", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-P3D-008, name: EXTRUDE, desc: "Extrude profiles along paths with taper and mode options", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-009, name: PRESSPULL, desc: "Push and pull bounded areas dynamically on faces", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-010, name: REVOLVE, desc: "Revolve profiles around an axis with start and stop angles", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-011, name: SWEEP, desc: "Sweep profiles along paths with twist and scale options", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-012, name: LOFT, desc: "Loft cross-sections with guide rails and continuity options", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-013, name: UNION, desc: "Boolean union of solids and regions", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-014, name: SUBTRACT, desc: "Boolean difference of solids and regions", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-015, name: INTERSECT, desc: "Boolean intersection of solids and regions", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-016, name: FILLETEDGE, desc: "Fillet solid edges with per-edge radii and chain selection", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-017, name: CHAMFEREDGE, desc: "Chamfer solid edges with distance or angle, loop selection", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-018, name: SLICE, desc: "Slice solids by plane or surface; keep either half", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-019, name: THICKEN, desc: "Convert surfaces to solids by thickness", p: P2, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-020, name: SHELL, desc: "Hollow solids leaving walls of set thickness", p: P2, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-021, name: 3DALIGN, desc: "Align solids by source and destination point trios with rotate", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-022, name: 3DROTATE, desc: "Rotate solids about a specified axis with gizmo", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-P3D-023, name: 3DMIRROR, desc: "Mirror solids across an arbitrary plane", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-024, name: 3DARRAY, desc: "Rectangular and polar arrays in three dimensions", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-P3D-025, name: INTERFERE, desc: "Check solids for interference; highlight interfering volumes", p: P2, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-026, name: SECTIONPLANE, desc: "Section planes with live section and 2D slice representations", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-027, name: "Model documentation views", desc: "Projected orthographic base views from 3D models into layouts", p: P1, dep: [], status: planned, test: "", note: "delivered via drawings module path"}
+  - {id: FP-P3D-028, name: FLATSHOT, desc: "Flattened 2D snapshot of solids with silhouette and hidden lines", p: P2, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-029, name: "Layout profiles", desc: "SOLPROF-like 2D profiles of solids in paper space", p: P2, dep: [occt], status: planned, test: "", note: "via drawings module"}
+  - {id: FP-P3D-030, name: "Visual styles", desc: "Wireframe, hidden, shaded, x-ray display modes per viewport", p: P1, dep: [blender-native], status: planned, test: "", note: ""}
+  - {id: FP-P3D-031, name: "Materials link", desc: "CAD materials map onto Blender materials for display and rendering", p: P2, dep: [blender-native], status: planned, test: "", note: "scope: display and rendering bridge only"}
+  - {id: FP-P3D-032, name: MASSPROP, desc: "Mass properties: volume, mass, centroid, moments of inertia", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-033, name: "Solid history", desc: "Boolean and extrude history retained for grip and parametric edits", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-034, name: "Mesh smoothing", desc: "Mesh primitives with smoothing levels and crease control", p: P2, dep: [blender-native], status: planned, test: "", note: ""}
+  - {id: FP-P3D-035, name: "Mesh conversion", desc: "Convert solids to meshes and meshes to solids or regions", p: P2, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-036, name: PLANESURF, desc: "Planar surface patches from boundaries", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-037, name: SURFNETWORK, desc: "Network surfaces fitted through U and V curve grids", p: P1, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-038, name: "Surface blend and patch", desc: "Blend surfaces between edges; patch surfaces over boundaries", p: P2, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-039, name: "Point clouds", desc: "Attach, view and crop point cloud scans (subset)", p: P2, dep: [pdal], status: planned, test: "", note: "subset of AutoCAD point cloud features; LAS/LAZ via PDAL"}
+  - {id: FP-P3D-040, name: POLYSOLID, desc: "Wall-like solid runs along paths with width and height", p: P2, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-041, name: IMPRINT, desc: "Imprint edges and faces onto solid faces for later pulls", p: P2, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-042, name: SOLIDEDIT, desc: "Face and edge editing: extrude, move, rotate, offset, taper, delete", p: P2, dep: [occt], status: planned, test: "", note: ""}
+  - {id: FP-P3D-043, name: "Sub-object selection", desc: "Ctrl-pick faces, edges and vertices with filter modes for editing", p: P1, dep: [], status: planned, test: "", note: ""}

@@ -1,0 +1,20 @@
+area: AGT
+title: Integrated agent operation
+module: agent
+entries:
+  - {id: FP-AGT-001, name: "Conversation panel", desc: "Chat-style agent panel docked in the CAD shell", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-AGT-002, name: "Pipeline states UI", desc: "Plan, preview, approve, execute, verify states with actions", p: P1, dep: [zcode-runtime], status: planned, test: "", note: ""}
+  - {id: FP-AGT-003, name: "Activity log", desc: "Visible log of agent actions with tool calls and results", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-AGT-004, name: "Mode switching UI", desc: "Switch read-only, propose, approve and autonomous modes", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-AGT-005, name: "Permission prompts", desc: "Per-class approval prompts for doc-edit, terminal, network and more", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-AGT-006, name: "Selection sync", desc: "Agent and user views share selection epoch state live", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-AGT-007, name: "Document sync", desc: "Agent sees committed doc versions; transactions only through cad tools", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-AGT-008, name: "Viewport previews", desc: "Proposed edits ghost and highlight in viewport before approval", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-AGT-009, name: "Checkpoints UI", desc: "Create, list and restore named rollback checkpoints", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-AGT-010, name: "Conflict notifications", desc: "Notify on entity lock and version conflicts with resolution actions", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-AGT-011, name: "Terminal access", desc: "Supervised terminal tool available from inside the product", p: P2, dep: [zcode-runtime], status: planned, test: "", note: ""}
+  - {id: FP-AGT-012, name: "Browser access", desc: "Supervised browser tool available from inside the product", p: P2, dep: [zcode-runtime], status: planned, test: "", note: ""}
+  - {id: FP-AGT-013, name: "Skill invocation", desc: "Run installed skills from the agent conversation panel", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-AGT-014, name: "CAD tool contract", desc: "Versioned cad.* tool namespaces implement drawing operations", p: P1, dep: [zcode-runtime], status: planned, test: "", note: ""}
+  - {id: FP-AGT-015, name: "Runtime sidecar", desc: "ZCode runtime runs as versioned sidecar, UI not merged (ADR-0004)", p: P1, dep: [zcode-runtime], status: planned, test: "", note: ""}
+  - {id: FP-AGT-016, name: "MCP adapter", desc: "Expose CAD tools through Model Context Protocol endpoints", p: P2, dep: [zcode-runtime], status: planned, test: "", note: ""}

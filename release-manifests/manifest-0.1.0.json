@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "product": "blender-cad",
+  "version": "0.1.0-m0",
+  "created": "2026-10-19",
+  "status": "m0-handoff",
+  "components": {
+    "blender": {
+      "role": "host application (fork)",
+      "upstream": "blender/blender",
+      "upstream_ref": "bf200615b83252a7be951aed5593d068f0f2438a",
+      "upstream_branch": "main",
+      "fork": "payswapdotorg/blender",
+      "fork_branch": "product/main",
+      "patch_series": "patches/blender",
+      "license": "GPL-2.0-or-later (verify: blender.org/license)"
+    },
+    "zcode_runtime": {
+      "role": "agent runtime (tracked upstream dependency; fork retained as patch surface)",
+      "upstream": "zai-org/ZCode",
+      "upstream_ref": "0a1fc56d279fd1001f78387bd81aec1c26767411",
+      "upstream_branch": "main",
+      "fork": "payswapdotorg/ZCode",
+      "pin_policy": "pinned release/commit; audited before adoption; re-pin requires manifest version bump",
+      "license": "Apache-2.0"
+    },
+    "cad_extension": {
+      "role": "canonical source of truth (this repo)",
+      "repo": "payswapdotorg/blender-cad",
+      "commit": "self-at-release"
+    }
+  },
+  "dependencies": [
+    {
+      "name": "OCCT",
+      "license": "LGPL-2.1-with-exception",
+      "role": "precise B-rep and analytic geometry kernel",
+      "module": "kernel",
+      "status": "candidate"
+    },
+    {
+      "name": "OCP",
+      "license": "Apache-2.0",
+      "role": "OCCT Python bindings candidate",
+      "module": "kernel",
+      "status": "candidate"
+    },
+    {
+      "name": "PlaneGCS",
+      "license": "LGPL (verify)",
+      "role": "2D geometric constraint solver",
+      "module": "parametric",
+      "status": "candidate"
+    },
+    {
+      "name": "ezdxf",
+      "license": "MIT",
+      "role": "DXF read/write engine",
+      "module": "interchange",
+      "status": "candidate"
+    },
+    {
+      "name": "LibreDWG",
+      "license": "GPL-3.0",
+      "role": "DWG read/write engine",
+      "module": "interchange",
+      "status": "candidate"
+    },
+    {
+      "name": "IfcOpenShell",
+      "license": "LGPL-3.0-or-later (verify)",
+      "role": "IFC BIM library",
+      "module": "bim",
+      "status": "candidate"
+    },
+    {
+      "name": "Bonsai (BlenderBIM)",
+      "license": "(verify)",
+      "role": "BIM toolset integration",
+      "module": "bim",
+      "status": "candidate"
+    },
+    {
+      "name": "GDAL",
+      "license": "MIT-style (verify)",
+      "role": "GIS and raster geospatial formats",
+      "module": "toolsets",
+      "status": "candidate"
+    },
+    {
+      "name": "PDAL",
+      "license": "BSD-style (verify)",
+      "role": "point cloud processing",
+      "module": "toolsets",
+      "status": "candidate"
+    },
+    {
+      "name": "shapely",
+      "license": "BSD-3-Clause",
+      "role": "GIS planar geometry",
+      "module": "toolsets",
+      "status": "candidate"
+    },
+    {
+      "name": "zcode-runtime",
+      "license": "Apache-2.0",
+      "role": "agent execution runtime (zai-org/ZCode)",
+      "module": "agent",
+      "status": "candidate"
+    }
+  ],
+  "notes": "M0 handoff manifest. No feature code yet; all dependencies are candidates pending adoption gates (see docs/00-architecture/component-adoption-matrix.md)."
+}

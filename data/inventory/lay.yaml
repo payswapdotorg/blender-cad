@@ -1,0 +1,27 @@
+area: LAY
+title: Layouts, viewports, plot/publish
+module: drawings
+entries:
+  - {id: FP-LAY-001, name: "Layout management", desc: "Create, delete, copy, rename and reorder paper-space layouts", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-002, name: "Model and paper space", desc: "TILEMODE switching between model space and layouts", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-003, name: "Page setup manager", desc: "Named page setups per layout; import setups from other drawings", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-004, name: "Viewport creation", desc: "Create viewports; fit, standard scales, named view assignment", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-005, name: "Viewport controls", desc: "Clip viewports polygonally, lock display, maximize and restore", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-006, name: "Viewport layer overrides", desc: "Per-viewport color, linetype, lineweight, transparency (VPLAYER)", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-007, name: "MSPACE/PSPACE", desc: "Edit inside viewports in floating model space", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-008, name: PLOT, desc: "Plot dialog: window, extents, layout areas; scale and fit options", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-009, name: "Plot styles", desc: "Color-dependent CTB and named STB tables; attach per layout", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-010, name: "Plot preview", desc: "WYSIWYG preview with zoom and pan before plotting", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-011, name: "PDF plotting", desc: "Page-setup-driven PDF output per layout", p: P1, dep: [], status: planned, test: "", note: "PDF format engine entry in IO area"}
+  - {id: FP-LAY-012, name: PUBLISH, desc: "Batch plot layouts to one multi-page or separate PDFs", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-013, name: "Sheet set manager", desc: "Sheet set management: sheet lists, publish integration, set data", p: P2, dep: [], status: planned, test: "", note: "honest limited tier at M0; DST format entry in IO area"}
+  - {id: FP-LAY-014, name: "Raster export", desc: "Plot layouts to PNG and common raster formats", p: P2, dep: [blender-native], status: planned, test: "", note: ""}
+  - {id: FP-LAY-015, name: "Background plotting", desc: "Continue editing while plot jobs process in the background", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-016, name: ETRANSMIT, desc: "Package drawing with xrefs, fonts and plot styles for handoff", p: P2, dep: [], status: planned, test: "", note: "(verify) tier: dependency graph first, packaging second"}
+  - {id: FP-LAY-017, name: "Drawing recovery", desc: "Recovery manager listing orphaned autosaves; RECOVER audit", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-018, name: "Automatic save", desc: "Timed autosave with backup file retention", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-019, name: "Plot stamp", desc: "Stamp plots with date, scale, drawing name and user fields", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-020, name: "PDF security", desc: "Password protection options on PDF output", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-021, name: "Layout copy", desc: "Drag or copy layouts between open drawings", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-022, name: "Scale list", desc: "Customize the scale list for viewports and annotation", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-LAY-023, name: CHSPACE, desc: "Move entities between model space and layouts, scale-adjusted", p: P2, dep: [], status: planned, test: "", note: ""}

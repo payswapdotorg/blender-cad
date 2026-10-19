@@ -1,0 +1,27 @@
+area: PAR
+title: Parametric constraints
+module: parametric
+entries:
+  - {id: FP-PAR-001, name: GCCOINCIDENT, desc: "Constrain points coincident between curves", p: P1, dep: [planegcs], status: planned, test: "", note: ""}
+  - {id: FP-PAR-002, name: GCCONCENTRIC, desc: "Constrain arcs, circles and ellipses to a shared center", p: P1, dep: [planegcs], status: planned, test: "", note: ""}
+  - {id: FP-PAR-003, name: GCCOLLINEAR, desc: "Constrain points or curves onto a common line", p: P1, dep: [planegcs], status: planned, test: "", note: ""}
+  - {id: FP-PAR-004, name: GCPARALLEL, desc: "Constrain two lines parallel", p: P1, dep: [planegcs], status: planned, test: "", note: ""}
+  - {id: FP-PAR-005, name: GCPERPENDICULAR, desc: "Constrain two lines perpendicular", p: P1, dep: [planegcs], status: planned, test: "", note: ""}
+  - {id: FP-PAR-006, name: GCHORIZONTAL, desc: "Constrain lines or point pairs horizontal", p: P1, dep: [planegcs], status: planned, test: "", note: ""}
+  - {id: FP-PAR-007, name: GCVERTICAL, desc: "Constrain lines or point pairs vertical", p: P1, dep: [planegcs], status: planned, test: "", note: ""}
+  - {id: FP-PAR-008, name: GCTANGENT, desc: "Constrain tangent contact between curves", p: P1, dep: [planegcs], status: planned, test: "", note: ""}
+  - {id: FP-PAR-009, name: GCSMOOTH, desc: "G2 curvature continuity constraint between splines", p: P2, dep: [planegcs, occt], status: planned, test: "", note: ""}
+  - {id: FP-PAR-010, name: GCSYMMETRIC, desc: "Constrain points symmetric about a line or point", p: P1, dep: [planegcs], status: planned, test: "", note: ""}
+  - {id: FP-PAR-011, name: GCEQUAL, desc: "Constrain equal radius or length between curves", p: P1, dep: [planegcs], status: planned, test: "", note: ""}
+  - {id: FP-PAR-012, name: GCFIX, desc: "Fix (anchor) points and curves in place", p: P1, dep: [planegcs], status: planned, test: "", note: ""}
+  - {id: FP-PAR-013, name: "Linear constraints", desc: "Horizontal, vertical, aligned and rotated distance constraints", p: P1, dep: [planegcs], status: planned, test: "", note: ""}
+  - {id: FP-PAR-014, name: "Radial constraints", desc: "Radius and diameter constraints on circles and arcs", p: P1, dep: [planegcs], status: planned, test: "", note: ""}
+  - {id: FP-PAR-015, name: "Angular constraints", desc: "Angle constraints between lines and curves", p: P1, dep: [planegcs], status: planned, test: "", note: ""}
+  - {id: FP-PAR-016, name: "Constraint bars", desc: "On-object constraint glyph display with show and hide controls", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PAR-017, name: AUTOCONSTRAIN, desc: "Auto-apply constraints by proximity with configurable priority list", p: P1, dep: [planegcs], status: planned, test: "", note: ""}
+  - {id: FP-PAR-018, name: "Infer constraints", desc: "Infer coincident constraints automatically while drafting (toggle)", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PAR-019, name: "Parameters manager", desc: "Palette of dimension parameters, user variables and expressions", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PAR-020, name: "Constraint expressions", desc: "Parameters reference other parameters through formulas", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PAR-021, name: "Constrained block analog", desc: "Constraint-driven block geometry (dynamic block analog)", p: P2, dep: [planegcs], status: planned, test: "", note: "must be built; pairs with ORG dynamic block analog"}
+  - {id: FP-PAR-022, name: DELCONSTRAINT, desc: "Remove selected constraints from entities", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PAR-023, name: "Solve feedback", desc: "Highlight conflicts when the constraint system fails to solve", p: P2, dep: [], status: planned, test: "", note: ""}

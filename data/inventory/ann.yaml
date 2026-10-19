@@ -1,0 +1,38 @@
+area: ANN
+title: Annotation (text, dims, tables, hatches)
+module: drawings
+entries:
+  - {id: FP-ANN-001, name: DIMLINEAR, desc: "Horizontal and vertical linear dimensions; rotated option", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-002, name: DIMALIGNED, desc: "Aligned linear dimensions parallel to measured edges", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-003, name: DIMRADIUS, desc: "Radius dimensions with center mark option", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-004, name: DIMDIAMETER, desc: "Diameter dimensions across circles", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-005, name: DIMANGULAR, desc: "Angular dimensions between lines, at points, on arcs", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-006, name: DIMORDINATE, desc: "X and Y ordinate dimensions with leader options", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-007, name: DIMARC, desc: "Arc-length dimensions", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-008, name: DIMJOGGED, desc: "Jogged radius dimensions for off-sheet centers", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-009, name: DIMCONTINUE, desc: "Chain dimensions continuing from the previous extension line", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-010, name: DIMBASELINE, desc: "Baseline dimensions sharing a common extension line", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-011, name: DIMSPACE, desc: "Adjust spacing between parallel linear and angular dimensions", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-012, name: DIMBREAK, desc: "Break dimension lines crossing other dimensions", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-013, name: DIMJOGLINE, desc: "Add jogs to linear dimension lines", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-014, name: DIMREASSOCIATE, desc: "Re-associate orphaned dimensions to measured geometry", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-015, name: "Dimension associativity", desc: "Dimensions update automatically when measured geometry changes; DIMREGEN rebuilds", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-016, name: DIMCENTER, desc: "Center marks and centerlines for circles and arcs", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-017, name: DIMSTYLE, desc: "Dimension style dialog with per-type family sub-styles", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-018, name: "Dimension overrides", desc: "Per-dimension variable overrides; apply and update style changes", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-019, name: "Dimension grips", desc: "Grip-edit dimension lines, text position, extension origins", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-020, name: TEXT, desc: "Single-line dynamic text with justification options", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-021, name: MTEXT, desc: "Multiline text: columns, stacked fractions, inline formatting, fields", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-022, name: TEXTEDIT, desc: "Edit existing text, mtext and attribute content in place", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-023, name: STYLE, desc: "Text styles: font, height, width factor, oblique angle", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-024, name: FIELD, desc: "Auto-updating fields: date, plot, object, sheet set data", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-025, name: TABLE, desc: "Insert and edit tables; cell merge, formulas, formatting", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-026, name: "Table styles", desc: "Table styles: borders, text styles, per-cell formats", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-027, name: "Table data links", desc: "Link table ranges to CSV or external data with refresh", p: P2, dep: [], status: planned, test: "", note: "extraction engine shared with IO area"}
+  - {id: FP-ANN-028, name: MLEADER, desc: "Multileaders with content, landing, baseline; MLEADER styles", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-029, name: LEADER, desc: "Legacy leader with annotation options", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-030, name: TOLERANCE, desc: "Feature control frames with datum references", p: P2, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-031, name: "Annotation scale", desc: "Per-viewport annotation scale list with auto-add representations", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-032, name: "Annotative objects", desc: "Per-scale representations for text, dimensions, leaders, hatches, revision clouds", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-033, name: SPELL, desc: "Spell check across text, mtext and attributes with dictionaries", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-ANN-034, name: FIND, desc: "Find and replace text across the drawing with zoom-to results", p: P1, dep: [], status: planned, test: "", note: ""}

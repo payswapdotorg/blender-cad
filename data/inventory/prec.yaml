@@ -1,0 +1,33 @@
+area: PREC
+title: Precision input & snaps
+module: drafting
+entries:
+  - {id: FP-PREC-001, name: ENDPOINT, desc: "Snap to the closest endpoint of lines, arcs, polylines", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-002, name: MIDPOINT, desc: "Snap to midpoints of segments and arcs", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-003, name: INTERSECTION, desc: "Snap to true intersections of entities", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-004, name: CENTER, desc: "Snap to centers of circles, arcs and ellipses", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-005, name: QUADRANT, desc: "Snap to circle and arc quadrant points", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-006, name: TANGENT, desc: "Snap tangent to curves from a picked point", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-007, name: PERPENDICULAR, desc: "Snap perpendicular foot onto entities", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-008, name: "Secondary snaps", desc: "NEArest, NODe and INSertion snap modes", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-009, name: APPINT, desc: "Apparent (projected) intersection snap for 3D views", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-010, name: EXTENSION, desc: "Snap along entity path extensions beyond endpoints", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-011, name: PARALLEL, desc: "Track parallel to an entity direction", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-012, name: "Running osnaps", desc: "Persistent snap set via OSNAP dialog and OSMODE bitmask", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-013, name: "One-shot osnap override", desc: "Typed snap name applies to the next point only", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-014, name: "Osnap cycling", desc: "Tab cycles snap candidates; tooltips identify each", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-015, name: "Osnap markers", desc: "Snap markers, magnet behavior, aperture size and tooltips", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-016, name: ORTHO, desc: "Constrain pointing to horizontal or vertical from last point", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-017, name: "Polar tracking", desc: "Increment angles plus additional angles; absolute and relative modes", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-018, name: "Object-snap tracking", desc: "Acquire snap points, then track alignment paths to intersections", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-019, name: FROM, desc: "Reference point offset: FROM base point plus relative displacement", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-020, name: "Dynamic input", desc: "On-cursor pointer input and dimension input fields with prompts", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-021, name: "Coordinate entry grammar", desc: "Absolute X,Y; relative @dx,dy; polar distance<angle entries", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-022, name: "Direct distance entry", desc: "Drag direction then type distance; works with ortho and polar", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-023, name: DUCS, desc: "Dynamic UCS: draw on faces using transient coordinate systems", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-024, name: "Grid and snap", desc: "Rectangular and isometric grids with snap spacing and adaptive display", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-025, name: UNITS, desc: "Drawing units: decimal, architectural, precision, angle direction", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-026, name: LIMITS, desc: "Drawing extent limits and grid bounds definition", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-027, name: MEASUREGEOM, desc: "Quick distance, radius, angle, area, volume inquiry with dynamic display", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-028, name: LIST, desc: "List entity data: geometry, layer, properties in text window", p: P1, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-PREC-029, name: ID, desc: "Display coordinates of a picked point", p: P1, dep: [], status: planned, test: "", note: ""}
