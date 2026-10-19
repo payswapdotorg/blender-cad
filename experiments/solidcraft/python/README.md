@@ -11,3 +11,12 @@ Drivers here run under the experiment environment(s):
   `experiments/solidcraft/`.
 
 Each driver writes its result JSON to `../results/` using the shared envelope.
+
+Drivers:
+
+- `w2_history_runner.py` (W2): feature-history scenarios through the release CLI.
+- `mcp_client_probe.py` (W3 lane-a): behavioural MCP PoC — drives `solidcraft-cli mcp`
+  (official release binary) over stdio JSON-RPC through a complete CAD chain with
+  analytic verification, parameter edit, schema-validation, filesystem-security and
+  transaction/rollback probes; runs the whole suite twice for reproducibility.
+  System Python 3.12, STDLIB ONLY (no venv needed).

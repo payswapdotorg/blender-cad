@@ -1,0 +1,60 @@
+{
+  "experiment": "w1-upstream-tests",
+  "issue_ref": "payswapdotorg/blender-cad#1",
+  "purpose": "upstream conformance evidence: run SolidCraft's own test suite for the sketch crate at the pinned SHA",
+  "upstream": {
+    "repo": "https://github.com/tangency-labs/solidcraft",
+    "sha": "3b4db52c10279251a068cfca5eb7447068bc28e7",
+    "version": "0.16.2",
+    "crate": "solidcraft-sketch"
+  },
+  "command": "cd /home/z/solidcraft-upstream && cargo test -p solidcraft-sketch -j 1",
+  "profile": "dev (upstream workspace dev profile: dependencies opt-level 2, debug-assertions off)",
+  "generated_utc": "2026-10-19T17:24:07Z",
+  "host": {
+    "cpus": 2,
+    "note": "sandbox container; cargo -j 1"
+  },
+  "suites": [
+    {
+      "suite": "unittests src/lib.rs",
+      "binary": "target/debug/deps/solidcraft_sketch-4effaa84b31d8013",
+      "result": "ok",
+      "passed": 226,
+      "failed": 0,
+      "ignored": 3,
+      "measured": 0,
+      "filtered_out": 0,
+      "finished_s": 79.32
+    },
+    {
+      "suite": "tests/cursor_target.rs",
+      "binary": "target/debug/deps/cursor_target-ad3c5d7034961ad2",
+      "result": "ok",
+      "passed": 9,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 0,
+      "finished_s": 0.02
+    },
+    {
+      "suite": "doc-tests solidcraft_sketch",
+      "binary": null,
+      "result": "ok",
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 0,
+      "finished_s": 0.0
+    }
+  ],
+  "summary": {
+    "suites": 3,
+    "passed": 235,
+    "failed": 0,
+    "ignored": 3,
+    "verdict": "all green"
+  }
+}
