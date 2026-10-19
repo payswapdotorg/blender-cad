@@ -41,7 +41,7 @@ import tempfile
 REPO_ROOT = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 )
-for _sub in ("document", "commands", "drafting", "interchange", "agent", "shell"):
+for _sub in ("document", "commands", "drafting", "drawings", "interchange", "agent", "shell"):
     _p = os.path.join(REPO_ROOT, "modules", _sub)
     if _p not in sys.path:
         sys.path.insert(0, _p)
@@ -156,6 +156,12 @@ def phase_main():
         "BCSHELL_OT_dxf_export", "BCSHELL_OT_doc_save_json",
         "BCSHELL_OT_doc_load_json", "BCSHELL_OT_undo",
         "BCSHELL_OT_redo", "BCSHELL_OT_doc_info",
+        # v2 panel operators (contract §7 — Layers / Layout-Space /
+        # Precision; additive check so the M1 driver also validates the
+        # v2 register surface when TL next runs it on the M2 build)
+        "BCSHELL_OT_layer_set_current", "BCSHELL_OT_layer_toggle",
+        "BCSHELL_OT_layout_activate", "BCSHELL_OT_layout_new",
+        "BCSHELL_OT_setting_toggle", "BCSHELL_OT_osnap_toggle",
     ]
     missing = [n for n in op_names if not hasattr(bpy.types, n)]
     check(phase, "all operators registered", not missing,
@@ -326,9 +332,12 @@ def phase_main():
           and os.path.isfile(blend_path), blend_path)
     text_block = bpy.data.texts.get("blender_cad_document.json")
     check(phase, "persistence text block in bpy.data.texts", text_block is not None)
-    check(phase, "text block content is bcdoc/1 JSON",
+    # bcdoc v2 (M2, contracts §2.7): the serialized schema literal is
+    # bcdoc/2 (load still accepts legacy bcdoc/1 — checked by the
+    # document suite, not here).
+    check(phase, "text block content is bcdoc/2 JSON",
           text_block is not None
-          and text_block.as_string().startswith('{"schema": "bcdoc/1"'))
+          and text_block.as_string().startswith('{"schema": "bcdoc/2"'))
     RESULTS["phases"][phase]["blend"] = blend_path
     RESULTS["phases"][phase]["document"] = signature
 

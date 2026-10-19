@@ -7,11 +7,21 @@ registered through ``bcdraft.register_all``), the session command history,
 the feedback message sink and the prompt/dynamic-overlay text the N-panel
 status line renders.
 
+The v2 document (M2, bcdoc/2) adds layers/blocks/layouts/settings/styles —
+:func:`panel_state` exposes them to the N-panel sections and
+:func:`resolve_cmdline_token` implements the v2 command-line behavior
+(empty token = repeat last, unknown token = suggestions when W-A's
+``Registry.suggestions`` has landed — feature-detected).
+
 Persistence (the M1 save/reopen gate): after EVERY committed transaction
 the document serializes into the ``bpy.data.texts`` block
-``"blender_cad_document.json"`` — native ``Ctrl+S`` therefore persists CAD
+``"blender_cad_document.json"`` (bcdoc/2; ``Document.load`` still upgrades
+legacy bcdoc/1 files) — native ``Ctrl+S`` therefore persists CAD
 documents inside the .blend. The ``load_post`` handler (handlers.py)
 restores the document on reopen; ``save_pre`` flushes right before saving.
+The on_change chain refreshes DIMENSION caches first
+(:func:`bcshell.sync.refresh_document_dims`, feature-detected bcdraw)
+then rebuilds the display (contract §7: dims stay current after MOVE).
 
 bpy is imported lazily inside the Blender-facing functions so this module
 imports under plain pytest for the pure status helpers.
@@ -40,6 +50,9 @@ _feedback: List[str] = []       # feedback ring (oldest first)
 prompt_text: str = "Command:"
 #: dynamic overlay text (distance < angle while the mouse moves)
 dynamic_text: str = ""
+#: reentrancy guard for the on_change chain (the bcdraw dim regen mutates
+#: document state; a nested on_change must not re-enter flush+sync)
+_handling_change: bool = False
 
 
 # ---------------------------------------------------------------------------
@@ -53,19 +66,32 @@ def _new_document():
 
 
 def _on_doc_change(event) -> None:
-    """Fires after every committed transaction: persist + resync display."""
-    if _doc is None:
-        return
-    try:
-        flush()
-    except Exception:
-        pass  # persistence must never break the command that committed
-    try:
-        from . import sync
+    """Fires after every committed transaction: persist, refresh dim
+    caches (bcdraw, feature-detected — contract §7), resync display.
 
-        sync.sync_display(_doc)
-    except Exception:
-        pass  # display is derived data — regenerate later (doc §7 rule 3)
+    Reentrancy-guarded: the bcdraw regen itself mutates document state
+    (stored dim measurements); the resulting nested on_change is absorbed
+    so flush+regen+sync run exactly ONCE per committed transaction."""
+    global _handling_change
+    if _doc is None or _handling_change:
+        return
+    _handling_change = True
+    try:
+        try:
+            flush()
+        except Exception:
+            pass  # persistence must never break the command that committed
+        try:
+            from . import sync
+
+            # dims first (contract §7: refresh_document before sync so the
+            # display shows current measurements), then the rebuild
+            sync.refresh_document_dims(_doc)
+            sync.sync_display(_doc)
+        except Exception:
+            pass  # display is derived data — regenerate later (doc §7 rule 3)
+    finally:
+        _handling_change = False
 
 
 def _subscribe(doc) -> None:
@@ -202,13 +228,22 @@ def ensure_session() -> None:
 
 def get_registry():
     """The session command registry: bcdraft commands registered through
-    ``bcdraft.register_all`` — the SAME interface the UI drives (§5)."""
+    ``bcdraft.register_all`` — plus the M2 annotation/layout commands
+    through ``bcdraw.register_all`` (feature-detected: present since W-C
+    landed, absent cleanly before) — the SAME interface the UI drives (§5
+    + contracts §7: the command line exposes DIMLINEAR/TEXT/LAYOUT/…)."""
     global _registry
     if _registry is None:
         import bcdraft
         from bccmd import Registry
 
         _registry = bcdraft.register_all(Registry())
+        try:
+            import bcdraw  # annotations + layouts (contracts §5)
+
+            bcdraw.register_all(_registry)
+        except ImportError:
+            pass  # feature-detected: bcdraw absent pre-integration
     return _registry
 
 
@@ -256,6 +291,10 @@ def run_scripted(command_name, inputs=None):
     importable and testable WITHOUT Blender (TP-CAT-01) — it is the exact
     ``Registry.run_command`` + ``ScriptedProvider`` machinery the modal
     operator's background fallback drives, never a reimplementation.
+
+    Mouse-sourced picks use :func:`mouse_point_input` so scripted sessions
+    exercise the SAME precision-resolution chain the modal operator feeds
+    (typed strings stay typed — AutoCAD rule, contracts §3).
     """
     from bccmd import ScriptedProvider
 
@@ -263,6 +302,87 @@ def run_scripted(command_name, inputs=None):
     registry = get_registry()
     provider = ScriptedProvider(ctx, list(inputs or []))
     return registry.run_command(ctx, command_name, provider=provider)
+
+
+# ---------------------------------------------------------------------------
+# v2 command-line resolution (pure; ops.BCSHELL_OT_cmdline dispatches on it)
+# ---------------------------------------------------------------------------
+
+#: how many autocomplete suggestions the cmdline shows (contract §7: up to 5)
+SUGGESTION_LIMIT = 5
+
+
+def resolve_cmdline_token(token: str) -> Dict:
+    """Pure resolution of one command-line entry (v2 behavior).
+
+    Returns an action dict the cmdline operator dispatches on:
+
+    * ``{"action": "run", "command", "preset", "message"}`` — run a
+      resolved command (message = the "Command: NAME" echo);
+    * ``{"action": "repeat", "command", "message"}`` — EMPTY token with a
+      known last command: repeat ``History.last_command()`` (ux-spec §3.2;
+      message = "Repeat: NAME");
+    * ``{"action": "message", "message"}`` — EMPTY token without history
+      (the M1 "(empty)" behavior) or an unknown token: the message carries
+      "did you mean: ..." suggestions when the registry exposes W-A's
+      ``Registry.suggestions(prefix, limit)`` (feature-detected; without
+      it the message is the M1 unknown-command text).
+    """
+    stripped = str(token).strip()
+    if not stripped:
+        last = get_history().last_command()
+        if last is None:
+            return {"action": "message", "message": "Command: (empty)"}
+        return {"action": "repeat", "command": last,
+                "message": f"Repeat: {last}"}
+    parts = stripped.split(None, 1)
+    registry = get_registry()
+    spec = registry.lookup(parts[0])
+    if spec is None:
+        suggest = getattr(registry, "suggestions", None)
+        names: List = []
+        if callable(suggest):
+            try:
+                names = [str(name) for name, _help
+                        in suggest(parts[0], SUGGESTION_LIMIT)]
+            except TypeError:  # pre-limit signature fallback
+                names = [str(name) for name, _help in suggest(parts[0])]
+            names = names[:SUGGESTION_LIMIT]
+        if names:
+            message = (f"Unknown command {parts[0]!r} — did you mean: "
+                       + ", ".join(names) + "?")
+        else:
+            message = f"Unknown command: {parts[0]!r}"
+        return {"action": "message", "message": message}
+    preset = parts[1] if len(parts) > 1 else ""
+    return {"action": "run", "command": spec.name, "preset": preset,
+            "message": f"Command: {spec.name}"}
+
+
+# ---------------------------------------------------------------------------
+# mouse-sourced input construction (W-A §3 feature-detected glue)
+# ---------------------------------------------------------------------------
+
+def mouse_point_input(x: float, y: float, z: float = 0.0):
+    """A point :class:`bccmd.InputValue` marked as MOUSE-sourced.
+
+    The pinned v2 input model (contracts §3) adds
+    ``InputValue.source: str = "typed"`` with "mouse" meaning a viewport
+    pick (mouse input ALWAYS passes through osnap/ortho/grid resolution;
+    typed input NEVER does). This helper constructs with the pinned
+    ``source`` kwarg when ``bccmd.input.point_input`` supports it and falls
+    back to plain construction + attribute assignment otherwise — BOTH
+    paths yield ``value.source == "mouse"`` so the glue is live now and
+    activates W-A's resolution chain the moment it lands. Used by the modal
+    operator's click path AND scripted precision tests."""
+    from bccmd import point_input
+
+    try:
+        return point_input(x, y, z, source="mouse")
+    except TypeError:
+        value = point_input(x, y, z)
+        value.source = "mouse"
+        return value
 
 
 def set_prompt(text: str, dynamic: str = "") -> None:
@@ -291,3 +411,71 @@ def status() -> Dict:
             redo_depth=doc.redo_depth(),
         )
     return info
+
+
+# ---------------------------------------------------------------------------
+# v2 panel state (Layers / Layout-Space / Precision sections — pure)
+# ---------------------------------------------------------------------------
+
+def panel_state() -> Dict:
+    """Snapshot for the v2 N-panel sections (contract §7). Pure — the
+    panel draw reads this, the headless tests pin its shape:
+
+    * ``layers``: ``[{name, color, on, frozen, locked, plot, current}]`` in
+      table order ("0" first); the UI caps the visible list;
+    * ``layouts``: layout names in table order; ``current_space`` /
+      ``active_layout`` are the session space pointers;
+    * ``osmode``: the running OSMODE bitmask (the Precision checkboxes
+      toggle bits 1/2/4/16/32/128/1024 — ENDPOINT..TANGENT);
+    * ``settings``: the bool-style toggles {ORTHOMODE, SNAPMODE,
+      GRIDMODE, DYNMODE} the panel maps to its operator buttons.
+    """
+    doc = _doc
+    state = {
+        "has_document": doc is not None,
+        "current_layer": None,
+        "layers": [],
+        "layouts": [],
+        "current_space": None,
+        "active_layout": None,
+        "osmode": 0,
+        "settings": {},
+    }
+    if doc is None:
+        return state
+    try:
+        state["current_layer"] = doc.current_layer
+    except Exception:
+        pass
+    try:
+        current = doc.current_layer
+        state["layers"] = [
+            {
+                "name": record.name,
+                "color": record.color,
+                "on": bool(record.on),
+                "frozen": bool(record.frozen),
+                "locked": bool(record.locked),
+                "plot": bool(record.plot),
+                "current": record.name == current,
+            }
+            for record in doc.layers.records()
+        ]
+    except Exception:
+        pass
+    try:
+        state["layouts"] = list(doc.layouts())
+    except Exception:
+        pass
+    state["current_space"] = getattr(doc, "current_space", None)
+    state["active_layout"] = getattr(doc, "active_layout", None)
+    try:
+        state["osmode"] = int(doc.settings.get("OSMODE"))
+    except Exception:
+        pass
+    for name in ("ORTHOMODE", "SNAPMODE", "GRIDMODE", "DYNMODE"):
+        try:
+            state["settings"][name] = int(doc.settings.get(name))
+        except Exception:
+            pass
+    return state

@@ -4,7 +4,7 @@
 schema_version = "1.0.0"
 
 id = "blender_cad"
-version = "0.1.0"
+version = "0.2.0"
 name = "Blender CAD"
 tagline = "AutoCAD-familiar CAD workspace inside Blender"
 maintainer = "Blender CAD project (payswapdotorg)"
@@ -17,7 +17,7 @@ license = ["SPDX:GPL-3.0-or-later"]
 tags = ["Add Mesh", "Import-Export", "User Interface"]
 
 # Minimum Blender version supported by this extension build. The M1 runtime
-# test build is Blender 5.2.2 LTS (recorded in release-manifests/manifest-0.2.0-m1.json).
+# test build is Blender 5.2.2 LTS (recorded in release-manifests/manifest-0.3.0-m2.json).
 blender_version_min = "5.2.0"
 
 [permissions]

@@ -13,7 +13,8 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[3]
 MODULES_DIR = REPO_ROOT / "modules"
 
-for _sub in ("shell", "commands", "drafting", "document", "interchange", "agent"):
+for _sub in ("shell", "commands", "drafting", "document", "interchange",
+             "agent", "drawings"):
     _dir = str(MODULES_DIR / _sub)
     if _dir not in sys.path:
         sys.path.insert(0, _dir)

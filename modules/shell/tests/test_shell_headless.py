@@ -26,8 +26,11 @@ import bcshell  # noqa: F401  (must import without bpy)
 PACKAGE_DIR = Path(bcshell.__file__).resolve().parent
 
 #: modules that must stay importable (and bpy-free) under plain pytest
+#: (v2 additions: colors.py — the ACI palette, panel_ops.py — the pure
+#: mutation logic behind the panel operators)
 PURE_MODULES = ("bcshell", "bcshell.pick", "bcshell.session",
-               "bcshell.sync", "bcshell.workspace", "bcshell.keymaps")
+                "bcshell.sync", "bcshell.workspace", "bcshell.keymaps",
+                "bcshell.colors", "bcshell.panel_ops")
 
 #: modules that legitimately import bpy at module level (Blender GUI side)
 BPY_MODULES = ("bcshell.ops", "bcshell.ui", "bcshell.handlers")
@@ -45,7 +48,8 @@ def test_pure_modules_have_no_module_level_bpy_import():
     statements only — function bodies are the lazy-by-design discipline)."""
     offenders = []
     for rel in ("__init__.py", "pick.py", "session.py", "sync.py",
-                "workspace.py", "keymaps.py"):
+                "workspace.py", "keymaps.py", "colors.py",
+                "panel_ops.py"):
         path = PACKAGE_DIR / rel
         tree = ast.parse(path.read_text(encoding="utf-8"))
         for node in tree.body:  # top-level statements ONLY

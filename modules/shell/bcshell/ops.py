@@ -6,9 +6,12 @@ Two ways drive the SAME command machinery (contract §4/§6.2):
 * :class:`BCSHELL_OT_command_run` — the MODAL viewport operator. It holds a
   ``bccmd.StepDriver`` (the step-by-step driver of the same steps-generator
   the blocking Runner executes), collects one InputValue per event (mouse
-  clicks → points on z=0 via pick.py, typed text → ``bccmd.input.parse``),
-  draws the rubberband + dynamic distance/angle overlay, and finishes when
-  the CommandResult is produced. Esc → ``Cancelled`` → clean finish.
+  clicks → points on z=0 via pick.py tagged ``source="mouse"`` — the v2
+  precision engine consumes that flag; typed text →
+  ``bccmd.input.parse``), records ``ctx.pointer`` on every mouse move (the
+  DDE/ortho direction data source, contracts §3/§7), draws the rubberband +
+  dynamic distance/angle overlay, and finishes when the CommandResult is
+  produced. Esc → ``Cancelled`` → clean finish.
 * :func:`run_scripted` — the headless/acceptance path:
   ``Registry.run_command(ctx, name, provider=ScriptedProvider(ctx, inputs))``
   — the identical registry + prompt-loop + StepDriver machinery, just fed by
@@ -30,7 +33,7 @@ import os
 from typing import List, Optional
 
 import bpy
-from bpy.props import StringProperty
+from bpy.props import EnumProperty, IntProperty, StringProperty
 
 from bccmd import (
     ACTIVE,
@@ -41,14 +44,13 @@ from bccmd import (
     ScriptedProvider,
     StepDriver,
     parse as parse_input,
-    point_input,
     selection_input,
 )
 from bccmd.input import InputParseError
 
-from . import pick, session, workspace
+from . import panel_ops, pick, session, workspace
 from .session import run_scripted  # re-export: the scripted path (bpy-free, in session.py)
-from .sync import COLLECTION_NAME, ID_PROP
+from .sync import ID_PROP
 
 
 # ---------------------------------------------------------------------------
@@ -236,6 +238,12 @@ class BCSHELL_OT_command_run(bpy.types.Operator):
         if request is not None and request.kind in ("point", "distance", "angle"):
             cursor = pick.point_from_event(event, context)
             if cursor is not None:
+                # v2 precision data source (contracts §3/§7): DDE + ortho
+                # direction read ctx.pointer — always current on mousemove.
+                try:
+                    self._ctx.pointer = cursor
+                except AttributeError:  # slotted context (defensive) — no data
+                    pass
                 anchor = self._ctx.last_point
                 if self._rubber is not None:
                     self._rubber.update(cursor.to_tuple())
@@ -264,12 +272,15 @@ class BCSHELL_OT_command_run(bpy.types.Operator):
                 "Enter to finish"
             )
             return {"RUNNING_MODAL"}
-        # point / distance / angle prompts: a click gives a point on z=0
+        # point / distance / angle prompts: a click gives a MOUSE-sourced
+        # point on z=0 (contracts §3: source="mouse" routes it through the
+        # osnap/ortho/grid resolution chain in bcdraft._common.ask_point —
+        # W-A's hook, feature-detected via session.mouse_point_input)
         point = pick.point_from_event(event, context)
         if point is None:
             session.feedback_sink("Cursor is off the drawing plane (z=0)")
             return {"RUNNING_MODAL"}
-        return self._push(point_input(point.x, point.y, point.z))
+        return self._push(session.mouse_point_input(point.x, point.y, point.z))
 
     def _on_enter(self, context):
         request = self._driver.current_request
@@ -395,17 +406,17 @@ class BCSHELL_OT_command_run(bpy.types.Operator):
         # nearest display object by planar distance (v0 pickbox: 0.5 units)
         best = None
         best_dist = 0.5
-        collection = bpy.data.collections.get(COLLECTION_NAME)
-        if collection is None:
-            return None
-        for obj in collection.objects:
-            entity_id = obj.get(ID_PROP)
-            if not entity_id:
-                continue
-            for co in _object_points(obj):
-                dist = ((co[0] - hit[0]) ** 2 + (co[1] - hit[1]) ** 2) ** 0.5
-                if dist < best_dist:
-                    best, best_dist = entity_id, dist
+        from . import sync
+
+        for collection in sync.all_space_collections():
+            for obj in collection.objects:
+                entity_id = obj.get(ID_PROP)
+                if not entity_id:
+                    continue
+                for co in _object_points(obj):
+                    dist = ((co[0] - hit[0]) ** 2 + (co[1] - hit[1]) ** 2) ** 0.5
+                    if dist < best_dist:
+                        best, best_dist = entity_id, dist
         return str(best) if best is not None else None
 
     def _prompt_line(self):
@@ -442,7 +453,13 @@ _DONE = object()  # sentinel: command already completed
 # ---------------------------------------------------------------------------
 
 class BCSHELL_OT_cmdline(bpy.types.Operator):
-    """Type a command (name + optional space-separated inputs)"""
+    """Type a command (name + optional space-separated inputs).
+
+    v2 behavior (contracts §3/§7): an EMPTY token repeats the last command
+    (History.last_command — "Repeat: NAME"); an unknown token reports
+    "did you mean:" suggestions when the registry exposes W-A's
+    ``Registry.suggestions`` (feature-detected — M1 keeps the plain
+    unknown-command message until then)."""
 
     bl_idname = "bcshell.cmdline"
     bl_label = "Command Line"
@@ -451,7 +468,7 @@ class BCSHELL_OT_cmdline(bpy.types.Operator):
     token: StringProperty(
         name="Command",
         description="Command name or alias, optionally followed by inputs "
-        "(e.g. 'line 0,0 10,10')",
+        "(e.g. 'line 0,0 10,10'); empty repeats the last command",
         default="",
     )
 
@@ -461,23 +478,19 @@ class BCSHELL_OT_cmdline(bpy.types.Operator):
         return self.execute(context)
 
     def execute(self, context):
-        registry = session.get_registry()
-        token = self.token.strip()
-        if not token:
-            session.feedback_sink("Command: (empty)")
-            return {"CANCELLED"}
-        parts = token.split(None, 1)
-        spec = registry.lookup(parts[0])
-        if spec is None:
-            msg = f"Unknown command: {parts[0]!r}"
-            session.feedback_sink(msg)
-            self.report({"ERROR"}, msg)
-            return {"CANCELLED"}
-        preset = parts[1] if len(parts) > 1 else ""
-        session.feedback_sink(f"Command: {spec.name}")
-        return bpy.ops.bcshell.command_run(
-            "INVOKE_DEFAULT", command=spec.name, preset=preset
-        )
+        resolution = session.resolve_cmdline_token(self.token)
+        session.feedback_sink(resolution["message"])
+        if resolution["action"] == "run":
+            return bpy.ops.bcshell.command_run(
+                "INVOKE_DEFAULT", command=resolution["command"],
+                preset=resolution["preset"],
+            )
+        if resolution["action"] == "repeat":
+            return bpy.ops.bcshell.command_run(
+                "INVOKE_DEFAULT", command=resolution["command"], preset=""
+            )
+        self.report({"ERROR"}, resolution["message"])
+        return {"CANCELLED"}
 
 
 # ---------------------------------------------------------------------------
@@ -562,7 +575,7 @@ class BCSHELL_OT_dxf_export(bpy.types.Operator):
 # ---------------------------------------------------------------------------
 
 class BCSHELL_OT_doc_save_json(bpy.types.Operator):
-    """Save the CAD document as bcdoc/1 JSON"""
+    """Save the CAD document as bcdoc/2 JSON"""
 
     bl_idname = "bcshell.doc_save_json"
     bl_label = "Save Document JSON"
@@ -591,7 +604,7 @@ class BCSHELL_OT_doc_save_json(bpy.types.Operator):
 
 
 class BCSHELL_OT_doc_load_json(bpy.types.Operator):
-    """Load a bcdoc/1 JSON document as the active document"""
+    """Load a bcdoc/2 (or legacy bcdoc/1) JSON document as the active document"""
 
     bl_idname = "bcshell.doc_load_json"
     bl_label = "Load Document JSON"
@@ -615,7 +628,7 @@ class BCSHELL_OT_doc_load_json(bpy.types.Operator):
             self.report({"ERROR"}, f"Load failed: {exc}")
             return {"CANCELLED"}
         except Exception as exc:
-            self.report({"ERROR"}, f"Not a valid bcdoc/1 document: {exc}")
+            self.report({"ERROR"}, f"Not a valid bcdoc document: {exc}")
             return {"CANCELLED"}
         session.set_active(doc)
         message = f"Loaded {doc.name} (v{doc.doc_version}, {len(doc.entities())} entities)"
@@ -684,6 +697,180 @@ class BCSHELL_OT_doc_info(bpy.types.Operator):
 
 
 # ---------------------------------------------------------------------------
+# v2 panel operators — Layers / Layout-Space / Precision (contract §7).
+# Every control in the N-panel maps to one of these; the mutation logic
+# lives in bcshell.panel_ops (pure, headless-tested) and each operator
+# adds: session feedback + Blender report + display resync.
+# ---------------------------------------------------------------------------
+
+class BCSHELL_OT_layer_set_current(bpy.types.Operator):
+    """Set the current layer (CLAYER) from the panel's layer list"""
+
+    bl_idname = "bcshell.layer_set_current"
+    bl_label = "Set Current Layer"
+    bl_options = {"REGISTER"}
+
+    name: StringProperty(name="Layer", default="0")
+
+    def execute(self, context):
+        doc = session.active_document()
+        ok, message = panel_ops.set_current_layer(doc, self.name)
+        session.feedback_sink(message)
+        if not ok:
+            self.report({"ERROR"}, message)
+            return {"CANCELLED"}
+        self.report({"INFO"}, message)
+        if context.area is not None:
+            context.area.tag_redraw()
+        return {"FINISHED"}
+
+
+class BCSHELL_OT_layer_toggle(bpy.types.Operator):
+    """Toggle one layer property (on/frozen/locked/plot) — journaled + undoable"""
+
+    bl_idname = "bcshell.layer_toggle"
+    bl_label = "Toggle Layer Property"
+    bl_options = {"REGISTER"}
+
+    name: StringProperty(name="Layer", default="0")
+    prop: EnumProperty(
+        name="Property",
+        items=(
+            ("on", "On", "Layer visibility (off = hidden but hit-testable)"),
+            ("frozen", "Frozen", "Frozen layers are hidden + excluded from "
+             "selection and osnap"),
+            ("locked", "Locked", "Locked layers are visible but not "
+             "modifiable"),
+            ("plot", "Plot", "Include the layer when plotting/exporting"),
+        ),
+        default="on",
+    )
+
+    def execute(self, context):
+        doc = session.active_document()
+        record = doc.layers.get(self.name)
+        if record is None:
+            message = f"Layer not found: {self.name}"
+            session.feedback_sink(message)
+            self.report({"ERROR"}, message)
+            return {"CANCELLED"}
+        value = not bool(getattr(record, self.prop))
+        ok, message = panel_ops.toggle_layer_prop(doc, self.name,
+                                                    self.prop, value)
+        session.feedback_sink(message)
+        if not ok:
+            self.report({"ERROR"}, message)
+            return {"CANCELLED"}
+        from . import sync
+
+        sync.sync_display(doc)
+        self.report({"INFO"}, message)
+        if context.area is not None:
+            context.area.tag_redraw()
+        return {"FINISHED"}
+
+
+class BCSHELL_OT_layout_activate(bpy.types.Operator):
+    """Activate a space (MODEL or a layout) from the panel's layout list"""
+
+    bl_idname = "bcshell.layout_activate"
+    bl_label = "Activate Space"
+    bl_options = {"REGISTER"}
+
+    name: StringProperty(name="Space", default="MODEL")
+
+    def execute(self, context):
+        doc = session.active_document()
+        ok, message = panel_ops.activate_space(doc, self.name)
+        session.feedback_sink(message)
+        if not ok:
+            self.report({"ERROR"}, message)
+            return {"CANCELLED"}
+        from . import sync
+
+        sync.sync_display(doc)
+        self.report({"INFO"}, message)
+        if context.area is not None:
+            context.area.tag_redraw()
+        return {"FINISHED"}
+
+
+class BCSHELL_OT_layout_new(bpy.types.Operator):
+    """Create a new paper-space layout and activate it"""
+
+    bl_idname = "bcshell.layout_new"
+    bl_label = "New Layout"
+    bl_options = {"REGISTER"}
+
+    name: StringProperty(name="Layout", default="Layout1")
+
+    def invoke(self, context, event):
+        if context.window is not None:
+            return context.window_manager.invoke_props_dialog(self)
+        return self.execute(context)
+
+    def execute(self, context):
+        doc = session.active_document()
+        ok, message = panel_ops.new_layout(doc, self.name)
+        session.feedback_sink(message)
+        if not ok:
+            self.report({"ERROR"}, message)
+            return {"CANCELLED"}
+        from . import sync
+
+        sync.sync_display(doc)
+        self.report({"INFO"}, message)
+        if context.area is not None:
+            context.area.tag_redraw()
+        return {"FINISHED"}
+
+
+class BCSHELL_OT_setting_toggle(bpy.types.Operator):
+    """Toggle a bool-style setting (ORTHO/GRID/SNAP/DYN) — persisted, not journaled"""
+
+    bl_idname = "bcshell.setting_toggle"
+    bl_label = "Toggle Setting"
+    bl_options = {"REGISTER"}
+
+    name: StringProperty(name="Setting", default="ORTHOMODE")
+
+    def execute(self, context):
+        doc = session.active_document()
+        ok, message = panel_ops.toggle_setting(doc, self.name)
+        session.feedback_sink(message)
+        if not ok:
+            self.report({"ERROR"}, message)
+            return {"CANCELLED"}
+        self.report({"INFO"}, message)
+        if context.area is not None:
+            context.area.tag_redraw()
+        return {"FINISHED"}
+
+
+class BCSHELL_OT_osnap_toggle(bpy.types.Operator):
+    """Toggle one running osnap mode (OSMODE bit XOR)"""
+
+    bl_idname = "bcshell.osnap_toggle"
+    bl_label = "Toggle Osnap Mode"
+    bl_options = {"REGISTER"}
+
+    bit: IntProperty(name="OSMODE bit", default=1, min=1)
+    mode: StringProperty(name="Mode", default="")
+
+    def execute(self, context):
+        doc = session.active_document()
+        ok, message = panel_ops.toggle_osnap_bit(doc, self.bit, self.mode)
+        session.feedback_sink(message)
+        if not ok:
+            self.report({"ERROR"}, message)
+            return {"CANCELLED"}
+        self.report({"INFO"}, message)
+        if context.area is not None:
+            context.area.tag_redraw()
+        return {"FINISHED"}
+
+
+# ---------------------------------------------------------------------------
 # class registration table
 # ---------------------------------------------------------------------------
 
@@ -698,4 +885,10 @@ classes = (
     BCSHELL_OT_undo,
     BCSHELL_OT_redo,
     BCSHELL_OT_doc_info,
+    BCSHELL_OT_layer_set_current,
+    BCSHELL_OT_layer_toggle,
+    BCSHELL_OT_layout_activate,
+    BCSHELL_OT_layout_new,
+    BCSHELL_OT_setting_toggle,
+    BCSHELL_OT_osnap_toggle,
 )

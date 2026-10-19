@@ -3,8 +3,9 @@
 #
 # Responsibilities (and nothing else):
 #   1. Top-level package bootstrap: insert the extension directory into sys.path
-#      so the module packages (bcdoc, bccmd, bcdraft, bcshell, bcio, bcagent)
-#      resolve as top-level imports (same model as the repo-root conftest.py).
+#      so the module packages (bcdoc, bccmd, bcdraft, bcdraw, bcshell, bcio,
+#      bcagent) resolve as top-level imports (same model as the repo-root
+#      conftest.py).
 #   2. Register/unregister the CAD shell (bcshell.register / bcshell.unregister).
 #   3. Keep load side-effect-light and unload CLEAN (TP-CAT-06).
 #
