@@ -30,7 +30,7 @@ jobs:
         run: python -m pytest modules tests -q
 
       - name: Byte-compile scripts and packages
-        run: python -m compileall scripts modules/document/bcdoc modules/interchange/bcio modules/commands/bccmd modules/drafting/bcdraft modules/agent/bcagent -q
+        run: python -m compileall scripts modules/document/bcdoc modules/interchange/bcio modules/commands/bccmd modules/drafting/bcdraft modules/drawings/bcdraw modules/agent/bcagent -q
 
       - name: Build extension package (assembly check)
         run: |

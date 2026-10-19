@@ -89,6 +89,16 @@ graph LR
 
 ## 5. M2 — Drafting core parity
 
+> **Status (2026-10-19): M2 EXITED per the operator-directed acceptance
+> scope** (precision input, layers/blocks, annotations/dimensions, layouts)
+> plus the analytically implementable drafting-core P0 subset. The kernel-bound
+> remainder of this section's original deliverables (TRIM/EXTEND/FILLET/
+> CHAMFER/PEDIT/HATCH/SPLINE, xrefs, PDF publish, grip cycling) is explicitly
+> rescheduled with evidence — see [ADR-0008](adr/0008-m2-scope-rebaseline.md)
+> and [completion-graph-m2.md](completion-graph-m2.md) for per-item status,
+> the honest not-done list and the battery evidence (59/59 in-Blender M2
+> acceptance, 30/30 M1 regression, TP-CAT-06 zero regressions, 1127 pytest).
+
 - **Objective:** osnap/ortho/polar/tracking/dynamic input; layers/blocks; dims
   & annotations; layouts + PDF publish; xrefs (DXF).
 - **Entry criteria:** M1 exit; P0 inventory entries for the drafting areas

@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "product": "blender-cad",
+  "version": "0.3.0-m2",
+  "created": "2026-10-19",
+  "status": "m2-drafting-core",
+  "components": {
+    "blender": {
+      "role": "host application (fork)",
+      "upstream": "blender/blender",
+      "upstream_ref": "bf200615b83252a7be951aed5593d068f0f2438a",
+      "upstream_branch": "main",
+      "fork": "payswapdotorg/blender",
+      "fork_branch": "product/main",
+      "fork_main_ref": "bf200615b83252a7be951aed5593d068f0f2438a",
+      "patch_series": "patches/blender",
+      "patch_series_state": "empty at M2",
+      "runtime_test_build": {
+        "version": "5.2.2 LTS",
+        "platform": "linux-x64",
+        "binary": "blender-5.2.2-linux-x64.tar.xz",
+        "url": "https://download.blender.org/release/Blender5.2/blender-5.2.2-linux-x64.tar.xz",
+        "sha256": "84098912789dc450e95697c4184fb8a90acbe5111c2ba4aede3fecb57806a168",
+        "size_bytes": 383295504,
+        "bpy_version": "5.2.2 LTS",
+        "bundled_python": "3.13.13",
+        "tested_with": "M2 acceptance battery (modules/testing/blender/acceptance_m2_result.json 59/59), M1 acceptance regression (acceptance_m1_result.json 30/30), TP-CAT-06 (modules/testing/blender-regression/result-m2.json)"
+      },
+      "license": "GPL-2.0-or-later (verify: blender.org/license)"
+    },
+    "zcode_runtime": {
+      "role": "agent runtime (tracked upstream dependency; fork retained as patch surface)",
+      "upstream": "zai-org/ZCode",
+      "upstream_ref": "0a1fc56d279fd1001f78387bd81aec1c26767411",
+      "upstream_branch": "main",
+      "upstream_version": "3.16.1",
+      "fork": "payswapdotorg/ZCode",
+      "fork_branch": "main",
+      "fork_main_ref": "0a1fc56d279fd1001f78387bd81aec1c26767411",
+      "mirror_tag": "upstream-pin-0a1fc56",
+      "patch_branch": "cad-adaptation",
+      "patch_branch_ref": "0a1fc56d279fd1001f78387bd81aec1c26767411",
+      "legacy_archive_branch": "gen/archive",
+      "legacy_archive_ref": "c3cc34f1d01a059517f13d3dea962c48e49fe309",
+      "pin_policy": "pinned release/commit; audited before adoption; re-pin requires manifest version bump",
+      "m1_spike": {
+        "evidence": "docs/20-agent/zcode-runtime-spike-m1.md",
+        "result": "pinned tree installs (pnpm --filter @zcode/server-cli... --ignore-scripts), builds (tsup), and its CLI entry executes (--version -> 3.16.1); sidecar entry-point candidates confirmed: packages/zcode-server-cli + packages/rpc seam + packages/server/src/entry-stdio.ts",
+        "sidecar_status": "not shipped at M2 \u2014 M5 deliverable per ADR-0004"
+      },
+      "license": "Apache-2.0"
+    },
+    "cad_extension": {
+      "role": "canonical source of truth (this repo)",
+      "repo": "payswapdotorg/blender-cad",
+      "commit": "self-at-release",
+      "extension_version": "0.2.0",
+      "extension_package": "dist/blender_cad-0.2.0.zip (built by scripts/build_extension.py; 67 files)",
+      "blender_version_min": "5.2.0",
+      "m2_scope": {
+        "operator_directive_areas": [
+          "A precision input",
+          "B layers and blocks",
+          "C annotations and dimensions",
+          "D layouts"
+        ],
+        "binding_spec": "docs/00-architecture/m2-module-contracts.md",
+        "new_module_package": "bcdraw (modules/drawings) \u2014 11 annotation/layout commands",
+        "document_model": "bcdoc/2 (loads bcdoc/1)",
+        "command_count": "48 registered (9 at M1)",
+        "rebaseline": "docs/30-process/adr/0008-m2-scope-rebaseline.md"
+      }
+    }
+  },
+  "dependencies": [
+    {
+      "name": "OCCT",
+      "license": "LGPL-2.1-with-exception",
+      "role": "precise B-rep and analytic geometry kernel",
+      "module": "kernel",
+      "status": "candidate"
+    },
+    {
+      "name": "OCP",
+      "license": "Apache-2.0",
+      "role": "OCCT Python bindings candidate; M1 evaluation: v8.0.1.1.0 wheels available for cp311-cp314 incl. Blender 5.2's Python 3.13 \u2014 leading candidate confirmed, packaging gate remains for M3 (docs/00-architecture/kernel-bindings-evaluation-m1.md)",
+      "module": "kernel",
+      "status": "candidate"
+    },
+    {
+      "name": "PlaneGCS",
+      "license": "LGPL (verify)",
+      "role": "2D geometric constraint solver",
+      "module": "parametric",
+      "status": "candidate"
+    },
+    {
+      "name": "ezdxf",
+      "license": "MIT",
+      "role": "DXF read/write engine (conformance oracle + in-process bridge for the full M2 entity set incl. blocks, layouts/paper space, viewports, dimensions, header sysvars; in-product fallback: pure-Python R12 minimal engine with loss ledger)",
+      "module": "interchange",
+      "status": "adopted",
+      "tested_versions": [
+        "1.4.3 (dev/CI python 3.12)",
+        "1.4.5 (Blender 5.2.2 bundled python 3.13)"
+      ]
+    },
+    {
+      "name": "LibreDWG",
+      "license": "GPL-3.0",
+      "role": "DWG read/write engine",
+      "module": "interchange",
+      "status": "candidate"
+    },
+    {
+      "name": "IfcOpenShell",
+      "license": "LGPL-3.0-or-later (verify)",
+      "role": "IFC BIM library",
+      "module": "bim",
+      "status": "candidate"
+    },
+    {
+      "name": "Bonsai (BlenderBIM)",
+      "license": "(verify)",
+      "role": "BIM toolset integration",
+      "module": "bim",
+      "status": "candidate"
+    },
+    {
+      "name": "GDAL",
+      "license": "MIT-style (verify)",
+      "role": "GIS and raster geospatial formats",
+      "module": "toolsets",
+      "status": "candidate"
+    },
+    {
+      "name": "PDAL",
+      "license": "BSD-style (verify)",
+      "role": "point cloud processing",
+      "module": "toolsets",
+      "status": "candidate"
+    },
+    {
+      "name": "shapely",
+      "license": "BSD-3-Clause",
+      "role": "GIS planar geometry",
+      "module": "toolsets",
+      "status": "candidate"
+    },
+    {
+      "name": "zcode-runtime",
+      "license": "Apache-2.0",
+      "role": "agent execution runtime (zai-org/ZCode @ 0a1fc56, pinned; M1 spike green; in-process cad.* adapter v0 at capabilities 1.1-m2; sidecar ships at M5 per ADR-0004)",
+      "module": "agent",
+      "status": "candidate"
+    }
+  ],
+  "evidence": {
+    "acceptance_m2": "modules/testing/blender/acceptance_m2_result.json (59/59 checks, Blender 5.2.2 LTS, extension 0.2.0 installed via blender --command extension install-file, enabled at startup)",
+    "acceptance_m1_regression": "modules/testing/blender/acceptance_m1_result.json (30/30 re-run on the M2 build)",
+    "tp_cat_06": "modules/testing/blender-regression/result-m2.json (7/7 native ops stock + loaded, no regressions, clean unload, startup delta +0.00s)",
+    "shell_driver": "modules/shell/tests/blender_driver_result.json (main 44/44 + reopen 53/53 on the M2 build)",
+    "pytest_battery": "1127 passed across modules/ + tests/ (TP-CAT-00/01/02/03/04/07 sections)",
+    "interchange_blender_probe": "full M2 universe export->audit-clean->import->compare OK under Blender's ezdxf 1.4.5 (W-B2-fix worklog; /home/z/probe/blender_verify_result.json)",
+    "scope_rebaseline": "docs/30-process/adr/0008-m2-scope-rebaseline.md",
+    "inventory_honesty": "55 verified / 25 partial / 481 planned of 561 entries; every flip carries a TP id"
+  },
+  "notes": "M2 drafting-core manifest. Pins unchanged from 0.2.0-m1 (blender bf200615, zcode 0a1fc56). New: bcdraw package (annotations + layouts), bcdoc/2, precision-input engine, layers/blocks tables, 20 drafting-core commands, bcio M2 interchange set, agent capabilities 1.1-m2. Kernel-bound drafting commands (TRIM/EXTEND/FILLET/CHAMFER/PEDIT/HATCH/SPLINE) are explicitly rescheduled to M3 with the OCCT kernel per ADR-0008 \u2014 not claimed at M2. See completion-graph-m2.md for per-item status and the honest not-done list."
+}

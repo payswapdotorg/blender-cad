@@ -24,12 +24,14 @@ EXT_SRC = REPO_ROOT / "modules" / "shell" / "ext" / "blender_cad"
 BUILD = REPO_ROOT / "build" / "blender_cad"
 DIST = REPO_ROOT / "dist"
 
-# module package -> source dir (contracts §2 table)
+# module package -> source dir (contracts §2 table; M2 §1 adds bcdraw
+# BEFORE bcshell — dependency order)
 PACKAGES = {
     "bcdoc": REPO_ROOT / "modules" / "document" / "bcdoc",
     "bcio": REPO_ROOT / "modules" / "interchange" / "bcio",
     "bccmd": REPO_ROOT / "modules" / "commands" / "bccmd",
     "bcdraft": REPO_ROOT / "modules" / "drafting" / "bcdraft",
+    "bcdraw": REPO_ROOT / "modules" / "drawings" / "bcdraw",
     "bcshell": REPO_ROOT / "modules" / "shell" / "bcshell",
     "bcagent": REPO_ROOT / "modules" / "agent" / "bcagent",
 }

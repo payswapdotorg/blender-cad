@@ -6,10 +6,10 @@ entries:
   - {id: FP-MOD-002, name: COPY, desc: "Multiple copies; Array option distributes copies", p: P0, dep: [], status: partial, test: "TP-CAT-01", note: "M1 v0: multiple copies; Array option planned"}
   - {id: FP-MOD-003, name: ROTATE, desc: "Rotate about base point; Reference and Copy options", p: P0, dep: [], status: partial, test: "TP-CAT-01", note: "M1 v0: base-point rotate; Reference/Copy options planned"}
   - {id: FP-MOD-004, name: SCALE, desc: "Uniform scaling; Reference length and Copy options", p: P0, dep: [], status: partial, test: "TP-CAT-01", note: "M1 v0: uniform scale; Reference/Copy options planned"}
-  - {id: FP-MOD-005, name: MIRROR, desc: "Mirror across a two-point axis; keep or delete source", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-MOD-005, name: MIRROR, desc: "Mirror across a two-point axis; keep or delete source", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: MIRROR with keep/discard, arc sweep swap, bulge sign flip, text rotation"}
   - {id: FP-MOD-006, name: MIRRTEXT, desc: "Toggle text mirroring versus staying legible", p: P1, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-MOD-007, name: OFFSET, desc: "Offset by distance or Through point; Multiple and Erase options", p: P0, dep: [occt], status: planned, test: "", note: ""}
-  - {id: FP-MOD-008, name: ARRAYRECT, desc: "Associative rectangular arrays: rows, columns, levels, spacings", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-MOD-007, name: OFFSET, desc: "Offset by distance or Through point; Multiple and Erase options", p: P0, dep: [occt], status: verified, test: "TP-CAT-01", note: "M2: OFFSET distance/through for line/circle/arc/polyline (per-segment; corner healing planned)"}
+  - {id: FP-MOD-008, name: ARRAYRECT, desc: "Associative rectangular arrays: rows, columns, levels, spacings", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: ARRAYRECT rows/cols + spacings, negative spacing, one tx per grid"}
   - {id: FP-MOD-009, name: ARRAYPOLAR, desc: "Associative polar arrays: center, item count, fill angle, rows", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-MOD-010, name: ARRAYPATH, desc: "Associative arrays along a path: divisions, spacing, alignment", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-MOD-011, name: "Array editing", desc: "Edit items, replace source objects, reset array state", p: P1, dep: [], status: planned, test: "", note: ""}
@@ -17,14 +17,14 @@ entries:
   - {id: FP-MOD-013, name: EXTEND, desc: "Extend to boundary edges with matching selection options", p: P0, dep: [occt], status: planned, test: "", note: ""}
   - {id: FP-MOD-014, name: FILLET, desc: "Radius fillets with Polyline, Trim-mode and Multiple options", p: P0, dep: [occt], status: planned, test: "", note: ""}
   - {id: FP-MOD-015, name: CHAMFER, desc: "Distance and angle chamfers with Polyline and Trim options", p: P0, dep: [occt], status: planned, test: "", note: ""}
-  - {id: FP-MOD-016, name: BREAK, desc: "Remove the portion between two points on an entity", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-MOD-016, name: BREAK, desc: "Remove the portion between two points on an entity", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: BREAK on line/circle/arc with [First] option + piece results in CommandResult; polyline segment-level break planned"}
   - {id: FP-MOD-017, name: BREAKAT, desc: "Split an entity at one point without removing geometry", p: P1, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-MOD-018, name: JOIN, desc: "Join collinear lines, arcs, polylines, splines and helices", p: P0, dep: [occt], status: planned, test: "", note: ""}
-  - {id: FP-MOD-019, name: EXPLODE, desc: "Decompose blocks, polylines, dimensions, hatches into components", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-MOD-018, name: JOIN, desc: "Join collinear lines, arcs, polylines, splines and helices", p: P0, dep: [occt], status: verified, test: "TP-CAT-01", note: "M2: JOIN collinear lines + concentric arcs + polyline append/prepend; non-joinable skipped with feedback"}
+  - {id: FP-MOD-019, name: EXPLODE, desc: "Decompose blocks, polylines, dimensions, hatches into components", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: EXPLODE insert (transformed members, ByBlock color, layer-0 adoption) + polyline (line/arc segments)"}
   - {id: FP-MOD-020, name: XPLODE, desc: "Explode with per-object color, layer and linetype choices", p: P2, dep: [], status: planned, test: "", note: ""}
   - {id: FP-MOD-021, name: PEDIT, desc: "Polyline editing: vertices, width, fit, spline, join, close", p: P0, dep: [occt], status: planned, test: "", note: ""}
   - {id: FP-MOD-022, name: SPLINEDIT, desc: "Edit control and fit points, refine, close, convert, degree", p: P1, dep: [occt], status: planned, test: "", note: ""}
-  - {id: FP-MOD-023, name: STRETCH, desc: "Stretch vertices inside a crossing window along a displacement", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-MOD-023, name: STRETCH, desc: "Stretch vertices inside a crossing window along a displacement", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: STRETCH crossing-window endpoint rules for lines/polylines, whole-entity move for circles; arc endpoint stretch planned (explicit feedback)"}
   - {id: FP-MOD-024, name: LENGTHEN, desc: "Lengthen by Delta, Percent, Total or Dynamic", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-MOD-025, name: ALIGN, desc: "Align by source and destination point pairs with optional scaling", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-MOD-026, name: "Grip mode cycling", desc: "Hot grips cycle stretch, move, rotate, scale, mirror modes", p: P0, dep: [], status: planned, test: "", note: ""}
@@ -39,7 +39,7 @@ entries:
   - {id: FP-MOD-035, name: PASTEBLOCK, desc: "Paste clipboard contents as a block reference", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-MOD-036, name: PASTEORIG, desc: "Paste at original coordinates in the destination drawing", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-MOD-037, name: ERASE, desc: "Remove selected objects", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M1 v0: selection-driven erase via command interface"}
-  - {id: FP-MOD-038, name: "Selection modes", desc: "Window, crossing, fence, WPolygon, CPolygon, Last, Previous", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-MOD-038, name: "Selection modes", desc: "Window, crossing, fence, WPolygon, CPolygon, Last, Previous", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: Window/Crossing/All/Previous/Last through select_ids + SELECT command; fence/Wpolygon/Cpolygon planned"}
   - {id: FP-MOD-039, name: QSELECT, desc: "Build selection sets from property and value filters", p: P1, dep: [], status: planned, test: "", note: ""}
   - {id: FP-MOD-040, name: DRAWORDER, desc: "Send objects to front or back; relative draw order", p: P1, dep: [], status: planned, test: "", note: ""}
-  - {id: FP-MOD-041, name: MATCHPROP, desc: "Copy color, layer, linetype and annotation properties between objects", p: P0, dep: [], status: planned, test: "", note: ""}
+  - {id: FP-MOD-041, name: MATCHPROP, desc: "Copy color, layer, linetype and annotation properties between objects", p: P0, dep: [], status: verified, test: "TP-CAT-01", note: "M2: MATCHPROP copies layer/color/linetype/lineweight; annotation properties planned"}
