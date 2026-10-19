@@ -17,8 +17,17 @@ import ezdxf
 import ezdxf.recover
 import pytest
 
+import bcio
 from bcdoc import Arc, Circle, Document, Line
 from bcio import LossLedger, export_dxf, import_dxf
+
+
+def kind_counts(**overrides):
+    """Additive v2 stats shape (all 13 kinds zero-filled + total)."""
+    counts = {kind: 0 for kind in bcio.KINDS}
+    counts.update(overrides)
+    counts["total"] = sum(counts[k] for k in bcio.KINDS)
+    return counts
 
 
 # ---------------------------------------------------------------------------
@@ -96,7 +105,8 @@ class TestDocumentDxfDocument:
         assert mirror.name == "working"  # fresh document named after the file
         assert_content_equivalent(doc, mirror)
 
-        # the bcdoc/1 serialization of the imported document round-trips
+        # the bcdoc/2 serialization of the imported document round-trips
+        # (load also accepts bcdoc/1 per contracts §2.7/§14)
         reloaded = Document.load(mirror.serialize())
         assert reloaded.serialize() == mirror.serialize()
         assert_content_equivalent(doc, reloaded)
@@ -120,9 +130,9 @@ class TestDocumentDxfDocument:
         assert_content_equivalent(doc, mirror2)
 
     def test_round_trip_survives_bcdoc_persistence(self, tmp_path):
-        """The M1 persistence path (bcdoc/1 JSON, e.g. the Blender text
-        block per contracts §6.2) composes with DXF interchange: save ->
-        load -> export -> import -> compare."""
+        """The M1 persistence path (bcdoc JSON — schema bcdoc/2 as of M2,
+        e.g. the Blender text block per contracts §6.2) composes with DXF
+        interchange: save -> load -> export -> import -> compare."""
         doc = build_working_drawing()
         text = doc.serialize()  # "save"
         revived = Document.load(text)  # "reopen"
@@ -156,17 +166,19 @@ class TestDocumentDxfDocument:
 class TestEzdxfFixtureRoundTrip:
     def test_foreign_file_survives_import_then_export(self, tmp_path):
         """A file authored by plain ezdxf (as any third-party CAD would
-        write it): LINE + CIRCLE + ARC + unsupported content. Import must
-        keep the supported subset with original handles, ledger the rest;
+        write it): LINE + CIRCLE + ARC + TEXT + an extra layer. At M2 the
+        full kind set + layer properties import (nothing is dropped); the
         re-export must then produce a file ezdxf reads back cleanly with
-        the SAME handles (round-trip through our document handle space)."""
-        author = ezdxf.new("R2010", setup=True)
+        the SAME handles (round-trip through our document handle space).
+        The M1 version expected TEXT + layer-prop losses — both lifted by
+        bcdoc v2 (contracts §2.1/§2.2)."""
+        author = ezdxf.new("R2010", setup=False)
         author.layers.add("FOREIGN", color=4)
         msp = author.modelspace()
         line = msp.add_line((1, 2, 3), (9, 8, 7), dxfattribs={"layer": "FOREIGN"})
         circle = msp.add_circle((-5.5, 6.25), 3.5)
         arc = msp.add_arc((0, 0), 10.0, 30.0, 300.0, dxfattribs={"color": 5})
-        msp.add_text("NOT SUPPORTED AT M1")  # must be ledgered, not imported
+        msp.add_text("SUPPORTED SINCE M2")
         foreign_handles = {
             "line": int(line.dxf.handle, 16),
             "circle": int(circle.dxf.handle, 16),
@@ -177,15 +189,16 @@ class TestEzdxfFixtureRoundTrip:
 
         doc, stats = import_dxf(fixture)
         assert stats["engine"] == "ezdxf"
-        assert stats["imported"] == {"line": 1, "circle": 1, "arc": 1, "total": 3}
-        # honest losses: the TEXT entity is out of v0 scope, and the foreign
-        # layer's ACI color 4 is not representable in names-only bcdoc v0
-        assert {e["dxf_type"] for e in stats["losses"]} == {"TEXT", "LAYER"}
-        assert any("not representable" in e["reason"]
-                   for e in stats["losses"] if e["dxf_type"] == "LAYER")
+        assert stats["imported"] == kind_counts(line=1, circle=1, arc=1,
+                                                 text=1)
+        # v2: TEXT and layer properties round-trip — no content losses
+        assert stats["losses"] == [], (
+            "the M2 kind set + full layer records import losslessly"
+        )
         # foreign handles were preserved into the document handle space
         by_kind = {e.kind: e for e in doc.entities()}
-        assert {k: e.handle for k, e in by_kind.items()} == foreign_handles
+        assert {k: e.handle for k, e in by_kind.items()
+                if k in foreign_handles} == foreign_handles
         # no handle collisions were needed: reallocation count is 0
         assert stats["handle_reallocations"] == 0
 
@@ -196,9 +209,13 @@ class TestEzdxfFixtureRoundTrip:
         reread = ezdxf.readfile(out)
         assert not reread.audit().has_errors
         kinds = sorted(e.dxftype() for e in reread.modelspace())
-        assert kinds == ["ARC", "CIRCLE", "LINE"]
-        handles = sorted(int(e.dxf.handle, 16) for e in reread.modelspace())
-        assert handles == sorted(foreign_handles.values())
+        assert kinds == ["ARC", "CIRCLE", "LINE", "TEXT"]
+        handles = sorted(int(e.dxf.handle, 16)
+                         for e in reread.modelspace())
+        expected = sorted(list(foreign_handles.values())
+                          + [e.handle for e in doc.entities()
+                             if e.kind == "text"])
+        assert handles == expected
         # colors and layers survived the import -> export path
         reread_arc = [e for e in reread.modelspace() if e.dxftype() == "ARC"][0]
         assert reread_arc.dxf.color == 5
@@ -233,7 +250,7 @@ class TestEzdxfFixtureRoundTrip:
         """The ADR-0003 ledger must be a machine-readable artifact: every
         entry has the contract fields and the whole ledger JSON-parses."""
         author = ezdxf.new("R2010", setup=False)
-        author.modelspace().add_text("dropped annotation")
+        author.modelspace().add_spline([(0, 0), (1, 1), (2, 0)])
         author.modelspace().add_solid([(0, 0), (1, 0), (1, 1), (0, 1)])
         fixture = str(tmp_path / "lossy.dxf")
         author.saveas(fixture)
