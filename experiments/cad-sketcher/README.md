@@ -41,19 +41,27 @@ experiments/cad-sketcher/
 ├── fetch-solver.sh         # pin + verify the evaluated slvs wheel; record solver source provenance
 ├── .gitignore              # .upstream/ scratch/ *.log __pycache__/ *.pyc scratch venv dirs
 ├── findings/               # human-readable audit records (paths + line citations)
-│   ├── audit-upstream.md   # release facts, manifest, release pipeline, addon structure map
-│   └── license-supply-chain.md  # per-artifact license record with verbatim quotes
+│   ├── audit-upstream.md            # phase 1: release facts, manifest, pipeline, structure map
+│   ├── license-supply-chain.md      # phase 1: per-artifact license record, verbatim quotes
+│   ├── solver-conformance.md        # phase 2a: experiment A analysis
+│   ├── bcdoc-seam.md                # phase 2b: experiment B design + gaps (proposed bcdoc/3)
+│   ├── parametric-workflow.md       # phase 2b: experiment C analysis (reusable vs UI)
+│   └── runtime-distribution.md      # phase 2b: experiment D record
+├── fixtures/solver/cases.json  # phase 2a: generated fixture definitions with provenance
 ├── results/                # committed machine-readable envelopes (never hand-edited)
-│   ├── upstream-audit.json
-│   ├── license-supply-chain.json
-│   └── runtime-compat.json
+│   ├── upstream-audit.json          ├── solver-conformance.json
+│   ├── license-supply-chain.json    ├── bcdoc-seam.json
+│   ├── runtime-compat.json         ├── parametric-workflow.json
+│   └── runtime-distribution.json
 └── scripts/                # drivers that GENERATE result JSON (never hand-edited)
-    ├── gen_upstream_audit.py
-    ├── gen_license_record.py
-    └── runtime/            # phase-1 compatibility drivers
-        ├── abi_smoke.py            # run by Blender's python 3.13 against a scratch wheel --target
-        ├── blender_enable_probe.py # run inside Blender after install
-        └── run_phase1_runtime.py   # orchestrator; writes results/runtime-compat.json
+    ├── gen_upstream_audit.py        # phase 1
+    ├── gen_license_record.py        # phase 1
+    ├── gen_solver_cases.py          # phase 2a (experiment A harness; + slvs_loader.py)
+    ├── gen_bcdoc_seam.py            # phase 2b (experiment B; uses REAL bcdoc read-only)
+    ├── gen_runtime_distribution.py  # phase 2b (experiment D)
+    └── runtime/                     # phase 1 + 2b drivers
+        ├── abi_smoke.py                     ├── parametric_workflow_probe.py (2b, in Blender)
+        ├── blender_enable_probe.py          └── run_phase1_runtime.py
 ```
 
 ## 3. Experiment ownership
@@ -62,10 +70,10 @@ experiments/cad-sketcher/
 |---|---|---|---|---|
 | Phase 1 — upstream + license/supply-chain audit | release facts, manifest, release pipeline, addon structure, license record with verbatim citations, provenance table | E1 (phase 1) | `scripts/gen_upstream_audit.py`, `scripts/gen_license_record.py` | `results/upstream-audit.json`, `results/license-supply-chain.json` |
 | Phase 1 — runtime compatibility | cp313 wheel import + smoke solve under Blender 5.2.2's Python 3.13.13; extension install/enable on Blender 5.2.2; startup-impact timings | E1 (phase 1) | `scripts/runtime/` (abi_smoke.py, blender_install_probe.py, startup_timing.sh) | `results/runtime-compat.json` |
-| A — solver | constraint kinds vs our PAR-area list (document-model §3.8), DOF/redundancy/conflict diagnostics, convergence/failure behavior, determinism | E1 (phase 2) | TBD | `results/a-solver.json` |
-| B — bcdoc seam | mapping between `slvs` entities/constraints and `bcdoc` v2 entities; what a solver adapter boundary would look like without touching `modules/` | E1 (phase 3) | TBD | `results/b-bcdoc-seam.json` |
-| C — parametric workflow | sketch → workplane → solver round-trip through the addon's own persistence (`serialize.py`), re-solve after edit; comparison note vs PlaneGCS (the `candidate`) | E1 (phase 3) | TBD | `results/c-parametric.json` |
-| D — runtime & distribution | packaging model (extension + wheels), platform/Python-ABI support matrix, startup impact, update story | E1 (phase 2, continues phase 4) | TBD | `results/d-runtime-distribution.json` |
+| A — solver | constraint kinds vs our PAR-area list (document-model §3.8), DOF/redundancy/conflict diagnostics, convergence/failure behavior, determinism, scale | E1 — **DONE (phase 2a, commit 7e487e7)** | `scripts/gen_solver_cases.py` (+ `scripts/slvs_loader.py`) | `results/solver-conformance.json`, `findings/solver-conformance.md` (23 cases, 115 checks: 112 pass / 3 honest redundancy-finding failures; bitwise determinism; scale N∈{10..200}) |
+| B — bcdoc seam | bcdoc-first mapping: slvs as a stateless compute service, apply-back via real transactions, undo/redo/persistence/edit-stability with identity guarantees; proposed bcdoc/3 SketchTable (design only) | E1 — **DONE (phase 2b)** | `scripts/gen_bcdoc_seam.py` | `results/bcdoc-seam.json` (26/26 checks), `findings/bcdoc-seam.md` |
+| C — parametric workflow | sketch lifecycle + update path + 3D surface at 0.32.1; headless reproduction (operators where possible, model APIs otherwise); reusable-vs-UI separation | E1 — **DONE (phase 2b)** | `scripts/runtime/parametric_workflow_probe.py` (inside Blender) | `results/parametric-workflow.json` (16 steps: 13 headless-ok, 3 recorded headless-impossible), `findings/parametric-workflow.md` |
+| D — runtime & distribution | platform matrix vs our 5 targets (linux-aarch64 GAP), sizes/ABI/native deps (ldd), startup impact, error surface, distribution obligations | E1 — **DONE (phase 2b)** | `scripts/gen_runtime_distribution.py` | `results/runtime-distribution.json` (10/10 checks), `findings/runtime-distribution.md` |
 
 ## 4. Reproduction (from a clean sandbox)
 

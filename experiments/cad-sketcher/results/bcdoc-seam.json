@@ -1,0 +1,177 @@
+{
+  "experiment": "bcdoc-seam",
+  "issue_ref": "m3-eval phase 2b \u2014 experiment B (bcdoc document-model seam)",
+  "command": "PYTHONPATH=experiments/cad-sketcher/scripts /home/z/runtime/blender-5.2.2-linux-x64/5.2/python/bin/python3.13 experiments/cad-sketcher/scripts/gen_bcdoc_seam.py",
+  "started_utc": "2026-10-19T22:05:22Z",
+  "finished_utc": "2026-10-19T22:05:22Z",
+  "upstream": {
+    "repo": "https://github.com/hlorus/CAD_Sketcher",
+    "tag": "v0.32.1",
+    "sha": "e7db7e6f94ad9dcaf2be03e849e1d3a2ac82e7a4",
+    "solver_binary": {
+      "wheel": "slvs-3.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "wheel_sha256": "9ee04ff5a00482cef1751eed71658f4b01f605de42c56786373c7da9e5b25f80",
+      "wheel_size": 2861309,
+      "wheel_source": "CAD_Sketcher v0.32.1 @ e7db7e6f94ad9dcaf2be03e849e1d3a2ac82e7a4 in-repo wheels/ (byte-identical to PyPI slvs 3.2)",
+      "solvespace_source": "solvespace/solvespace @ 477d4c87ca51b9727fbc0765cbd94253c3968b8b",
+      "extracted_to": "/home/z/cad-sketcher-eval-scratch/pytarget",
+      "imported_by": "/home/z/runtime/blender-5.2.2-linux-x64/5.2/python/bin/python3.13"
+    }
+  },
+  "host": {
+    "cpus": 2,
+    "note": "sandbox container"
+  },
+  "bcdoc_module": {
+    "path": "modules/document/bcdoc (read-only import)",
+    "schema": "bcdoc/2",
+    "identity": "Entity.id = uuid4 hex; handle monotonic from 0x1001",
+    "mutation_path": "doc.update_entity inside doc.transaction (journaled)",
+    "guards": "single open transaction (NoOpenTransaction); snapshot rollback on failed tx; JournalConflict on journal/state mismatch; base_doc_version only at the agent boundary (bcagent contract R1)"
+  },
+  "seam_design": "findings/bcdoc-seam.md \u00a72: bcdoc authoritative; constraints in a PROPOSED bcdoc/3 SketchTable (sidecar stand-in); slvs stateless compute service; apply-back only via real transactions; solver never creates/replaces entities; failed solves write nothing",
+  "scenario": "triangle from phase 2a (3 bcdoc Lines, 8 constraint records)",
+  "checks": [
+    {
+      "name": "build.entities_added_via_transaction",
+      "pass": true,
+      "detail": "doc_version=1, entities=3, kinds=['line', 'line', 'line']"
+    },
+    {
+      "name": "build.ids_and_handles_assigned",
+      "pass": true,
+      "detail": "ids=['6f31bceb', '986be6bf', '05add1ec'] handles=[4097, 4098, 4099] (allocator starts 0x1001)"
+    },
+    {
+      "name": "attach.constraints_reference_bcdoc_ids",
+      "pass": true,
+      "detail": "8 records over 3 entity ids"
+    },
+    {
+      "name": "solve1.success_dof0",
+      "pass": true,
+      "detail": "status=solved dof=0"
+    },
+    {
+      "name": "solve1.solved_positions_analytic",
+      "pass": true,
+      "detail": "B=(50.0, 0.0) C=(18.623724358773817, 32.25723681538874) expected C=(18.623724356957943, 32.257236812409175)"
+    },
+    {
+      "name": "solve1.document_untouched_by_query",
+      "pass": true,
+      "detail": "the solve itself opens no transaction \u2014 bcdoc unchanged (doc_version=1, undo_depth=1)"
+    },
+    {
+      "name": "applyback.doc_version_bumped",
+      "pass": true,
+      "detail": "doc_version 1 -> 2"
+    },
+    {
+      "name": "applyback.undo_stack_grew",
+      "pass": true,
+      "detail": "undo_depth 1 -> 2 (label='solve sk1 (apply-back)')"
+    },
+    {
+      "name": "applyback.ids_handles_stable",
+      "pass": true,
+      "detail": "update_entity mutates fields of the SAME objects \u2014 ids/handles unchanged (document.py:368-405 identity rule)"
+    },
+    {
+      "name": "applyback.merged_junctions_consistent",
+      "pass": true,
+      "detail": "junctions l1.p2=(50.0, 0.0, 0.0) l2.p1=(50.0, 0.0, 0.0) l2.p2=(18.623724358773817, 32.25723681538874, 0.0) l3.p1=(18.623724358773817, 32.25723681538874, 0.0) \u2014 coincident-merged slvs points agree within 1e-9"
+    },
+    {
+      "name": "applyback.entity_count_unchanged",
+      "pass": true,
+      "detail": "the solver created NO bcdoc entities (helpers live only inside the per-solve system)"
+    },
+    {
+      "name": "undo.returns_presolve_coordinates_exactly",
+      "pass": true,
+      "detail": "undo restores the journaled old values bit-identically (doc_version now 3)"
+    },
+    {
+      "name": "redo.returns_solved_coordinates",
+      "pass": true,
+      "detail": "redo re-applies the solved values (doc_version 4)"
+    },
+    {
+      "name": "undoredo.ids_stable_throughout",
+      "pass": true,
+      "detail": "entity ids identical before/after/undo/redo"
+    },
+    {
+      "name": "selection.references_survive_solve_undo_redo",
+      "pass": true,
+      "detail": "selection ids ['05add1ec', '6f31bceb', '986be6bf'] still reference the same entities (epoch 1 -> 1)"
+    },
+    {
+      "name": "reopen.entities_survive",
+      "pass": true,
+      "detail": "fresh Document.load: ids + handles + geometry preserved (doc_version=6)"
+    },
+    {
+      "name": "reopen.geometry_digest_equal",
+      "pass": true,
+      "detail": "digest 387e191b812f457d == 387e191b812f457d"
+    },
+    {
+      "name": "reopen.constraints_survive_via_sidecar",
+      "pass": true,
+      "detail": "8 constraint records reloaded from the adapter sidecar \u2014 THE GAP: bcdoc/2 has no constraint table, records are NOT document content today (proposed bcdoc/3 SketchTable, findings/bcdoc-seam.md \u00a74)"
+    },
+    {
+      "name": "guard.mutation_outside_transaction_rejected",
+      "pass": true,
+      "detail": "bcdoc.errors.NoOpenTransaction raised \u2014 mutations are only legal inside 'with document.transaction(...)' (document.py:419-425)"
+    },
+    {
+      "name": "guard.failed_transaction_rolls_back",
+      "pass": true,
+      "detail": "rolled-back tx leaves doc_version=6 and geometry at pre-tx values (p1=(0.0, 0.0, 0.0)) \u2014 exceptions inside 'with doc.transaction' restore the snapshot (transaction.py:80-86)"
+    },
+    {
+      "name": "guard.base_doc_version_is_agent_boundary",
+      "pass": true,
+      "detail": "in-process bcdoc writes take NO base_doc_version; the optimistic-concurrency guard (base_doc_version, conflict rule R1) lives at the agent boundary \u2014 modules/agent/bcagent/contract.py:145-156 (BcdocConflictError with current/base doc_version in details). A solver service exposed to agents would ride the same boundary; recorded as seam gap #6."
+    },
+    {
+      "name": "edit.solve_success_after_dimension_change",
+      "pass": true,
+      "detail": "status=solved dof=0"
+    },
+    {
+      "name": "edit.doc_version_bumped_only_once",
+      "pass": true,
+      "detail": "6 -> 7 (one journaled apply-back transaction)"
+    },
+    {
+      "name": "edit.only_dependent_coordinates_changed",
+      "pass": true,
+      "detail": "anchored A unchanged (0.0, 0.0, 0.0); B moved (40.0, 0.0, 0.0); C moved to (24.36140661634509, 42.195194003354295, 0.0) (analytic (24.36140661634507, 42.19519400335427)) \u2014 dependency relationships held"
+    },
+    {
+      "name": "edit.ids_stable_and_no_new_entities",
+      "pass": true,
+      "detail": "ids unchanged; the solver still created no entities"
+    },
+    {
+      "name": "failure.writes_back_nothing",
+      "pass": true,
+      "detail": "solve status=failed_didnt_converge -> seam opened NO transaction; doc_version stayed 7; coordinates bit-identical (SolveSpace's copy-solve leaves the sketch untouched \u2014 Phase 2a \u00a74 \u2014 and the seam additionally does not journal/bump/fire)"
+    }
+  ],
+  "failures": [],
+  "summary": {
+    "checks_total": 26,
+    "checks_passed": 26,
+    "checks_failed": 0,
+    "all_passed": true,
+    "scratch_files": [
+      "/home/z/cad-sketcher-eval-scratch/seam/seam-demo.bcdoc",
+      "/home/z/cad-sketcher-eval-scratch/seam/seam-demo.sketches.json"
+    ]
+  }
+}
