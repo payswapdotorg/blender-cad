@@ -1,0 +1,660 @@
+{
+ "experiment": "h2h-par-solver-comparison",
+ "issue_ref": "m3-solver-h2h \u2014 the head-to-head gate named by m3-eval \u00a78 item 1 and solidcraft-evaluation \u00a74.1 gate (a)",
+ "command": "python3 experiments/solver-h2h/gen_head_to_head.py",
+ "inputs": {
+  "slvs": "experiments/cad-sketcher/results/solver-conformance.json",
+  "solidcraft": "experiments/solver-h2h/results/solidcraft-conformance.json",
+  "planegcs": "experiments/solver-h2h/results/planegcs-conformance.json"
+ },
+ "cases": [
+  {
+   "id": "bare_line",
+   "slvs": {
+    "status": "solved",
+    "dof": 4,
+    "checks_passed": 3,
+    "checks_total": 3,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "solved",
+    "dof": 4,
+    "checks_passed": 3,
+    "checks_total": 3,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "solved",
+    "dof": 4,
+    "checks_passed": 3,
+    "checks_total": 3,
+    "failed_checks": []
+   }
+  },
+  {
+   "id": "bare_circle",
+   "slvs": {
+    "status": "solved",
+    "dof": 3,
+    "checks_passed": 4,
+    "checks_total": 4,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "solved",
+    "dof": 3,
+    "checks_passed": 5,
+    "checks_total": 5,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "solved",
+    "dof": 3,
+    "checks_passed": 4,
+    "checks_total": 4,
+    "failed_checks": []
+   }
+  },
+  {
+   "id": "bare_arc",
+   "slvs": {
+    "status": "solved",
+    "dof": 5,
+    "checks_passed": 4,
+    "checks_total": 4,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "solved",
+    "dof": 5,
+    "checks_passed": 4,
+    "checks_total": 4,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "solved",
+    "dof": 5,
+    "checks_passed": 4,
+    "checks_total": 4,
+    "failed_checks": []
+   }
+  },
+  {
+   "id": "circle_origin_radius",
+   "slvs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 5,
+    "checks_total": 5,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 5,
+    "checks_total": 5,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 5,
+    "checks_total": 5,
+    "failed_checks": []
+   }
+  },
+  {
+   "id": "triangle_constrained",
+   "slvs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 6,
+    "checks_total": 6,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 6,
+    "checks_total": 6,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 6,
+    "checks_total": 6,
+    "failed_checks": []
+   }
+  },
+  {
+   "id": "triangle_value_edit",
+   "slvs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 7,
+    "checks_total": 7,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 7,
+    "checks_total": 7,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 9,
+    "checks_total": 9,
+    "failed_checks": []
+   }
+  },
+  {
+   "id": "l_bracket_constrained",
+   "slvs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 9,
+    "checks_total": 9,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 9,
+    "checks_total": 9,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 9,
+    "checks_total": 9,
+    "failed_checks": []
+   }
+  },
+  {
+   "id": "l_bracket_no_dims",
+   "slvs": {
+    "status": "solved",
+    "dof": 4,
+    "checks_passed": 5,
+    "checks_total": 5,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "solved",
+    "dof": 4,
+    "checks_passed": 6,
+    "checks_total": 6,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "solved",
+    "dof": 4,
+    "checks_passed": 5,
+    "checks_total": 5,
+    "failed_checks": []
+   }
+  },
+  {
+   "id": "slot_constrained",
+   "slvs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 10,
+    "checks_total": 10,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 11,
+    "checks_total": 11,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "solved",
+    "dof": 2,
+    "checks_passed": 4,
+    "checks_total": 10,
+    "failed_checks": [
+     "dof_0",
+     "a1s_at_0,6",
+     "a1e_at_0,-6",
+     "a2s_at_40,-6",
+     "a2e_at_40,6",
+     "no_redundancy_reported_for_endpoint_tangency"
+    ]
+   }
+  },
+  {
+   "id": "line_horizontal_only",
+   "slvs": {
+    "status": "solved",
+    "dof": 3,
+    "checks_passed": 4,
+    "checks_total": 4,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "solved",
+    "dof": 3,
+    "checks_passed": 6,
+    "checks_total": 6,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "solved",
+    "dof": 3,
+    "checks_passed": 4,
+    "checks_total": 4,
+    "failed_checks": []
+   }
+  },
+  {
+   "id": "circle_radius_only_edit",
+   "slvs": {
+    "status": "solved",
+    "dof": 2,
+    "checks_passed": 8,
+    "checks_total": 8,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "solved",
+    "dof": 2,
+    "checks_passed": 8,
+    "checks_total": 8,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "solved",
+    "dof": 2,
+    "checks_passed": 11,
+    "checks_total": 11,
+    "failed_checks": []
+   }
+  },
+  {
+   "id": "rect_redundant_duplicate_dimension",
+   "slvs": {
+    "status": "failed_inconsistent",
+    "dof": 0,
+    "checks_passed": 2,
+    "checks_total": 5,
+    "failed_checks": [
+     "solved_despite_redundancy",
+     "redundant_listed",
+     "w1_corners_expected_but_not_reached"
+    ]
+   },
+   "solidcraft": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 7,
+    "checks_total": 7,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "failed",
+    "dof": 0,
+    "checks_passed": 3,
+    "checks_total": 5,
+    "failed_checks": [
+     "solved_despite_redundancy",
+     "w1_corners_expected_but_not_reached"
+    ]
+   }
+  },
+  {
+   "id": "conflicting_distances",
+   "slvs": {
+    "status": "failed_inconsistent",
+    "dof": 2,
+    "checks_passed": 3,
+    "checks_total": 3,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "failed",
+    "dof": 2,
+    "checks_passed": 4,
+    "checks_total": 4,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "failed",
+    "dof": 2,
+    "checks_passed": 3,
+    "checks_total": 3,
+    "failed_checks": []
+   }
+  },
+  {
+   "id": "coincident_plus_distance",
+   "slvs": {
+    "status": "failed_inconsistent",
+    "dof": 2,
+    "checks_passed": 3,
+    "checks_total": 3,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "failed",
+    "dof": 2,
+    "checks_passed": 4,
+    "checks_total": 4,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "failed",
+    "dof": 2,
+    "checks_passed": 3,
+    "checks_total": 3,
+    "failed_checks": []
+   }
+  },
+  {
+   "id": "triangle_edit_unsolvable",
+   "slvs": {
+    "status": "failed_didnt_converge",
+    "dof": 0,
+    "checks_passed": 3,
+    "checks_total": 3,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "failed",
+    "dof": 1,
+    "checks_passed": 4,
+    "checks_total": 4,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "failed",
+    "dof": 0,
+    "checks_passed": 3,
+    "checks_total": 4,
+    "failed_checks": [
+     "bad_list_nonempty"
+    ]
+   }
+  },
+  {
+   "id": "determinism_inprocess_5x",
+   "slvs": {
+    "status": "",
+    "dof": null,
+    "checks_passed": 3,
+    "checks_total": 3,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "",
+    "dof": null,
+    "checks_passed": 4,
+    "checks_total": 4,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "",
+    "dof": null,
+    "checks_passed": 3,
+    "checks_total": 3,
+    "failed_checks": []
+   }
+  },
+  {
+   "id": "determinism_crossprocess_3x",
+   "slvs": {
+    "status": "",
+    "dof": null,
+    "checks_passed": 2,
+    "checks_total": 2,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "",
+    "dof": null,
+    "checks_passed": 2,
+    "checks_total": 2,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "",
+    "dof": null,
+    "checks_passed": 2,
+    "checks_total": 2,
+    "failed_checks": []
+   }
+  },
+  {
+   "id": "parallel_offset",
+   "slvs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 6,
+    "checks_total": 6,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "solved",
+    "dof": 1,
+    "checks_passed": 6,
+    "checks_total": 8,
+    "failed_checks": [
+     "dof_0",
+     "distance_x_zero_rank_analysis"
+    ]
+   },
+   "planegcs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 6,
+    "checks_total": 6,
+    "failed_checks": []
+   }
+  },
+  {
+   "id": "perpendicular_pair",
+   "slvs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 6,
+    "checks_total": 6,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "solved",
+    "dof": 1,
+    "checks_passed": 5,
+    "checks_total": 7,
+    "failed_checks": [
+     "dof_0",
+     "distance_y_zero_rank_analysis"
+    ]
+   },
+   "planegcs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 6,
+    "checks_total": 6,
+    "failed_checks": []
+   }
+  },
+  {
+   "id": "diameter_dim",
+   "slvs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 4,
+    "checks_total": 4,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 4,
+    "checks_total": 4,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 4,
+    "checks_total": 4,
+    "failed_checks": []
+   }
+  },
+  {
+   "id": "symmetric_points",
+   "slvs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 4,
+    "checks_total": 4,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 5,
+    "checks_total": 5,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 4,
+    "checks_total": 4,
+    "failed_checks": []
+   }
+  },
+  {
+   "id": "midpoint_case",
+   "slvs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 5,
+    "checks_total": 5,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 5,
+    "checks_total": 5,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 5,
+    "checks_total": 5,
+    "failed_checks": []
+   }
+  },
+  {
+   "id": "concentric_circles",
+   "slvs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 6,
+    "checks_total": 6,
+    "failed_checks": []
+   },
+   "solidcraft": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 7,
+    "checks_total": 7,
+    "failed_checks": []
+   },
+   "planegcs": {
+    "status": "solved",
+    "dof": 0,
+    "checks_passed": 6,
+    "checks_total": 6,
+    "failed_checks": []
+   }
+  }
+ ],
+ "scale": {
+  "method_note": "identical staircase fixture, 5 fresh processes per N, wall-clock around the solve call; 2-CPU sandbox \u2014 absolute values host-specific, the SHAPE is the finding",
+  "solvers": {
+   "slvs": {
+    "N10": 0.00019,
+    "N50": 0.00084,
+    "N100": 0.00305,
+    "N200": 0.0161,
+    "source": "m3-eval results/solver-conformance.json scale_performance medians (same fixture, same class of sandbox)"
+   },
+   "solidcraft": {
+    "N10": 7.6412e-05,
+    "N50": 0.000173625,
+    "N100": 0.000273093,
+    "N200": 0.000483515,
+    "source": "this lane results/solidcraft-conformance.json"
+   },
+   "planegcs": {
+    "N10": 0.000208634,
+    "N50": 0.002197162,
+    "N100": 0.011794916,
+    "N200": 0.106343858,
+    "source": "this lane results/planegcs-conformance.json"
+   }
+  },
+  "at_200_ratio_solidcraft_vs_planegcs": 219.9,
+  "at_200_ratio_slvs_vs_planegcs": 6.6
+ },
+ "determinism": {
+  "slvs": {
+   "inprocess_5x": true,
+   "crossprocess_3x": true,
+   "source": "m3-eval envelope (bitwise both)"
+  },
+  "solidcraft": {
+   "inprocess_5x": true,
+   "crossprocess_3x": true,
+   "source": "this lane solidcraft-conformance.json (TL1 independently re-verified the digests post-landing)"
+  },
+  "planegcs": {
+   "inprocess_5x": true,
+   "crossprocess_3x": true,
+   "source": "this lane planegcs-conformance.json (PLANEGCS_HASH identical across 3 processes)"
+  }
+ },
+ "contrasts": {
+  "rect_redundant_duplicate_dimension": {
+   "why": "the fixture that REJECTED slvs (m3-eval \u00a74.1 pillar 1)",
+   "slvs": "FAILED; bad list MISATTRIBUTES (names d1, a non-redundant constraint \u2014 Newton's final-iterate violators)",
+   "solidcraft": "SOLVED: dof 0, exact corners, redundant=[k8] named with the implied-by relationship (W1 oracle)",
+   "planegcs": "FAILED with the CORRECT diagnosis: redundant=[k6], dof 0 (attribution slvs could not make) \u2014 but the full 4-step FreeCAD chain (incl. SQP-augmented) cannot zero it"
+  },
+  "mutation_api": {
+   "why": "the m3-eval rejection's pillar 2 (no incremental path)",
+   "slvs": "NO value-mutation API; rebuild-on-every-edit (its own add-on does the same)",
+   "solidcraft": "set_value + solve_after_value_edit with deterministic continuation substeps (<=64), model.rs:370-389 / solver.rs:1369-1371",
+   "planegcs": "native: datums are caller-owned double* \u2014 set + initSolution + solve on the same System (verified to land on the exact analytic branches in both edit cases)"
+  },
+  "diagnostics": {
+   "slvs": "result flag + bad list (final-iterate violators, often misattributed); no residual/iteration surface exposed by the wheel",
+   "solidcraft": "per-constraint residuals, iteration counts, DOF + determined flags, implied-by, fold detection",
+   "planegcs": "DOF + conflicting/redundant/partially-redundant tags + dependent-parameter groups; BUT diagnose is formulation/order-dependent on seamed systems (slot probes) and there is NO named-constraint surface on structurally-clean numerical failures (edit_unsolvable)"
+  },
+  "scale_at_N200": {
+   "why": "the staircase fixture, medians of 5 fresh processes",
+   "slvs": "16.1 ms",
+   "solidcraft": "0.48 ms",
+   "planegcs": "106.3 ms (the slowest; ~6.6x slvs, ~220x SolidCraft)"
+  }
+ },
+ "summary": {
+  "note": "per-solver envelopes carry the full check-level detail; this comparison quotes their verdicts only",
+  "slvs_rejected": "m3-eval decision record \u00a74.1 (evidence unchanged here \u2014 it is the REJECTED baseline, quoted for reference columns)"
+ }
+}

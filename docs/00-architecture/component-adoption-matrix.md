@@ -64,7 +64,7 @@ Gate process (how a row becomes `adopted`):
 | OCCT | Precise geometry kernel: B-rep, analytic geometry, booleans, fillets, projections, STEP/IGES | kernel | LGPL-2.1 with exception (high) | vendored native library via chosen binding (document-model doc §5.2) | candidate | only credible open-source full B-rep kernel matching AutoCAD-class needs | large binary footprint; packaging; binding maintenance | M3-entry binding evaluation (perf, packaging, binding stability); LGPL compliance recheck; benchmark evidence with test IDs | ADR-0002 | evaluation criteria fixed in ADR-0002 |
 | OCP | OCCT Python bindings — candidate binding layer | kernel | Apache-2.0 (high) | pip wheels | evaluate | proven wheels; fastest to stand up | wheel size; OCCT-version coupling | part of the ADR-0002 binding evaluation; extension-platform packaging rules (verify) | ADR-0002 | |
 | FreeCAD components | Reference implementations to study (sketcher patterns, importers, PlaneGCS usage) | kernel / parametric / interchange (study) | LGPL-2.1+ per-module exceptions (high) | source study only by default | evaluate | large proven open-source CAD codebase to learn from | per-module license diversity; drift from upstream | per-copy license review + attribution if any code is copied; default = no product dependency | — | study-only default is recorded policy |
-| PlaneGCS | 2D geometric constraint solver | parametric | LGPL (medium — (verify)) | vendor with build, or source-embed after license verification | candidate | proven in FreeCAD's sketcher; right scope for 2D constraints (PAR area) | license (verify); robustness on large sketches | license verification; solver conformance suite passes (PAR area features); packaging decision | ADR-0002 | |
+| PlaneGCS | 2D geometric constraint solver | parametric | LGPL-2.1-family — **verified 2026-10-20 at FreeCAD 1.1.4 pin** (all 11 planegcs per-file headers verbatim + root LICENSE = full LGPL-2.1 + SPDX tags in sibling files; legacy "Library GPL v2-or-later" wording recorded — high) + Eigen 3.4.0 MPL-2.0 (verified at the release artifact AND at solvespace's `3147391d` gitlink — the m3-eval §9 blocker cleared) | vendor with build (NOT chosen); reference integration only | **fallback + reference** (was candidate) | proven in FreeCAD's sketcher; native 5-DOF arc parameterization; correct redundancy attribution (rect fixture: named the duplicate where slvs misattributed) | **measured in the head-to-head (2026-10-20)**: W1 slot converges to ~2.5e-5 only (4 checks fail at 1e-6) with formulation/order-dependent diagnosis (dof 0/2/4 probes recorded); the exactly-redundant rect does NOT solve even via FreeCAD's full 4-step chain; no named-constraint diagnostics on structurally-clean numerical failures; ~220x slower than SolidCraft at N=200 | head-to-head gate CLOSED — SolidCraft-solver won every measured dimension; PlaneGCS is the named fallback + reference (translation-pattern notes committed) — see [par-solver-head-to-head.md](par-solver-head-to-head.md) | ADR-0002 context; decision record par-solver-head-to-head.md | evidence: experiments/solver-h2h/results/planegcs-conformance.json (121 checks: 112 pass / 9 honest failures) + results/head-to-head.json |
 | build123d | Python CAD scripting API — candidate user-facing scripting layer | kernel / scripting | Apache-2.0 (high) | pip dependency if adopted | evaluate | modern API over OCP | overlaps kernel API design; version churn | use-case decision (user scripting API vs internal); API stability review; otherwise exclude | — | |
 | CadQuery | Python CAD scripting API — alternative to build123d | kernel / scripting | Apache-2.0 (high) | pip dependency if adopted | evaluate | mature; same OCP base | duplicate dependency vs build123d | same evaluation as build123d; adopt at most one | — | |
 | ezdxf | First-class DXF read/write | interchange | MIT (high) | pip dependency | candidate | mature, documented DXF path; M1 DXF read/write depends on it | DXF version/entity coverage gaps become loss-ledger entries | M1 DXF read/write acceptance (TP-CAT-04); performance on large files; vendoring plan | ADR-0003 | every round-trip gap recorded in the loss ledger |
@@ -107,10 +107,14 @@ as the in-product PAR-area solver — **REJECT (evidence-backed)** on measured g
 acceptable-but-costly, not the rejection reason); CAD Sketcher as reference material —
 **ADAPT (design)** for the solver-agnostic bcdoc seam demonstrated in experiment B,
 **REFERENCE** for the specific workflow patterns (decision record §4.3). SolidCraft's
-solver-crate disposition is unchanged (TL2's gated record); PlaneGCS remains the
-incumbent candidate (ADR-0002) with the identical-fixture head-to-head as the remaining
-M3-entry gate work. Nothing is adopted; no release-manifest change; no product
-dependency exists at any point in the evaluation.
+solver-crate disposition is unchanged (TL2's gated record); the identical-fixture
+head-to-head — the remaining M3-entry gate named by both records — **ran on the
+solver-h2h lane and is decided**: SolidCraft-solver wins every measured dimension
+(W1-17 reproduction, the exactly-redundant fixture, ~220x scale, diagnostics);
+PlaneGCS is the named fallback + reference, its license (verify) resolved at the
+pin, and the m3-eval Eigen@3147391d blocker cleared with at-pin evidence. See
+[par-solver-head-to-head.md](par-solver-head-to-head.md). Nothing is adopted; no
+release-manifest change; no product dependency exists at any point in the evaluation.
 
 ## 5. Honest risk notes (recorded, not hidden)
 
