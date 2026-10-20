@@ -1,0 +1,198 @@
+{
+  "experiment": "parametric-workflow",
+  "issue_ref": "m3-eval phase 2b \u2014 experiment C (parametric workflow)",
+  "command": "BLENDER_USER_RESOURCES=<scratch>/ble_user_with_ext /home/z/runtime/blender-5.2.2-linux-x64/blender --background --python experiments/cad-sketcher/scripts/runtime/parametric_workflow_probe.py",
+  "started_utc": "2026-10-19T22:12:16Z",
+  "finished_utc": "2026-10-19T22:12:16Z",
+  "upstream": {
+    "repo": "https://github.com/hlorus/CAD_Sketcher",
+    "tag": "v0.32.1",
+    "sha": "e7db7e6f94ad9dcaf2be03e849e1d3a2ac82e7a4"
+  },
+  "blender": "5.2.2 LTS",
+  "host": {
+    "cpus": 2,
+    "note": "sandbox container"
+  },
+  "static_inventory": {
+    "lifecycle_operators": [
+      "view3d.slvs_add_sketch (stateful pick; operators/add_sketch.py:323)",
+      "view3d.slvs_add_sketch_on_plane (execute; add_sketch.py:414)",
+      "view3d.slvs_add_point2d/add_line2d/add_circle2d/... (stateful; operators/base_2d.py)",
+      "view3d.slvs_add_coincident/horizontal/distance/... (operators/add_*.py)",
+      "view3d.slvs_solve (execute; operators/solve.py:10)",
+      "view3d.slvs_update (operators/update.py:8)"
+    ],
+    "update_path": "utilities/solver.py update callbacks set global_data.needs_solve; consumed by handlers.py:186-206 on_depsgraph_update_post -> curve_solver.solve_system + refresh_curve_geometry (operators that solve do it themselves; handlers.py:198-205)",
+    "three_d_surface_0_32_1": [
+      "Extrude: stateful tool VIEW3D_T_slvs_node_extrude (workspacetools/extrude.py) -> view3d.slvs_node_extrude (operators/modifiers.py:737) building the 'CAD Sketcher Extrude' GN group live (utilities/extrude_nodes.py) \u2014 a live modifier, not a one-shot solid op",
+      "Revolve: workspacetools/revolve.py -> slvs_node_revolve (operators/modifiers.py), same GN pattern",
+      "Booleans: operators/modifiers.py apply_boolean with Exact vs Manifold solver choice (CHANGELOG 0.32.0)",
+      "Arrays/Bevel/Offset/Trim/Project: workspacetools/*.py \u2014 all stateful viewport tools",
+      "UI-only: gizmos/, drawing/, ui/, keymaps (not ported; see findings separation table)"
+    ]
+  },
+  "steps": [
+    {
+      "op": "view3d.slvs_add_sketch (stateful, EXEC_DEFAULT)",
+      "invoked": true,
+      "result": "{'CANCELLED'} \u2014 operator ran but cancelled (no viewport/selection context headlessly)",
+      "headless_ok": false,
+      "notes": "sketch-creation operator is stateful (operators/add_sketch.py:323; pick-based state machine) \u2014 expected headless-impossible; recorded",
+      "timing_s": 0.000305
+    },
+    {
+      "op": "view3d.slvs_add_sketch_on_plane(plane='XY')",
+      "invoked": true,
+      "result": "RuntimeError: Error: Python: Traceback (most recent call last):\n  File \"/home/z/cad-sketcher-eval-scratch/ble_user_with_ext/extensions/user_default/CAD_Sketcher/operators/add_sketch.py\", line 449, in execute\n    create_sketch_on_workplane(context, empty, self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/z/cad-sketcher-eval-scratch/ble_user_with_ext/extensions/user_default/CAD_Sketcher/operators/add_sketch.py\", line 159, in create_sketch_on_workplane\n    activate_sketch(context, sketch.target_object, operator)\n    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/z/cad-sketcher-eval-scratch/ble_user_with_ext/extensions/user_default/CAD_Sketcher/operators/utilities.py\", line 211, in activate_sketch\n    switch_sketch_mode(\n    ~~~~~~~~~~~~~~~~~~^\n        self=operator,\n        ^^^^^^^^^^^^^^\n    ...<2 lines>...\n        is_3d=bool(new_sketch and new_sketch.is_3d),\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/home/z/cad-sketcher-eval-scratch/ble_user_with_ext/extensions/user_default/CAD_Sketcher/operators/utilities.py\", line 190, in switch_sketch_mode\n    if tool.widget != GizmoGroups.Preselection:\n       ^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'widget'\nLocation: /home/z/blender-cad/experiments/cad-sketcher/scripts/runtime/parametric_workflow_probe.py:84\n",
+      "headless_ok": false,
+      "notes": "execute()-based (operators/add_sketch.py:414-460) \u2014 the documented way to create a sketch without viewport picking",
+      "timing_s": 0.029281
+    },
+    {
+      "op": "sketch exists despite the operator's UI-tail crash",
+      "invoked": true,
+      "result": "1 sketch(es): 'Body Sketch'",
+      "headless_ok": true,
+      "notes": "partial headless success: execute() created the sketch, then switch_sketch_mode crashed on tool=None (recorded honestly)"
+    },
+    {
+      "op": "scene.sketcher.active_sketch_object = sketch (model API)",
+      "invoked": true,
+      "result": "sketch object 'Body Sketch'",
+      "headless_ok": true,
+      "notes": "model/sketch_ref.py:227-253 get_sketches/get_active_sketch; model/group_sketcher.py:217 active_sketch_object"
+    },
+    {
+      "op": "view3d.slvs_add_point2d (stateful, EXEC_DEFAULT)",
+      "invoked": true,
+      "result": "{'FINISHED'}",
+      "headless_ok": true,
+      "notes": "stateful drawing operator (stateful_operator framework; operators/base_2d.py:94 invoke) \u2014 expected headless-impossible",
+      "timing_s": 0.008127
+    },
+    {
+      "op": "what did slvs_add_point2d actually do?",
+      "invoked": true,
+      "result": "curves on the sketch after the operator: 3 (sketch started empty)",
+      "headless_ok": true,
+      "notes": "the stateful operator returned {'FINISHED'} headlessly \u2014 its effect is measured, not guessed: the count below is taken BEFORE the model-layer geometry is added, so any operator-created curve is visible in it"
+    },
+    {
+      "op": "PointRef.create x3 + LineRef.create x3 (model API)",
+      "invoked": true,
+      "result": "curve ids: A=79b4b392\u2026 B=dc76cfc3\u2026 C=008beeea\u2026; lines share junction PointRefs",
+      "headless_ok": true,
+      "notes": "model/curve_ref.py:488 (PointRef.create), :599 (LineRef.create)"
+    },
+    {
+      "op": "constraints.add_horizontal + add_distance x3 (model API)",
+      "invoked": true,
+      "result": "4 constraints on sketch_constraints (bpy.types.Curves pointer, model/group_constraints.py:322)",
+      "headless_ok": true,
+      "notes": "model/group_constraints.py:224-290 add_* wrappers \u2014 the same APIs the add_constraint operators call"
+    },
+    {
+      "op": "view3d.slvs_solve()",
+      "invoked": true,
+      "result": "{'FINISHED'}",
+      "headless_ok": true,
+      "notes": "operators/solve.py:10 \u2014 execute()-based; calls curve_solver.solve_system (the rebuild-every-solve path)",
+      "timing_s": 0.005783
+    },
+    {
+      "op": "verify solved positions (PointRef.co)",
+      "invoked": true,
+      "result": "A=(0.0, 0.0) B=(50.0, 0.0) C=(32.0, 24.0) (expected (0,0) (50,0) (32,24))",
+      "headless_ok": true,
+      "notes": "solver_state on the sketch: OKAY"
+    },
+    {
+      "op": "constraint.value edit (d1: 50 -> 40)",
+      "invoked": true,
+      "result": "value setter on the distance constraint (model/distance.py; utilities/solver.py constraint_value_update_cb marks needs_solve)",
+      "headless_ok": true,
+      "notes": ""
+    },
+    {
+      "op": "view3d.slvs_solve() after dimension edit",
+      "invoked": true,
+      "result": "{'FINISHED'}",
+      "headless_ok": true,
+      "notes": "re-solve after driving-dimension edit \u2014 the edit -> rebuild evidence; the UI path defers this to depsgraph_update_post (handlers.py:189-206)",
+      "timing_s": 0.004635
+    },
+    {
+      "op": "verify dependent geometry updated (B, C)",
+      "invoked": true,
+      "result": "B=(40.0, 0.0) C=(28.75, 27.810745239257812) (analytic: B=(40,0) C=(28.75, 27.810744))",
+      "headless_ok": true,
+      "notes": "A (fixed) untouched: (0.0, 0.0)"
+    },
+    {
+      "op": "view3d.slvs_node_extrude (stateful tool operator, EXEC_DEFAULT)",
+      "invoked": true,
+      "result": "{'CANCELLED'} \u2014 operator ran but cancelled (no viewport/selection context headlessly)",
+      "headless_ok": false,
+      "notes": "operators/modifiers.py:737 \u2014 stateful (BASE_STATES + offset pick); the interactive Extrude TOOL (workspacetools/extrude.py) drives it with viewport events; expected headless-impossible",
+      "timing_s": 0.000281
+    },
+    {
+      "op": "build_extrude_node_group + ensure_extrude_edge_walls (mechanism)",
+      "invoked": true,
+      "result": "node group built: 'CAD Sketcher Extrude' (85 nodes)",
+      "headless_ok": true,
+      "notes": "utilities/extrude_nodes.py:96,301 \u2014 the live-modifier mechanism behind the Extrude tool, headless-drivable",
+      "timing_s": 0.050614
+    },
+    {
+      "op": "ensure_body + extrude modifier + depsgraph evaluation (sketch->mesh)",
+      "invoked": true,
+      "result": "body 'Body' evaluated via depsgraph object_instances: 6 vertices, 5 faces",
+      "headless_ok": true,
+      "notes": "the 0.32 design: sketch = pure-source Curves object; the BODY mesh carries the live modifier stack (utilities/body.py:1-9); read via the addon's own instance pattern (boolean_targets.py:50-58) \u2014 the real Extrude TOOL is the stateful UI on top of exactly this"
+    }
+  ],
+  "summary": {
+    "steps_total": 16,
+    "headless_ok": 13,
+    "headless_impossible": [
+      "view3d.slvs_add_sketch (stateful, EXEC_DEFAULT)",
+      "view3d.slvs_add_sketch_on_plane(plane='XY')",
+      "view3d.slvs_node_extrude (stateful tool operator, EXEC_DEFAULT)"
+    ],
+    "workflow_demonstrated": [
+      "sketch creation (execute operator)",
+      "geometry + constraints via the addon's own model API",
+      "solve operator + exact verification",
+      "dimension edit -> re-solve -> dependent rebuild verified",
+      "extrude mechanism (GN group + live modifier evaluation)"
+    ]
+  },
+  "failures": [
+    {
+      "op": "view3d.slvs_add_sketch (stateful, EXEC_DEFAULT)",
+      "invoked": true,
+      "result": "{'CANCELLED'} \u2014 operator ran but cancelled (no viewport/selection context headlessly)",
+      "headless_ok": false,
+      "notes": "sketch-creation operator is stateful (operators/add_sketch.py:323; pick-based state machine) \u2014 expected headless-impossible; recorded",
+      "timing_s": 0.000305
+    },
+    {
+      "op": "view3d.slvs_add_sketch_on_plane(plane='XY')",
+      "invoked": true,
+      "result": "RuntimeError: Error: Python: Traceback (most recent call last):\n  File \"/home/z/cad-sketcher-eval-scratch/ble_user_with_ext/extensions/user_default/CAD_Sketcher/operators/add_sketch.py\", line 449, in execute\n    create_sketch_on_workplane(context, empty, self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/z/cad-sketcher-eval-scratch/ble_user_with_ext/extensions/user_default/CAD_Sketcher/operators/add_sketch.py\", line 159, in create_sketch_on_workplane\n    activate_sketch(context, sketch.target_object, operator)\n    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/z/cad-sketcher-eval-scratch/ble_user_with_ext/extensions/user_default/CAD_Sketcher/operators/utilities.py\", line 211, in activate_sketch\n    switch_sketch_mode(\n    ~~~~~~~~~~~~~~~~~~^\n        self=operator,\n        ^^^^^^^^^^^^^^\n    ...<2 lines>...\n        is_3d=bool(new_sketch and new_sketch.is_3d),\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/home/z/cad-sketcher-eval-scratch/ble_user_with_ext/extensions/user_default/CAD_Sketcher/operators/utilities.py\", line 190, in switch_sketch_mode\n    if tool.widget != GizmoGroups.Preselection:\n       ^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'widget'\nLocation: /home/z/blender-cad/experiments/cad-sketcher/scripts/runtime/parametric_workflow_probe.py:84\n",
+      "headless_ok": false,
+      "notes": "execute()-based (operators/add_sketch.py:414-460) \u2014 the documented way to create a sketch without viewport picking",
+      "timing_s": 0.029281
+    },
+    {
+      "op": "view3d.slvs_node_extrude (stateful tool operator, EXEC_DEFAULT)",
+      "invoked": true,
+      "result": "{'CANCELLED'} \u2014 operator ran but cancelled (no viewport/selection context headlessly)",
+      "headless_ok": false,
+      "notes": "operators/modifiers.py:737 \u2014 stateful (BASE_STATES + offset pick); the interactive Extrude TOOL (workspacetools/extrude.py) drives it with viewport events; expected headless-impossible",
+      "timing_s": 0.000281
+    }
+  ]
+}

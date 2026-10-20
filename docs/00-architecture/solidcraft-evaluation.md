@@ -2,10 +2,10 @@
 
 - **Status:** Evaluation complete (issue #1 acceptance gates). **No component is adopted; no release-manifest change; no product code touched.** Every decision below is evidence-backed by committed, reproducible experiments under `experiments/solidcraft/`.
 - **Owner:** TL2 (evaluation track); TL owns the product consequences
-- **Date:** 2026-10-19 (UTC) — experiments 17:20–18:21 UTC per result-envelope timestamps; decision record committed as `467eaba` (2026-10-19 18:47 UTC); station re-verification `685f7c4` (2026-10-19 20:07 UTC); close-out sync with main `a6a46f1` (M2) on 2026-10-20
+- **Date:** 2026-10-19 (UTC) — experiments 17:20–18:21 UTC per result-envelope timestamps; decision record committed as `467eaba` (2026-10-19 18:47 UTC); station re-verification `685f7c4` (2026-10-19 20:07 UTC); close-out sync with main `a6a46f1` (M2) via merge `df378b3` (2026-10-19 21:27 UTC); re-sync with main `92aefa1` (M2 + TL1 m3-eval) on 2026-10-20 09:16 UTC (main advanced after the close-out; the lane follows canonical main)
 - **Vocabulary:** [docs/GLOSSARY.md](../GLOSSARY.md) (binding)
 - **Upstream evaluated:** `tangency-labs/solidcraft` @ `3b4db52c10279251a068cfca5eb7447068bc28e7` (v0.16.2, commit date 2026-10-19); official release binary v0.16.2 (tag `5de48e9`, **80 commits behind the pin** — measured, recorded in every behavioral result envelope)
-- **Experiment lane:** `tl2/solidcraft-evaluation`, originally branched off main `a4b0d7a` (M1 walking skeleton) — **synced with main `a6a46f1` (M2) via merge `df378b3` at close-out; all M2 implementation, acceptance artifacts and inventory changes preserved, zero conflicts, nothing reverted** (verified: the PR diff vs main touches only `experiments/solidcraft/` + these evaluation docs)
+- **Experiment lane:** `tl2/solidcraft-evaluation`, originally branched off main `a4b0d7a` (M1 walking skeleton) — **synced with main `a6a46f1` (M2) via merge `df378b3` at close-out, then re-synced with main `92aefa1` (M2 + TL1's m3-eval merge) on 2026-10-20; all M2 and m3-eval implementation, acceptance artifacts and inventory changes preserved, nothing reverted; the two doc files both lanes edited (component-adoption-matrix.md, license-inventory.md) were resolved keeping BOTH lanes' rows (§4.2/§4.3 and §2.1/§2.2)** (verified: the PR diff vs main touches only `experiments/solidcraft/` + these evaluation docs)
 
 ## 1. Executive decision
 
@@ -257,6 +257,26 @@ Two records, both green, exactly one command set each:
   `python3 scripts/render_inventory.py --check` → in sync.
   These are exactly the five checks the repo CI workflow ("Repo consistency and unit
   batteries") runs; the close-out head SHA and CI run URLs are recorded in the PR.
+- **At the re-sync with main `92aefa1` (M2 + TL1's m3-eval merge) on 2026-10-20
+  (main advanced after the close-out; the lane follows canonical main — merge
+  conflict resolution kept BOTH lanes' rows in the two shared doc files, see the
+  lane note above):** the identical five-check battery re-run on the resolved tree:
+  `python3 -m pytest tests/ -q` → **6 passed**;
+  `python3 -m pytest modules tests -q` → **1127 passed** (M2 batteries — unchanged
+  vs main, which now also carries the m3-eval lane);
+  `python3 -m pytest -q` → **1138 passed, 0 failed, 0 errors** (1127 + 11 lane tests);
+  `python3 -m pytest experiments/solidcraft/tests/ -q` → **11 passed**;
+  `python3 -m compileall … -q` → rc 0;
+  `python3 scripts/build_extension.py` → `blender_cad-0.2.0.zip` (67 files,
+  250,274 bytes, zero experiments entries) + `--check` green;
+  `python3 scripts/render_inventory.py --check` → in sync.
+  Scope re-verified at this head: `git diff 92aefa1..HEAD --name-only` =
+  `experiments/solidcraft/**` (62) + these 5 evaluation docs; the production-area
+  diff (`modules/ scripts/ tests/ .github/ release-manifests/ data/ patches/
+  conftest.py`) is **empty**; M2 and m3-eval artifacts byte-identical to main
+  (`acceptance_m2_result.json`, `manifest-0.3.0-m2.json`,
+  `cad-sketcher-evaluation.md`, `solver-conformance.json` all IDENTICAL).
+  The re-sync head SHA and its CI run URL are recorded in the PR.
 - Blender 5.2.2 acceptance battery: **not re-run — no production-facing file was
   touched** (the issue requires it only in that case); the standing in-Blender evidence
   remains main's `modules/testing/blender/acceptance_m2_result.json` (59/59, plus the

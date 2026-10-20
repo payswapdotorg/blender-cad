@@ -1,0 +1,13 @@
+# Scratch and upstream materialization targets — NEVER commit these.
+.upstream/
+scratch/
+__pycache__/
+*.pyc
+*.log
+# any scratch venv / --target dir created inside this tree
+*-venv/
+.venv/
+py-target/
+# downloaded solver artifacts (wheels are read from .upstream, never copied into git)
+*.whl
+*.tar.gz

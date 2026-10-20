@@ -1,0 +1,200 @@
+{
+  "experiment": "runtime-compat",
+  "issue_ref": "m3-eval phase 1 (CAD Sketcher evaluation)",
+  "upstream": {
+    "repo": "https://github.com/hlorus/CAD_Sketcher",
+    "tag": "v0.32.1",
+    "sha": "e7db7e6f94ad9dcaf2be03e849e1d3a2ac82e7a4",
+    "version": "0.32.1"
+  },
+  "host": {
+    "cpus": 2,
+    "mem_gb": 3.9,
+    "blender": "5.2.2 LTS (hash d13f752e3b9c built 2026-09-15)",
+    "blender_python": "3.13.13",
+    "note": "sandbox container"
+  },
+  "scratch_dir": "/home/z/cad-sketcher-eval-scratch",
+  "command": "python3 experiments/cad-sketcher/scripts/runtime/run_phase1_runtime.py",
+  "started_utc": "2026-10-19T21:15:26Z",
+  "steps": {
+    "python_abi": {
+      "command": "PYTHONPATH=/home/z/cad-sketcher-eval-scratch/pytarget /home/z/runtime/blender-5.2.2-linux-x64/5.2/python/bin/python3.13 /home/z/blender-cad/experiments/cad-sketcher/scripts/runtime/abi_smoke.py",
+      "exit": 0,
+      "seconds": 0.03,
+      "stdout_tail": "{\n  \"driver\": \"abi_smoke.py\",\n  \"python\": \"3.13.13 (main, Apr 25 2025, 12:39:20) [GCC 14.2.1 20250110 (Red Hat 14.2.1-11)]\",\n  \"checks\": [\n    {\n      \"check\": \"import.slvs\",\n      \"pass\": true,\n      \"detail\": \"slvs imported from /home/z/cad-sketcher-eval-scratch/pytarget/slvs\"\n    },\n    {\n      \"check\": \"solve.sketch\",\n      \"pass\": true,\n      \"detail\": \"result flag 0 (OKAY=0), dof 0\"\n    },\n    {\n      \"check\": \"solve.p0_at_origin\",\n      \"pass\": true,\n      \"detail\": \"p0=(0.0, 0.0)\"\n    },\n    {\n      \"check\": \"solve.p1_at_distance10\",\n      \"pass\": true,\n      \"detail\": \"p1=(10.0, 0.0)\"\n    },\n    {\n      \"check\": \"solve.dof_zero\",\n      \"pass\": true,\n      \"detail\": \"dof=0\"\n    }\n  ],\n  \"solved\": {\n    \"p0\": [\n      0.0,\n      0.0\n    ],\n    \"p1\": [\n      10.0,\n      0.0\n    ]\n  },\n  \"solve_result\": {\n    \"result\": 0,\n    \"dof\": 0,\n    \"rank\": -1\n  },\n  \"all_passed\": true\n}\n",
+      "stderr_tail": "PASS import.slvs  slvs imported from /home/z/cad-sketcher-eval-scratch/pytarget/slvs\nPASS solve.sketch  result flag 0 (OKAY=0), dof 0\nPASS solve.p0_at_origin  p0=(0.0, 0.0)\nPASS solve.p1_at_distance10  p1=(10.0, 0.0)\nPASS solve.dof_zero  dof=0\n",
+      "result": {
+        "driver": "abi_smoke.py",
+        "python": "3.13.13 (main, Apr 25 2025, 12:39:20) [GCC 14.2.1 20250110 (Red Hat 14.2.1-11)]",
+        "checks": [
+          {
+            "check": "import.slvs",
+            "pass": true,
+            "detail": "slvs imported from /home/z/cad-sketcher-eval-scratch/pytarget/slvs"
+          },
+          {
+            "check": "solve.sketch",
+            "pass": true,
+            "detail": "result flag 0 (OKAY=0), dof 0"
+          },
+          {
+            "check": "solve.p0_at_origin",
+            "pass": true,
+            "detail": "p0=(0.0, 0.0)"
+          },
+          {
+            "check": "solve.p1_at_distance10",
+            "pass": true,
+            "detail": "p1=(10.0, 0.0)"
+          },
+          {
+            "check": "solve.dof_zero",
+            "pass": true,
+            "detail": "dof=0"
+          }
+        ],
+        "solved": {
+          "p0": [
+            0.0,
+            0.0
+          ],
+          "p1": [
+            10.0,
+            0.0
+          ]
+        },
+        "solve_result": {
+          "result": 0,
+          "dof": 0,
+          "rank": -1
+        },
+        "all_passed": true
+      }
+    },
+    "extension_install": {
+      "command": "BLENDER_USER_RESOURCES=<scratch>/ble_user_with_ext /home/z/runtime/blender-5.2.2-linux-x64/blender --command extension install-file -r user_default -e /home/z/cad-sketcher-eval-scratch/CAD_Sketcher-0.32.1-linux_x64.zip",
+      "exit": 0,
+      "seconds": 1.19,
+      "output_tail": "STATUS Installed \"CAD_Sketcher\"\n/home/z/cad-sketcher-eval-scratch/ble_user_with_ext/extensions/user_default/CAD_Sketcher/utilities/bpy.py:65: SyntaxWarning: invalid escape sequence '\\['\n  match = re.match(\"(.*)\\[\\d*\\]\", path)\nbl_ext.user_default.CAD_Sketcher:{INFO}: Logging into: /tmp/bl_ext.user_default.CAD_Sketcher-z.log\nbl_ext.user_default.CAD_Sketcher.handlers:{DEBUG}: Append <save_pre> builtin handlers: \n  - write_addon_version\nbl_ext.user_default.CAD_Sketcher.handlers:{DEBUG}: Append <load_post> builtin handlers: \n  - on_load_post\nbl_ext.user_default.CAD_Sketcher.handlers:{DEBUG}: Append <depsgraph_update_post> builtin handlers: \n  - on_depsgraph_update\nbl_ext.user_default.CAD_Sketcher.handlers:{DEBUG}: Append <frame_change_post> builtin handlers: \n  - on_frame_change\nbl_ext.user_default.CAD_Sketcher.handlers:{DEBUG}: Append <undo_post> builtin handlers: \n  - on_undo_redo\nbl_ext.user_default.CAD_Sketcher.handlers:{DEBUG}: Append <redo_post> builtin handlers: \n  - on_undo_redo\n"
+    },
+    "extension_enable": {
+      "command": "BLENDER_USER_RESOURCES=<scratch>/ble_user_with_ext /home/z/runtime/blender-5.2.2-linux-x64/blender --background --python /home/z/blender-cad/experiments/cad-sketcher/scripts/runtime/blender_enable_probe.py -- /home/z/cad-sketcher-eval-scratch/blender_enable_probe.json",
+      "exit": 0,
+      "seconds": 0.68,
+      "output_tail": "Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:34:58)\nPASS extension.enabled  bl_ext.user_default.CAD_Sketcher in enabled modules: True; bl_ext modules seen: ['bl_ext.user_default.CAD_Sketcher']\nPASS extension.import  bl_ext.user_default.CAD_Sketcher imported; version tuple (0, 32, 1)\nPASS solver.import_in_blender  slvs from /home/z/cad-sketcher-eval-scratch/ble_user_with_ext/extensions/.local/lib/python3.13/site-packages/slvs\nPASS operators.registered  add_sketch=True, add_point2d=True, add_line2d=True, add_circle2d=True, add_coincident=True, add_horizontal=True, add_distance=True, solve=True\nPASS scene.sketcher_prop  bpy.types.Scene.sketcher exists: True\nPASS blender.version  5.2.2 LTS\nbl_ext.user_default.CAD_Sketcher:{INFO}: Logging into: /tmp/bl_ext.user_default.CAD_Sketcher-z.log\nbl_ext.user_default.CAD_Sketcher.handlers:{DEBUG}: Append <save_pre> builtin handlers: \n  - write_addon_version\nbl_ext.user_default.CAD_Sketcher.handlers:{DEBUG}: Append <load_post> builtin handlers: \n  - on_load_post\nbl_ext.user_default.CAD_Sketcher.handlers:{DEBUG}: Append <depsgraph_update_post> builtin handlers: \n  - on_depsgraph_update\nbl_ext.user_default.CAD_Sketcher.handlers:{DEBUG}: Append <frame_change_post> builtin handlers: \n  - on_frame_change\nbl_ext.user_default.CAD_Sketcher.handlers:{DEBUG}: Append <undo_post> builtin handlers: \n  - on_undo_redo\nbl_ext.user_default.CAD_Sketcher.handlers:{DEBUG}: Append <redo_post> builtin handlers: \n  - on_undo_redo\n",
+      "result": {
+        "driver": "blender_enable_probe.py",
+        "blender": "5.2.2 LTS",
+        "module": "bl_ext.user_default.CAD_Sketcher",
+        "module_version": [
+          0,
+          32,
+          1
+        ],
+        "checks": [
+          {
+            "check": "extension.enabled",
+            "pass": true,
+            "detail": "bl_ext.user_default.CAD_Sketcher in enabled modules: True; bl_ext modules seen: ['bl_ext.user_default.CAD_Sketcher']"
+          },
+          {
+            "check": "extension.import",
+            "pass": true,
+            "detail": "bl_ext.user_default.CAD_Sketcher imported; version tuple (0, 32, 1)"
+          },
+          {
+            "check": "solver.import_in_blender",
+            "pass": true,
+            "detail": "slvs from /home/z/cad-sketcher-eval-scratch/ble_user_with_ext/extensions/.local/lib/python3.13/site-packages/slvs"
+          },
+          {
+            "check": "operators.registered",
+            "pass": true,
+            "detail": "add_sketch=True, add_point2d=True, add_line2d=True, add_circle2d=True, add_coincident=True, add_horizontal=True, add_distance=True, solve=True"
+          },
+          {
+            "check": "scene.sketcher_prop",
+            "pass": true,
+            "detail": "bpy.types.Scene.sketcher exists: True"
+          },
+          {
+            "check": "blender.version",
+            "pass": true,
+            "detail": "5.2.2 LTS"
+          }
+        ],
+        "all_passed": true
+      }
+    }
+  },
+  "checks": [
+    {
+      "name": "abi.wheel_pinned",
+      "pass": true,
+      "detail": "wheels/slvs-3.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl sha256 matches pin"
+    },
+    {
+      "name": "abi.smoke_solve",
+      "pass": true,
+      "detail": "exit 0; solved p1=[10.0, 0.0], dof=0"
+    },
+    {
+      "name": "release.zip_downloaded",
+      "pass": true,
+      "detail": "CAD_Sketcher-0.32.1-linux_x64.zip 13968966 bytes sha256 c679cccd8ae955c4..."
+    },
+    {
+      "name": "extension.install",
+      "pass": true,
+      "detail": "exit 0; STATUS Installed \"CAD_Sketcher\"\n/home/z/cad-sketcher-eval-scratch/ble_user_with_ext/extensions/user_default/CAD_Sketcher/utilities/bpy.py:65: SyntaxWarning: inv"
+    },
+    {
+      "name": "extension.enable_probe",
+      "pass": true,
+      "detail": "exit 0; probe all_passed=True (6/6 checks)"
+    },
+    {
+      "name": "startup.timing_ran",
+      "pass": true,
+      "detail": "without [0.543, 0.539, 0.536] median 0.539s; with [0.667, 0.664, 0.662] median 0.664s; delta +0.125s"
+    }
+  ],
+  "failures": [],
+  "release_zip": {
+    "path": "CAD_Sketcher-0.32.1-linux_x64.zip",
+    "url": "https://github.com/hlorus/CAD_Sketcher/releases/download/v0.32.1/CAD_Sketcher-0.32.1-linux_x64.zip",
+    "size": 13968966,
+    "sha256": "c679cccd8ae955c440787e6be4a8eaebfb77cb1909eb8de04ffc182e97774541"
+  },
+  "startup_impact": {
+    "method": "3 runs each of `blender --background` (isolated BLENDER_USER_RESOURCES, no --factory-startup so enabled extensions load); wall-clock seconds; medians",
+    "without_extension": {
+      "runs_s": [
+        0.543,
+        0.539,
+        0.536
+      ],
+      "median_s": 0.539,
+      "user_dir": "/home/z/cad-sketcher-eval-scratch/ble_user_without_ext"
+    },
+    "with_extension": {
+      "runs_s": [
+        0.667,
+        0.664,
+        0.662
+      ],
+      "median_s": 0.664,
+      "user_dir": "/home/z/cad-sketcher-eval-scratch/ble_user_with_ext"
+    },
+    "delta_median_s": 0.125
+  },
+  "finished_utc": "2026-10-19T21:15:32Z",
+  "summary": {
+    "all_passed": true,
+    "abi_smoke": true,
+    "extension_install": true,
+    "extension_enable": true,
+    "startup_delta_median_s": 0.125
+  }
+}
