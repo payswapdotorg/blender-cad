@@ -20,7 +20,7 @@ Conventions and honest notes:
   documents, so a fresh bcdoc exports into ezdxf collision-free. Block
   definitions draw their handles from the same monotonic allocator;
 - SETTINGS EXCEPTION (binding): ``doc.settings`` is persisted
-  (bcdoc/2 ``settings`` key) but NOT journaled and NOT rolled back —
+  (the ``settings`` key, bcdoc/2+ — kept by bcdoc/3) but NOT journaled and NOT rolled back —
   UNDO does not revert sysvars (AutoCAD precedent). A failed transaction
   deliberately leaves settings changes applied while every table
   (entities/layers/blocks/layouts/styles) rolls back bit-identically;
@@ -42,6 +42,13 @@ from .layouts import LayoutRecord, LayoutTable
 from .settings import Settings
 from .styles import DimStyleRecord, DimStyleTable, TextStyleRecord, TextStyleTable
 from .selection import SelectionState
+from .sketches import (
+    ConstraintRecord,
+    JunctionRecord,
+    SketchRecord,
+    SketchTable,
+    SolveReports,
+)
 from .transaction import Transaction
 from .undo import UndoGroup, inverse_of_applied
 
@@ -86,11 +93,16 @@ class Document:
         self._layout_table = LayoutTable(self)
         self._text_styles = TextStyleTable(self)
         self._dim_styles = DimStyleTable(self)
+        self._sketch_table = SketchTable(self)
         self._store: dict = {}  # entity id -> Entity (insertion ordered)
         self._by_handle: dict = {}  # handle -> entity id
         self._undo_stack: list = []
         self._redo_stack: list = []
         self._open_tx = None
+        # -- session state (bcdoc/3, contract m3 §1.5) --------------------------
+        # Solve reports: NEVER serialized, NEVER journaled, never part of the
+        # transaction snapshot (selection semantics, minus events).
+        self.solve_reports = SolveReports()
 
     # ------------------------------------------------------------------
     # layers (contract §2.2; M1 §3.2 type change sanctioned by §14)
@@ -130,6 +142,17 @@ class Document:
     def _entities_on_layer(self, name: str) -> list:
         return [entity for entity in self._store.values()
                 if entity.layer == name]
+
+    # ------------------------------------------------------------------
+    # sketches (bcdoc/3 — contract m3-module-contracts.md §2)
+    # ------------------------------------------------------------------
+    @property
+    def sketches(self) -> SketchTable:
+        """The constrained-sketch table (bcdoc/3): constraints and
+        junctions as journaled, serialized, undoable document content.
+        Mutations go through the table methods inside a transaction; reads
+        are always legal."""
+        return self._sketch_table
 
     # ------------------------------------------------------------------
     # blocks (contract §2.3)
@@ -351,9 +374,18 @@ class Document:
         The journal keeps the LIVE entity object and its insertion index so
         an undo of this removal restores the very same Python object at the
         very same position (identity guarantee relied on by the command
-        layer, W1 contract test `test_remove_is_journaled_and_undoable`)."""
+        layer, W1 contract test `test_remove_is_journaled_and_undoable`).
+
+        bcdoc/3 guard (m3-module-contracts.md §5.3, BlockInUse precedent):
+        an entity still referenced by any sketch constraint or junction
+        member raises :class:`errors.EntityInUse` — compose
+        remove-constraint-then-remove-entity; bcdoc never silently deletes
+        constraints."""
         tx = self._require_tx()
         entity = self.get(eid)
+        refs = self._sketch_refs_to(eid)
+        if refs:
+            raise errors.EntityInUse(eid, len(refs))
         index = list(self._store).index(eid)
         del self._store[eid]
         self._by_handle.pop(entity.handle, None)
@@ -364,6 +396,23 @@ class Document:
             "index": index,
         })
         return entity
+
+    def _sketch_refs_to(self, eid: str) -> list:
+        """Every sketch-constraint ref / junction member that addresses
+        ``eid`` (the §5.3 guard's evidence; [(sketch_id, where), …])."""
+        refs = []
+        for sketch in self._sketch_table._records:
+            for constraint in sketch.constraints:
+                for ref in constraint.refs:
+                    if ref.get("entity") == eid:
+                        refs.append((sketch.sketch_id,
+                                     f"constraint {constraint.c_id!r}"))
+            for junction in sketch.junctions:
+                for member in junction.members:
+                    if member.get("entity") == eid:
+                        refs.append((sketch.sketch_id,
+                                     f"junction {junction.junction_id!r}"))
+        return refs
 
     def update_entity(self, eid: str, **changes) -> Entity:
         """Change mutable fields of an entity inside the open transaction.
@@ -516,6 +565,16 @@ class Document:
             entity = self._store.get(eid)
             if entity is None:
                 raise errors.JournalConflict(f"cannot remove absent entity {eid!r}")
+            # bcdoc/3 belt-and-braces (contract §5.3): a replayed remove may
+            # never strand a sketch ref — legal LIFO sequences never hit
+            # this (the constraint-removing group is undone first); a
+            # corrupted/edited journal fails loudly instead of silently
+            # producing dangling refs.
+            sketch_refs = self._sketch_refs_to(eid)
+            if sketch_refs:
+                raise errors.JournalConflict(
+                    f"journal remove of {eid!r} would strand sketch ref(s) "
+                    f"{sketch_refs!r}")
             index = list(self._store).index(eid)
             del self._store[eid]
             self._by_handle.pop(entity.handle, None)
@@ -697,6 +756,131 @@ class Document:
                 _conflict(f"bad {kind} op for {name!r}: {exc}")
             return {"op": kind, "name": name, "changes": prior}
 
+        # -- sketches (bcdoc/3 — contract m3 §2) --------------------------
+        if kind == "add_sketch":
+            sketch_id = op["sketch_id"]
+            if self._sketch_table.get(sketch_id) is not None:
+                _conflict(f"sketch {sketch_id!r} already present")
+            try:
+                record = SketchRecord.from_dict(op["record"])
+            except (KeyError, TypeError, ValueError) as exc:
+                _conflict(f"bad add_sketch op for {sketch_id!r}: {exc}")
+            index = int(op.get("index", len(self._sketch_table._records)))
+            self._sketch_table._insert_at(index, record)
+            return {"op": "remove_sketch", "sketch_id": sketch_id}
+        if kind == "remove_sketch":
+            sketch_id = op["sketch_id"]
+            record = self._sketch_table.get(sketch_id)
+            if record is None:
+                _conflict(f"sketch {sketch_id!r} absent")
+            index = self._sketch_table._records.index(record)
+            self._sketch_table._drop(sketch_id)
+            return {"op": "add_sketch", "sketch_id": sketch_id,
+                    "record": record.to_dict(), "index": index}
+        if kind == "mutate_sketch":
+            sketch_id = op["sketch_id"]
+            record = self._sketch_table.get(sketch_id)
+            if record is None:
+                _conflict(f"sketch {sketch_id!r} absent")
+            try:
+                prior = record.set(**op["changes"])
+            except (TypeError, ValueError) as exc:
+                _conflict(f"bad mutate_sketch op for {sketch_id!r}: {exc}")
+            return {"op": "mutate_sketch", "sketch_id": sketch_id,
+                    "changes": prior}
+        if kind == "add_constraint":
+            sketch_id = op["sketch_id"]
+            sketch = self._sketch_table.get(sketch_id)
+            if sketch is None:
+                _conflict(f"sketch {sketch_id!r} absent")
+            try:
+                record = ConstraintRecord.from_dict(op["constraint"])
+            except (KeyError, TypeError, ValueError) as exc:
+                _conflict(f"bad add_constraint op for {sketch_id!r}: {exc}")
+            if sketch.constraint(record.c_id) is not None:
+                _conflict(f"constraint {record.c_id!r} already present in "
+                          f"sketch {sketch_id!r}")
+            index = int(op.get("index", len(sketch.constraints)))
+            index = max(0, min(index, len(sketch.constraints)))
+            sketch.constraints.insert(index, record)
+            return {"op": "remove_constraint", "sketch_id": sketch_id,
+                    "c_id": record.c_id}
+        if kind == "remove_constraint":
+            sketch_id = op["sketch_id"]
+            sketch = self._sketch_table.get(sketch_id)
+            if sketch is None:
+                _conflict(f"sketch {sketch_id!r} absent")
+            record = sketch.constraint(op["c_id"])
+            if record is None:
+                _conflict(f"constraint {op['c_id']!r} absent in sketch "
+                          f"{sketch_id!r}")
+            index = sketch.constraints.index(record)
+            sketch.constraints.remove(record)
+            return {"op": "add_constraint", "sketch_id": sketch_id,
+                    "constraint": record.to_dict(), "index": index}
+        if kind == "mutate_constraint":
+            sketch_id = op["sketch_id"]
+            sketch = self._sketch_table.get(sketch_id)
+            if sketch is None:
+                _conflict(f"sketch {sketch_id!r} absent")
+            record = sketch.constraint(op["c_id"])
+            if record is None:
+                _conflict(f"constraint {op['c_id']!r} absent in sketch "
+                          f"{sketch_id!r}")
+            try:
+                prior = record.set(**op["changes"])
+            except (TypeError, ValueError) as exc:
+                _conflict(f"bad mutate_constraint op for {op['c_id']!r}: {exc}")
+            return {"op": "mutate_constraint", "sketch_id": sketch_id,
+                    "c_id": op["c_id"], "changes": prior}
+        if kind == "add_junction":
+            sketch_id = op["sketch_id"]
+            sketch = self._sketch_table.get(sketch_id)
+            if sketch is None:
+                _conflict(f"sketch {sketch_id!r} absent")
+            try:
+                record = JunctionRecord.from_dict(op["junction"])
+            except (KeyError, TypeError, ValueError) as exc:
+                _conflict(f"bad add_junction op for {sketch_id!r}: {exc}")
+            if sketch.junction(record.junction_id) is not None:
+                _conflict(f"junction {record.junction_id!r} already present "
+                          f"in sketch {sketch_id!r}")
+            index = int(op.get("index", len(sketch.junctions)))
+            index = max(0, min(index, len(sketch.junctions)))
+            sketch.junctions.insert(index, record)
+            return {"op": "remove_junction", "sketch_id": sketch_id,
+                    "junction_id": record.junction_id}
+        if kind == "remove_junction":
+            sketch_id = op["sketch_id"]
+            sketch = self._sketch_table.get(sketch_id)
+            if sketch is None:
+                _conflict(f"sketch {sketch_id!r} absent")
+            record = sketch.junction(op["junction_id"])
+            if record is None:
+                _conflict(f"junction {op['junction_id']!r} absent in sketch "
+                          f"{sketch_id!r}")
+            index = sketch.junctions.index(record)
+            sketch.junctions.remove(record)
+            return {"op": "add_junction", "sketch_id": sketch_id,
+                    "junction": record.to_dict(), "index": index}
+        if kind == "mutate_junction":
+            sketch_id = op["sketch_id"]
+            sketch = self._sketch_table.get(sketch_id)
+            if sketch is None:
+                _conflict(f"sketch {sketch_id!r} absent")
+            record = sketch.junction(op["junction_id"])
+            if record is None:
+                _conflict(f"junction {op['junction_id']!r} absent in sketch "
+                          f"{sketch_id!r}")
+            try:
+                prior = record.set(members=op["changes"]["members"])
+            except (KeyError, TypeError, ValueError) as exc:
+                _conflict(f"bad mutate_junction op for "
+                          f"{op['junction_id']!r}: {exc}")
+            return {"op": "mutate_junction", "sketch_id": sketch_id,
+                    "junction_id": op["junction_id"],
+                    "changes": prior}
+
         raise errors.JournalConflict(f"unknown journal op {op!r}")
 
     def _style_target(self, which: str):
@@ -740,6 +924,7 @@ class Document:
                             for record in self._text_styles._records.values()],
             "dim_styles": [record.copy()
                            for record in self._dim_styles._records.values()],
+            "sketches": [record.copy() for record in self._sketch_table._records],
             "next_handle": self.next_handle,
             "selection": self.selection.snapshot(),
             "doc_version": self.doc_version,
@@ -755,6 +940,7 @@ class Document:
         self._layout_table._restore(snapshot["layouts"])
         self._text_styles._restore(snapshot["text_styles"])
         self._dim_styles._restore(snapshot["dim_styles"])
+        self._sketch_table._restore(snapshot["sketches"])
         self.next_handle = snapshot["next_handle"]
         self.selection._restore(*snapshot["selection"])
         self.doc_version = snapshot["doc_version"]
@@ -783,13 +969,13 @@ class Document:
     # serialization
     # ------------------------------------------------------------------
     def serialize(self) -> str:
-        """Stable ``bcdoc/2`` JSON (byte-stable for untouched documents)."""
+        """Stable ``bcdoc/3`` JSON (byte-stable for untouched documents)."""
         return serialize.to_json(self)
 
     @staticmethod
     def load(text: str) -> "Document":
-        """Rebuild a document from ``bcdoc/1`` (deterministic upgrade) or
-        ``bcdoc/2`` JSON; anything else raises
+        """Rebuild a document from ``bcdoc/1``, ``bcdoc/2`` (deterministic
+        upgrades) or ``bcdoc/3`` JSON; anything else raises
         :class:`bcdoc.errors.SerializationError`."""
         data = serialize.parse(text)
         doc = Document(name=data["name"], units=data["units"])
@@ -806,6 +992,7 @@ class Document:
         self._layout_table._restore(data["__layouts__"])
         self._text_styles._restore(data["__text_styles__"])
         self._dim_styles._restore(data["__dim_styles__"])
+        self._sketch_table._restore(data["__sketches__"])
         self._store = {}
         self._by_handle = {}
         for entity in data["__entities__"]:

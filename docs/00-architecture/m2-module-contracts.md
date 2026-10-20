@@ -665,3 +665,8 @@ the inventory notes + completion graph.
   (renamed from blender_driver_m2.py) is a HEADLESS pytest smoke suite over
   the same registry the UI uses; the in-Blender evidence remains the
   acceptance batteries + TP-CAT-06.
+- **(M3 schema lane, 2026-10-20)** this file's §2.7/§2.8 are AMENDED by
+  `m3-module-contracts.md` §6 (serialization writes `bcdoc/3` and loads
+  1/2/3; the journal vocabulary gains nine sketch op kinds; `remove_entity`
+  gains an EntityInUse guard; extension version 0.3.0). The binding text
+  for all of that lives in the m3 file; this log line is the pointer.

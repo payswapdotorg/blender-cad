@@ -105,8 +105,8 @@ class TestDocumentDxfDocument:
         assert mirror.name == "working"  # fresh document named after the file
         assert_content_equivalent(doc, mirror)
 
-        # the bcdoc/2 serialization of the imported document round-trips
-        # (load also accepts bcdoc/1 per contracts §2.7/§14)
+        # the bcdoc serialization of the imported document round-trips
+        # (load accepts bcdoc/1/2/3 per contracts §2.7/§14 + m3 §6)
         reloaded = Document.load(mirror.serialize())
         assert reloaded.serialize() == mirror.serialize()
         assert_content_equivalent(doc, reloaded)
@@ -130,9 +130,10 @@ class TestDocumentDxfDocument:
         assert_content_equivalent(doc, mirror2)
 
     def test_round_trip_survives_bcdoc_persistence(self, tmp_path):
-        """The M1 persistence path (bcdoc JSON — schema bcdoc/2 as of M2,
-        e.g. the Blender text block per contracts §6.2) composes with DXF
-        interchange: save -> load -> export -> import -> compare."""
+        """The M1 persistence path (bcdoc JSON — schema bcdoc/3 since the
+        m3 schema lane, e.g. the Blender text block per contracts §6.2)
+        composes with DXF interchange: save -> load -> export -> import ->
+        compare."""
         doc = build_working_drawing()
         text = doc.serialize()  # "save"
         revived = Document.load(text)  # "reopen"

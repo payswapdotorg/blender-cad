@@ -12,7 +12,7 @@ typed store over :data:`SETTING_DEFS`:
 - ``choices`` entries (where pinned) restrict the value set.
 
 UNDO POLICY EXCEPTION (binding, documented): settings are document state
-that is PERSISTED (the ``settings`` key of bcdoc/2) but NOT journaled and
+that is PERSISTED (the ``settings`` key of bcdoc/2+, kept in bcdoc/3) but NOT journaled and
 NOT rolled back — UNDO does not revert sysvars, matching AutoCAD for
 out-of-command changes. Consequently a failed transaction deliberately
 leaves settings changes made inside it applied (everything else —

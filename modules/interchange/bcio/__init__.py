@@ -69,7 +69,7 @@ __all__ = [
     "loss_ledger",
 ]
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 #: bcdoc entity kinds in stats/counts order (M1 kinds first, then M2).
 KINDS = ezdxf_bridge.KINDS

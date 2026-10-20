@@ -522,18 +522,20 @@ class TestSerialization:
     §2.7/§14 (M1 file amended — intent kept: schema exactness, tolerant
     reads, byte-stability)."""
 
-    def test_schema_is_bcdoc2(self):
+    def test_schema_is_bcdoc3(self):
         import json
 
         doc = make_sample_doc()
         payload = json.loads(doc.serialize())
-        assert payload["schema"] == "bcdoc/2"
-        # pinned v2 key order (m2-module-contracts §2.7)
+        # bcdoc/3 since the m3 schema lane (m3-module-contracts.md §3
+        # amends m2 §2.7; load still accepts bcdoc/1 + bcdoc/2)
+        assert payload["schema"] == "bcdoc/3"
+        # pinned v3 key order ("sketches" slots before "entities")
         assert list(payload) == [
             "schema", "name", "units", "doc_version", "next_handle",
             "settings", "layers", "current_layer", "text_styles",
-            "dim_styles", "blocks", "layouts", "entities", "undo",
-            "redo", "selection",
+            "dim_styles", "blocks", "layouts", "sketches", "entities",
+            "undo", "redo", "selection",
         ]
 
     def test_byte_stable_round_trip(self):
@@ -603,7 +605,7 @@ class TestSerialization:
 
     def test_stable_json_key_order(self):
         doc = make_sample_doc()
-        assert doc.serialize().startswith('{"schema": "bcdoc/2", "name": "sample"')
+        assert doc.serialize().startswith('{"schema": "bcdoc/3", "name": "sample"')
         entity = doc.serialize().split('"entities": [', 1)[1]
         assert '"kind": "line", "id":' in entity, "entity dicts keep fixed field order"
 

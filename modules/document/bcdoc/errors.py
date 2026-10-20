@@ -233,6 +233,92 @@ class JournalConflict(BcdocError):
 
 
 class SerializationError(BcdocError):
-    """``Document.load`` received text that is not a valid ``bcdoc/1`` or
-    ``bcdoc/2`` document (unknown schema, malformed JSON, or structurally
-    invalid content)."""
+    """``Document.load`` received text that is not a valid ``bcdoc/1``,
+    ``bcdoc/2`` or ``bcdoc/3`` document (unknown schema, malformed JSON,
+    or structurally invalid content)."""
+
+
+# ---------------------------------------------------------------------------
+# bcdoc/3 — constrained-sketch content (m3-module-contracts.md §5)
+# ---------------------------------------------------------------------------
+
+class SketchNotFound(BcdocError):
+    """A sketch-table operation referenced an unknown sketch id."""
+
+    def __init__(self, sketch_id: str):
+        super().__init__(f"no sketch with id {sketch_id!r}")
+        self.sketch_id = sketch_id
+
+
+class DuplicateSketch(BcdocError):
+    """``SketchTable.add`` was called with a sketch id that already exists."""
+
+    def __init__(self, sketch_id: str):
+        super().__init__(f"sketch {sketch_id!r} already exists")
+        self.sketch_id = sketch_id
+
+
+class ConstraintNotFound(BcdocError):
+    """A constraint operation referenced an unknown constraint id."""
+
+    def __init__(self, sketch_id: str, c_id: str):
+        super().__init__(f"no constraint {c_id!r} in sketch {sketch_id!r}")
+        self.sketch_id = sketch_id
+        self.c_id = c_id
+
+
+class DuplicateConstraint(BcdocError):
+    """A constraint with the same c_id already exists in the sketch
+    (per-sketch uniqueness, contracts §5.2)."""
+
+    def __init__(self, sketch_id: str, c_id: str):
+        super().__init__(f"constraint {c_id!r} already exists in sketch "
+                         f"{sketch_id!r}")
+        self.sketch_id = sketch_id
+        self.c_id = c_id
+
+
+class JunctionNotFound(BcdocError):
+    """A junction operation or junction ref referenced an unknown junction
+    id (junctions are sketch-local, contracts §1.3/§5.1)."""
+
+    def __init__(self, sketch_id: str, junction_id: str):
+        super().__init__(f"no junction {junction_id!r} in sketch "
+                         f"{sketch_id!r}")
+        self.sketch_id = sketch_id
+        self.junction_id = junction_id
+
+
+class DuplicateJunction(BcdocError):
+    """A junction with the same id already exists in the sketch."""
+
+    def __init__(self, sketch_id: str, junction_id: str):
+        super().__init__(f"junction {junction_id!r} already exists in "
+                         f"sketch {sketch_id!r}")
+        self.sketch_id = sketch_id
+        self.junction_id = junction_id
+
+
+class DanglingSketchRef(BcdocError):
+    """A constraint ref or junction member addressed an entity that is not
+    in the document (guards §5.1: refs are validated at every ref-writing
+    mutation against the live document; parse rejects them at load)."""
+
+    def __init__(self, eid: str):
+        super().__init__(f"sketch ref addresses unknown entity {eid!r}")
+        self.eid = eid
+
+
+class EntityInUse(BcdocError):
+    """``Document.remove`` refused: the entity is still referenced by a
+    sketch constraint or junction member (BlockInUse precedent, contracts
+    §5.3 — compose remove-constraint-then-remove-entity; bcdoc never
+    silently deletes constraints)."""
+
+    def __init__(self, eid: str, count: int = 0):
+        super().__init__(
+            f"entity {eid!r} is still referenced by {count} sketch "
+            "constraint/junction ref(s); remove the referencing sketch "
+            "content first")
+        self.eid = eid
+        self.count = count

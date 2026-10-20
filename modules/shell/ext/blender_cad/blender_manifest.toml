@@ -4,7 +4,7 @@
 schema_version = "1.0.0"
 
 id = "blender_cad"
-version = "0.2.0"
+version = "0.3.0"
 name = "Blender CAD"
 tagline = "AutoCAD-familiar CAD workspace inside Blender"
 maintainer = "Blender CAD project (payswapdotorg)"

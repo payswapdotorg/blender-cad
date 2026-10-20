@@ -1001,13 +1001,15 @@ V1_TEXT = (
 class TestSerializationV2:
     def test_pinned_key_order(self):
         payload = json.loads(make_v2_doc().serialize())
+        # write schema moved to bcdoc/3 by the m3 schema lane (amends m2
+        # §2.7 — m3-module-contracts.md §6); v2 payloads still LOAD
         assert list(payload) == [
             "schema", "name", "units", "doc_version", "next_handle",
             "settings", "layers", "current_layer", "text_styles",
-            "dim_styles", "blocks", "layouts", "entities", "undo", "redo",
-            "selection",
+            "dim_styles", "blocks", "layouts", "sketches", "entities",
+            "undo", "redo", "selection",
         ]
-        assert payload["schema"] == "bcdoc/2"
+        assert payload["schema"] == "bcdoc/3"
 
     def test_byte_stable_with_all_tables_and_kinds(self):
         doc = make_v2_doc()
@@ -1033,9 +1035,10 @@ class TestSerializationV2:
         assert doc.blocks() == [] and doc.layouts() == []
         assert doc.text_styles() == ["Standard"] and doc.dim_styles() == ["Standard"]
         assert doc.current_layer == "0"
-        # byte-stable across repeated cycles
+        # byte-stable across repeated cycles (write schema = bcdoc/3
+        # since the m3 schema lane; the v1 upgrade path itself is unchanged)
         text = doc.serialize()
-        assert text.startswith('{"schema": "bcdoc/2"')
+        assert text.startswith('{"schema": "bcdoc/3"')
         assert Document.load(text).serialize() == text
         again = Document.load(Document.load(text).serialize())
         assert again.serialize() == text
