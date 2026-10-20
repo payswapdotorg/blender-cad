@@ -1,0 +1,4 @@
+# SolidCraft h2h harness — scratch build artifacts (never committed).
+# The pinned upstream clone lives at ../../.upstream/ (lane-level gitignore covers it;
+# see ../README.md §2: "Upstream is never vendored into git").
+target/

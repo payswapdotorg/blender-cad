@@ -1,0 +1,12 @@
+.upstream/
+scratch/
+*.log
+__pycache__/
+*.pyc
+target/
+Cargo.lock.bak
+build/
+*.o
+*.so
+driver
+solidcraft-driver

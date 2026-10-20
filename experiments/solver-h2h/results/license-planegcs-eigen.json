@@ -1,0 +1,201 @@
+{
+ "experiment": "h2h-license-planegcs-eigen",
+ "issue_ref": "m3-solver-h2h (m3-eval \u00a78 items 1-2; solidcraft-evaluation \u00a74.1 gate (a)) \u2014 PlaneGCS license verification before any vendoring decision + the pins this lane introduces",
+ "command": "python3 experiments/solver-h2h/gen_license_record.py",
+ "started_utc": "2026-10-20T15:27:10Z",
+ "finished_utc": "2026-10-20T15:27:10Z",
+ "pins": {
+  "freecad": {
+   "repo": "https://github.com/FreeCAD/FreeCAD.git",
+   "tag": "1.1.4",
+   "tag_sha": "4fd3bf320d9566a27e60069fc8387448aaa3a094"
+  },
+  "eigen": {
+   "artifact": "https://deb.debian.org/debian/pool/main/e/eigen3/eigen3_3.4.0.orig.tar.bz2",
+   "sha256": "b4c198460eba6f28d34894e3a5710998818515104d6e74e5cc331ce31e46e626",
+   "canonical_repo": "https://gitlab.com/libeigen/eigen.git",
+   "canonical_reachable_this_sandbox": false
+  }
+ },
+ "artifacts": {
+  "planegcs_files": {
+   "Constraints.cpp": {
+    "header_first_line": "/***************************************************************************",
+    "copyright_line": "*   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *",
+    "license_phrase": true,
+    "or_later": true,
+    "verbatim": "/***************************************************************************\n *   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *\n *                                                                         *\n *   This file is part of the FreeCAD CAx development system.              *\n *                                                                         *\n *   This library is free software; you can redistribute it and/or         *\n *   modify it under the terms of the GNU Library General Public           *\n *   License as published by the Free Software Foundation; either          *\n *   version 2 of the License, or (at your option) any later version.      *\n *                                                                         *\n *   This library  is distributed in the hope that it will be useful,      *\n *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *\n *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\n *   GNU Library General Public License for more details.                  *\n *                                                                         *\n *   You should have received a copy of the GNU Library General Public     *\n *   License along with this library; see the file COPYING.LIB. If not,    *\n *   write to the Free Software Foundation, Inc., 59 Temple Place,         *\n *   Suite 330, Boston, MA  02111-1307, USA                                *\n *                                                                         *\n ***************************************************************************/",
+    "sha256": "cb709b3f179c7540f749e3723669a652877156a1ec5d10d7e97ad0fd7f4a812b"
+   },
+   "Constraints.h": {
+    "header_first_line": "/***************************************************************************",
+    "copyright_line": "*   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *",
+    "license_phrase": true,
+    "or_later": true,
+    "verbatim": "/***************************************************************************\n *   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *\n *                                                                         *\n *   This file is part of the FreeCAD CAx development system.              *\n *                                                                         *\n *   This library is free software; you can redistribute it and/or         *\n *   modify it under the terms of the GNU Library General Public           *\n *   License as published by the Free Software Foundation; either          *\n *   version 2 of the License, or (at your option) any later version.      *\n *                                                                         *\n *   This library  is distributed in the hope that it will be useful,      *\n *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *\n *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\n *   GNU Library General Public License for more details.                  *\n *                                                                         *\n *   You should have received a copy of the GNU Library General Public     *\n *   License along with this library; see the file COPYING.LIB. If not,    *\n *   write to the Free Software Foundation, Inc., 59 Temple Place,         *\n *   Suite 330, Boston, MA  02111-1307, USA                                *\n *                                                                         *\n ***************************************************************************/",
+    "sha256": "2b32626a5d9976ef1b14343692faec55058875433f6982523504ca3d77f76a15"
+   },
+   "GCS.cpp": {
+    "header_first_line": "/***************************************************************************",
+    "copyright_line": "*   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *",
+    "license_phrase": true,
+    "or_later": true,
+    "verbatim": "/***************************************************************************\n *   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *\n *                                                                         *\n *   This file is part of the FreeCAD CAx development system.              *\n *                                                                         *\n *   This library is free software; you can redistribute it and/or         *\n *   modify it under the terms of the GNU Library General Public           *\n *   License as published by the Free Software Foundation; either          *\n *   version 2 of the License, or (at your option) any later version.      *\n *                                                                         *\n *   This library  is distributed in the hope that it will be useful,      *\n *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *\n *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\n *   GNU Library General Public License for more details.                  *\n *                                                                         *\n *   You should have received a copy of the GNU Library General Public     *\n *   License along with this library; see the file COPYING.LIB. If not,    *\n *   write to the Free Software Foundation, Inc., 59 Temple Place,         *\n *   Suite 330, Boston, MA  02111-1307, USA                                *\n *                                                                         *\n ***************************************************************************/",
+    "sha256": "501f0d279ea57e39b61f49ca433e05c54fff3a0a7bfe6fe657b0f83f3464355c"
+   },
+   "GCS.h": {
+    "header_first_line": "/***************************************************************************",
+    "copyright_line": "*   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *",
+    "license_phrase": true,
+    "or_later": true,
+    "verbatim": "/***************************************************************************\n *   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *\n *                                                                         *\n *   This file is part of the FreeCAD CAx development system.              *\n *                                                                         *\n *   This library is free software; you can redistribute it and/or         *\n *   modify it under the terms of the GNU Library General Public           *\n *   License as published by the Free Software Foundation; either          *\n *   version 2 of the License, or (at your option) any later version.      *\n *                                                                         *\n *   This library  is distributed in the hope that it will be useful,      *\n *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *\n *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\n *   GNU Library General Public License for more details.                  *\n *                                                                         *\n *   You should have received a copy of the GNU Library General Public     *\n *   License along with this library; see the file COPYING.LIB. If not,    *\n *   write to the Free Software Foundation, Inc., 59 Temple Place,         *\n *   Suite 330, Boston, MA  02111-1307, USA                                *\n *                                                                         *\n ***************************************************************************/",
+    "sha256": "79a0683acd84273efd8fb2dce36d2dac23011b10b2c693ec5615ce9eb786f18a"
+   },
+   "Geo.cpp": {
+    "header_first_line": "/***************************************************************************",
+    "copyright_line": "*   Copyright (c) 2014 Victor Titov (DeepSOIC) <vv.titov@gmail.com>       *",
+    "license_phrase": true,
+    "or_later": true,
+    "verbatim": "/***************************************************************************\n *   Copyright (c) 2014 Victor Titov (DeepSOIC) <vv.titov@gmail.com>       *\n *                                                                         *\n *   This file is part of the FreeCAD CAx development system.              *\n *                                                                         *\n *   This library is free software; you can redistribute it and/or         *\n *   modify it under the terms of the GNU Library General Public           *\n *   License as published by the Free Software Foundation; either          *\n *   version 2 of the License, or (at your option) any later version.      *\n *                                                                         *\n *   This library  is distributed in the hope that it will be useful,      *\n *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *\n *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\n *   GNU Library General Public License for more details.                  *\n *                                                                         *\n *   You should have received a copy of the GNU Library General Public     *\n *   License along with this library; see the file COPYING.LIB. If not,    *\n *   write to the Free Software Foundation, Inc., 59 Temple Place,         *\n *   Suite 330, Boston, MA  02111-1307, USA                                *\n *                                                                         *\n ***************************************************************************/",
+    "sha256": "166a01743bba5e98640bbdbfa5fa615557dd2e9b507f7450de1e6a4649db8ed9"
+   },
+   "Geo.h": {
+    "header_first_line": "/***************************************************************************",
+    "copyright_line": "*   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *",
+    "license_phrase": true,
+    "or_later": true,
+    "verbatim": "/***************************************************************************\n *   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *\n *                                                                         *\n *   This file is part of the FreeCAD CAx development system.              *\n *                                                                         *\n *   This library is free software; you can redistribute it and/or         *\n *   modify it under the terms of the GNU Library General Public           *\n *   License as published by the Free Software Foundation; either          *\n *   version 2 of the License, or (at your option) any later version.      *\n *                                                                         *\n *   This library  is distributed in the hope that it will be useful,      *\n *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *\n *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\n *   GNU Library General Public License for more details.                  *\n *                                                                         *\n *   You should have received a copy of the GNU Library General Public     *\n *   License along with this library; see the file COPYING.LIB. If not,    *\n *   write to the Free Software Foundation, Inc., 59 Temple Place,         *\n *   Suite 330, Boston, MA  02111-1307, USA                                *\n *                                                                         *\n ***************************************************************************/",
+    "sha256": "17c59287625820418ad66c3e6cf9463ad9388f169de11535d2c25fa428771712"
+   },
+   "SubSystem.cpp": {
+    "header_first_line": "/***************************************************************************",
+    "copyright_line": "*   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *",
+    "license_phrase": true,
+    "or_later": true,
+    "verbatim": "/***************************************************************************\n *   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *\n *                                                                         *\n *   This file is part of the FreeCAD CAx development system.              *\n *                                                                         *\n *   This library is free software; you can redistribute it and/or         *\n *   modify it under the terms of the GNU Library General Public           *\n *   License as published by the Free Software Foundation; either          *\n *   version 2 of the License, or (at your option) any later version.      *\n *                                                                         *\n *   This library  is distributed in the hope that it will be useful,      *\n *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *\n *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\n *   GNU Library General Public License for more details.                  *\n *                                                                         *\n *   You should have received a copy of the GNU Library General Public     *\n *   License along with this library; see the file COPYING.LIB. If not,    *\n *   write to the Free Software Foundation, Inc., 59 Temple Place,         *\n *   Suite 330, Boston, MA  02111-1307, USA                                *\n *                                                                         *\n ***************************************************************************/",
+    "sha256": "c48700843911f923d1c05bbda736e45df66826db5a1860aca19aa16cf035bc2a"
+   },
+   "SubSystem.h": {
+    "header_first_line": "/***************************************************************************",
+    "copyright_line": "*   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *",
+    "license_phrase": true,
+    "or_later": true,
+    "verbatim": "/***************************************************************************\n *   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *\n *                                                                         *\n *   This file is part of the FreeCAD CAx development system.              *\n *                                                                         *\n *   This library is free software; you can redistribute it and/or         *\n *   modify it under the terms of the GNU Library General Public           *\n *   License as published by the Free Software Foundation; either          *\n *   version 2 of the License, or (at your option) any later version.      *\n *                                                                         *\n *   This library  is distributed in the hope that it will be useful,      *\n *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *\n *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\n *   GNU Library General Public License for more details.                  *\n *                                                                         *\n *   You should have received a copy of the GNU Library General Public     *\n *   License along with this library; see the file COPYING.LIB. If not,    *\n *   write to the Free Software Foundation, Inc., 59 Temple Place,         *\n *   Suite 330, Boston, MA  02111-1307, USA                                *\n *                                                                         *\n ***************************************************************************/",
+    "sha256": "9a601de5fc441675551cf717a21da184060eb2f95bd76a026430f053401ae758"
+   },
+   "Util.h": {
+    "header_first_line": "/***************************************************************************",
+    "copyright_line": "*   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *",
+    "license_phrase": true,
+    "or_later": true,
+    "verbatim": "/***************************************************************************\n *   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *\n *                                                                         *\n *   This file is part of the FreeCAD CAx development system.              *\n *                                                                         *\n *   This library is free software; you can redistribute it and/or         *\n *   modify it under the terms of the GNU Library General Public           *\n *   License as published by the Free Software Foundation; either          *\n *   version 2 of the License, or (at your option) any later version.      *\n *                                                                         *\n *   This library  is distributed in the hope that it will be useful,      *\n *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *\n *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\n *   GNU Library General Public License for more details.                  *\n *                                                                         *\n *   You should have received a copy of the GNU Library General Public     *\n *   License along with this library; see the file COPYING.LIB. If not,    *\n *   write to the Free Software Foundation, Inc., 59 Temple Place,         *\n *   Suite 330, Boston, MA  02111-1307, USA                                *\n *                                                                         *\n ***************************************************************************/",
+    "sha256": "ff6df589332423ecb4b29e7b2f8d9f2d779f6520861b4155bb8e5a9b2f7a4eeb"
+   },
+   "qp_eq.cpp": {
+    "header_first_line": "/***************************************************************************",
+    "copyright_line": "*   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *",
+    "license_phrase": true,
+    "or_later": true,
+    "verbatim": "/***************************************************************************\n *   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *\n *                                                                         *\n *   This file is part of the FreeCAD CAx development system.              *\n *                                                                         *\n *   This library is free software; you can redistribute it and/or         *\n *   modify it under the terms of the GNU Library General Public           *\n *   License as published by the Free Software Foundation; either          *\n *   version 2 of the License, or (at your option) any later version.      *\n *                                                                         *\n *   This library  is distributed in the hope that it will be useful,      *\n *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *\n *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\n *   GNU Library General Public License for more details.                  *\n *                                                                         *\n *   You should have received a copy of the GNU Library General Public     *\n *   License along with this library; see the file COPYING.LIB. If not,    *\n *   write to the Free Software Foundation, Inc., 59 Temple Place,         *\n *   Suite 330, Boston, MA  02111-1307, USA                                *\n *                                                                         *\n ***************************************************************************/",
+    "sha256": "28aaf79ce58d4515a6aa7d2c79c702d83b09e7633b7575706b24974b4953ecfb"
+   },
+   "qp_eq.h": {
+    "header_first_line": "/***************************************************************************",
+    "copyright_line": "*   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *",
+    "license_phrase": true,
+    "or_later": true,
+    "verbatim": "/***************************************************************************\n *   Copyright (c) 2011 Konstantinos Poulios <logari81@gmail.com>          *\n *                                                                         *\n *   This file is part of the FreeCAD CAx development system.              *\n *                                                                         *\n *   This library is free software; you can redistribute it and/or         *\n *   modify it under the terms of the GNU Library General Public           *\n *   License as published by the Free Software Foundation; either          *\n *   version 2 of the License, or (at your option) any later version.      *\n *                                                                         *\n *   This library  is distributed in the hope that it will be useful,      *\n *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *\n *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\n *   GNU Library General Public License for more details.                  *\n *                                                                         *\n *   You should have received a copy of the GNU Library General Public     *\n *   License along with this library; see the file COPYING.LIB. If not,    *\n *   write to the Free Software Foundation, Inc., 59 Temple Place,         *\n *   Suite 330, Boston, MA  02111-1307, USA                                *\n *                                                                         *\n ***************************************************************************/",
+    "sha256": "e1083df385b8639fc3fe609dc60f81bd662a99b10e4efbaab9b50c6d9026afab"
+   }
+  },
+  "freecad_root_license_head": "GNU LESSER GENERAL PUBLIC LICENSE\n                       Version 2.1, February 1999\n\n Copyright (C) 1991, 1999 Free Software Foundation, Inc.\n 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  ",
+  "boost_wrapper_line2": "",
+  "sketcherglobal_header": "/***************************************************************************\n *   Copyright (c) 2019 Werner Mayer <wmayer[at]users.sourceforge.net>     *\n *                                                                         *\n *   This file is part of the FreeCAD CAx development system.              *\n *                                                                         *\n *   This library is free software; you can redistribute it and/or         *\n *   modify it under the terms of the GNU Library General Public           *\n *   License as published by the Free Software Foundation; either          *\n *   version 2 of the License, or (at your option) any later version.      *\n *                                                                         *\n *   This library  is distributed in the hope that it will be useful,      *\n *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *\n *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\n *   GNU Library General Public License for more details.                  *\n *                                                                         *\n *   You should have received a copy of the GNU Library General Public     *\n *   License along with this library; see the file COPYING.LIB. If not,    *\n *   write to the Free Software Foundation, Inc., 59 Temple Place,         *\n *   Suite 330, Boston, MA  02111-1307, USA                                *\n *                                                                         *\n ***************************************************************************/",
+  "eigen_copying_mpl2_head": "Mozilla Public License Version 2.0\n==================================\n\n1. Definitions\n--------------\n\n1.1. \"Contributor\"\n    means each individual or legal enti",
+  "eigen_copying_readme": "Eigen is primarily MPL2 licensed. See COPYING.MPL2 and these links:\n  http://www.mozilla.org/MPL/2.0/\n  http://www.mozilla.org/MPL/2.0/FAQ.html\n\nSome files contain third-party code under BSD or LGPL licenses, whence the other\nCOPYING.* files here.\n\nAll the LGPL code is either LGPL 2.1-only, or LGPL 2.1-or-later.\nFor this reason, the COPYING.LGPL file contains the LGPL 2.1 text.\n\nIf you want to guarantee that the Eigen code that you are #including is licensed\nunder the MPL2 and possibly more permissive licenses (like BSD), #define this\npreprocessor symbol:\n  EIGEN_MPL2_ONLY\nFor example, with most compilers, you could add this to your project CXXFLAGS:\n  -DEIGEN_MPL2_ONLY\nThis will cause a compilation error to be generated if you #include any code that is\nLGPL licensed.\n",
+  "freecad_setup_eigen": "necessary for Sketcher module"
+ },
+ "classification_note": "Per-file planegcs headers use the legacy 'GNU Library General Public License ... version 2 of the License, or (at your option) any later version' wording (LGPL-2.0+-in-form); the FreeCAD project-level license is LGPL-2.1-or-later (root LICENSE = full LGPL-2.1 text; sibling files such as boost_graph_adjacency_list.hpp carry SPDX LGPL-2.1-or-later). Both readings are LGPL-family with an 'or later' clause and are GPL-3.0-or-later-host-compatible for combined distribution; the conservative classification is recorded verbatim-quoted in the findings doc and the inventory row states the ambiguity explicitly. No verdict is produced here.",
+ "checks": [
+  {
+   "name": "planegcs.all_11_headers_lgpl_family_or_later",
+   "pass": true,
+   "detail": "every planegcs file header carries 'GNU Library General Public License ... or any later version' wording (verbatim per file in artifacts.planegcs_files)",
+   "files_with_deviation": []
+  },
+  {
+   "name": "planegcs.geo_cpp_second_author",
+   "pass": true,
+   "detail": "Geo.cpp copyright adds Victor Titov (DeepSOIC) <vv.titov@gmail.com> 2014 alongside the Poulios header \u2014 verbatim in artifacts"
+  },
+  {
+   "name": "freecad_root_license_is_lgpl21",
+   "pass": true,
+   "detail": "FreeCAD 1.1.4 root LICENSE is the full GNU LGPL-2.1 text (26526 chars; head quoted in artifacts)",
+   "head": "GNU LESSER GENERAL PUBLIC LICENSE\n                       Version 2.1, February 1999\n\n Copyright (C) 1991, 1999 Free Software Foundation, Inc.\n 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  ",
+   "chars": 26526
+  },
+  {
+   "name": "boost_wrapper_spdx_lgpl21_or_later",
+   "pass": true,
+   "detail": "src/boost_graph_adjacency_list.hpp:2 \u2014 SPDX LGPL-2.1-or-later (the 11-line boost>=1.75 deprecated-headers workaround planegcs includes)",
+   "verbatim": ""
+  },
+  {
+   "name": "sketcherglobal_header",
+   "pass": true,
+   "detail": "src/Mod/Sketcher/SketcherGlobal.h (Werner Mayer 2019) carries the same LGPL-family header \u2014 vendored read-only by the build, never modified",
+   "verbatim": "/***************************************************************************\n *   Copyright (c) 2019 Werner Mayer <wmayer[at]users.sourceforge.net>     *\n *                                                                         *\n *   This file is part of the FreeCAD CAx development system.              *\n *                                                                         *\n *   This library is free software; you can redistribute it and/or         *\n *   modify it under the terms of the GNU Library General Public           *\n *   License as published by the Free Software Foundation; either          *\n *   version 2 of the License, or (at your option) any later version.      *\n *                                                                         *\n *   This library  is distributed in the hope that it will be useful,      *\n *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *\n *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\n *   GNU Library General Public License for more details.                  *\n *                                                                         *\n *   You should have received a copy of the GNU Library General Public     *\n *   License along with this library; see the file COPYING.LIB. If not,    *\n *   write to the Free Software Foundation, Inc., 59 Temple Place,         *\n *   Suite 330, Boston, MA  02111-1307, USA                                *\n *                                                                         *\n ***************************************************************************/"
+  },
+  {
+   "name": "eigen.tarball_sha256_matches_pin",
+   "pass": true,
+   "detail": "eigen3_3.4.0.orig.tar.bz2 sha256 b4c198460eba6f28d34894e3a5710998818515104d6e74e5cc331ce31e46e626 == pin (Debian pool mirror of the upstream 3.4.0 release tarball)"
+  },
+  {
+   "name": "eigen.copying_mpl2_is_full_mpl2_text",
+   "pass": true,
+   "detail": "eigen-3.4.0/COPYING.MPL2 is the full MPL-2.0 text (16726 chars; first lines quoted in artifacts)",
+   "head": "Mozilla Public License Version 2.0\n==================================\n\n1. Definitions\n--------------\n\n1.1. \"Contributor\"\n    means each individual or legal enti",
+   "chars": 16726,
+   "sha256": "fab3dd6bdab226f1c08630b1dd917e11fcb4ec5e1e020e2c16f83a0a13863e85"
+  },
+  {
+   "name": "eigen.copying_readme_records_mpl2_default",
+   "pass": true,
+   "detail": "COPYING.README explains Eigen's multi-licensing (MPL2 default, with GPLv3+/BSD-3 alternative options for derivative works) \u2014 quoted in artifacts",
+   "verbatim": "Eigen is primarily MPL2 licensed. See COPYING.MPL2 and these links:\n  http://www.mozilla.org/MPL/2.0/\n  http://www.mozilla.org/MPL/2.0/FAQ.html\n\nSome files contain third-party code under BSD or LGPL licenses, whence the other\nCOPYING.* files here.\n\nAll the LGPL code is either LGPL 2.1-only, or LGPL 2.1-or-later.\nFor this reason, the COPYING.LGPL file contains the LGPL 2.1 text.\n\nIf you want to guarantee that the Eigen code that you are #including is licensed\nunder the MPL2 and possibly more permissive licenses (like BSD), #define this\npreprocessor symbol:\n  EIGEN_MPL2_ONLY\nFor example, with most compilers, you could add this to your project CXXFLAGS:\n  -DEIGEN_MPL2_ONLY\nThis will cause a compilation error to be generated if you #include any code that is\nLGPL licensed.\n"
+  },
+  {
+   "name": "freecad_1_1_4_targets_eigen3",
+   "pass": true,
+   "detail": "FreeCAD 1.1.4 cMake/FreeCAD_Helpers/SetupEigen.cmake: find_package(Eigen3) with 'necessary for Sketcher module'; flatmesh requires >= 3.4.0 \u2014 the planegcs build targets the 3.4 line, matching production FreeCAD",
+   "verbatim_quote": "# -------------------------------- Eigen --------------------------------\n    # necessary for Sketcher module"
+  },
+  {
+   "name": "eigen_3147391d_copying_mpl2_verified_at_pin",
+   "pass": true,
+   "detail": "eigen @ 3147391d is fetchable NOW (retest of the m3-eval \u00a79 403 condition; commit subject: 'Change version to 3.4.0.') and its COPYING.MPL2 is byte-identical to the eigen 3.4.0 release artifact verified above \u2014 the solvespace-row (verify) blocker is CLEARED by at-pin evidence",
+   "commit_subject": "Change version to 3.4.0.",
+   "copying_mpl2_sha256": "fab3dd6bdab226f1c08630b1dd917e11fcb4ec5e1e020e2c16f83a0a13863e85",
+   "release_mpl2_sha256": "fab3dd6bdab226f1c08630b1dd917e11fcb4ec5e1e020e2c16f83a0a13863e85"
+  },
+  {
+   "name": "eigen_gitlab_reachable_this_sandbox",
+   "pass": false,
+   "detail": "retest of the m3-eval \u00a77.2/\u00a79 blocker condition: exit 128: fatal: unable to access 'https://gitlab.com/libeigen/eigen.git/': The requested URL returned error: 403"
+  }
+ ],
+ "summary": {
+  "checks_total": 11,
+  "checks_passed": 10,
+  "checks_failed": 1
+ },
+ "failures": [
+  {
+   "name": "eigen_gitlab_reachable_this_sandbox",
+   "pass": false,
+   "detail": "retest of the m3-eval \u00a77.2/\u00a79 blocker condition: exit 128: fatal: unable to access 'https://gitlab.com/libeigen/eigen.git/': The requested URL returned error: 403"
+  }
+ ]
+}

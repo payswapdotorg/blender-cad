@@ -1,0 +1,36 @@
+# SolidCraft head-to-head harness — isolated experiment workspace (NOT product code)
+#
+# Solver-h2h lane (M3-entry gate): SolidCraft-side conformance envelope on the
+# m3-eval canonical 23-case corpus + determinism protocol + staircase scale
+# fixture, against the SAME upstream pin TL2 evaluated:
+#   tangency-labs/solidcraft @ 3b4db52c10279251a068cfca5eb7447068bc28e7 (v0.16.2)
+#
+# Path-depends on the pinned clone at ../.upstream/solidcraft (created by
+# ../fetch-solidcraft.sh; scratch, never committed). NOTE: the sketch/geom
+# dependency closure is serde + thiserror + ttf-parser ONLY (TL2's W1 record
+# §6.2) — it does NOT reach the vendored truck crates, so upstream's
+# [patch.crates-io] table is NOT replicated here (verified against upstream's
+# root Cargo.toml at the pin; if a future pin needs it, add the minimal set).
+#
+# ONLY sketch + geom are linked (never solidcraft-kernel/doc/io: their closure
+# exceeds this sandbox's 4 GiB cgroup OOM limit — TL2 Task-96 record).
+#
+# Build memory safety: cargo build --release -j 2 (2 jobs, 2-CPU/4 GiB cgroup).
+
+[package]
+name = "solidcraft-h2h-driver"
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+publish = false
+description = "Solver head-to-head harness: SolidCraft-sketch conformance evidence (isolated; never shipped)"
+
+[dependencies]
+solidcraft-sketch = { path = "../.upstream/solidcraft/crates/sketch" }
+solidcraft-geom = { path = "../.upstream/solidcraft/crates/geom" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[profile.release]
+opt-level = 3
+debug = 0
