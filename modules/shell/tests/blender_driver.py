@@ -332,12 +332,12 @@ def phase_main():
           and os.path.isfile(blend_path), blend_path)
     text_block = bpy.data.texts.get("blender_cad_document.json")
     check(phase, "persistence text block in bpy.data.texts", text_block is not None)
-    # bcdoc v2 (M2, contracts §2.7): the serialized schema literal is
-    # bcdoc/2 (load still accepts legacy bcdoc/1 — checked by the
-    # document suite, not here).
-    check(phase, "text block content is bcdoc/2 JSON",
+    # bcdoc/3 since the m3 schema lane (contracts m3 §6 amending §2.7):
+    # the serialized schema literal is bcdoc/3 (load still accepts legacy
+    # bcdoc/1/bcdoc/2 — checked by the document suite, not here).
+    check(phase, "text block content is bcdoc/3 JSON",
           text_block is not None
-          and text_block.as_string().startswith('{"schema": "bcdoc/2"'))
+          and text_block.as_string().startswith('{"schema": "bcdoc/3"'))
     RESULTS["phases"][phase]["blend"] = blend_path
     RESULTS["phases"][phase]["document"] = signature
 

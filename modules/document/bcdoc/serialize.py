@@ -1,13 +1,12 @@
-"""Stable serialization for documents — schema ``bcdoc/2`` (contract
-m2-module-contracts.md §2.7; M1 §3.5 amended by §14).
+"""Stable serialization for documents — schema ``bcdoc/3`` (contract
+m3-module-contracts.md §3; m2 §2.7 amended; M1 §3.5 amended by m2 §14).
 
-``serialize()`` ALWAYS writes ``bcdoc/2`` with keys in the pinned order:
+``serialize()`` ALWAYS writes ``bcdoc/3`` with keys in the pinned order:
 schema, name, units, doc_version, next_handle, settings, layers,
-current_layer, text_styles, dim_styles, blocks, layouts, entities, undo,
-redo, selection. ``load`` accepts BOTH ``bcdoc/1`` (deterministic
-upgrade: layer names -> default records, settings defaults, entities get
-``lineweight=None`` + ``space="MODEL"``, no blocks/layouts/styles) and
-``bcdoc/2``; anything else raises :class:`bcdoc.errors.SerializationError`.
+current_layer, text_styles, dim_styles, blocks, layouts, sketches,
+entities, undo, redo, selection. ``load`` accepts ``bcdoc/1`` and
+``bcdoc/2`` (deterministic upgrades: v1 → v2 shape → sketches = []) and
+``bcdoc/3``; anything else raises :class:`bcdoc.errors.SerializationError`.
 
 Byte-stability rules:
 
@@ -17,9 +16,15 @@ Byte-stability rules:
 - floats round-trip exactly through ``json`` (repr-based shortest form);
 - selection ids are sorted (frozensets have arbitrary iteration order);
 - the undo journal + redo stack are serialized, so a saved/reloaded
-  document keeps undo/redo depth intact — including the v2 op kinds
-  (v1 journals with bare ``add_layer`` ops replay tolerantly: missing
-  payloads -> default records).
+  document keeps undo/redo depth intact — including the v2 and v3 op
+  kinds (v1 journals with bare ``add_layer`` ops replay tolerantly:
+  missing payloads -> default records).
+
+bcdoc/3 sketch-content integrity (contract §3, blocks-handle-collision
+precedent): the ``sketches`` section is cross-validated against the
+payload's entity list at parse time — every entity ref (constraints and
+junction members alike) must exist in ``entities`` and slot refs must
+address line-kind entities; a dangling ref fails ``load``.
 """
 
 from __future__ import annotations
@@ -32,13 +37,20 @@ from .entities import ENTITY_CLASSES, GEOMETRY_FIELDS
 from .layers import LayerRecord
 from .layouts import LayoutRecord
 from .settings import Settings
+from .sketches import (
+    CONSTRAINT_KINDS,
+    ConstraintRecord,
+    JunctionRecord,
+    SketchRecord,
+)
 from .styles import DimStyleRecord, TextStyleRecord
 from .undo import UndoGroup
 
 SCHEMA_V1 = "bcdoc/1"
 SCHEMA_V2 = "bcdoc/2"
-#: What :func:`to_json` writes (loads accept V1 and V2).
-SCHEMA = SCHEMA_V2
+SCHEMA_V3 = "bcdoc/3"
+#: What :func:`to_json` writes (loads accept V1, V2 and V3).
+SCHEMA = SCHEMA_V3
 
 _OP_KINDS = {
     "add", "remove", "mutate",
@@ -47,12 +59,15 @@ _OP_KINDS = {
     "add_layout", "remove_layout", "rename_layout", "reorder_layout",
     "add_text_style", "remove_text_style", "mutate_text_style",
     "add_dim_style", "remove_dim_style", "mutate_dim_style",
+    "add_sketch", "remove_sketch", "mutate_sketch",
+    "add_constraint", "remove_constraint", "mutate_constraint",
+    "add_junction", "remove_junction", "mutate_junction",
 }
 
-_V2_REQUIRED_KEYS = (
+_V3_REQUIRED_KEYS = (
     "name", "units", "doc_version", "next_handle", "settings", "layers",
     "current_layer", "text_styles", "dim_styles", "blocks", "layouts",
-    "entities", "undo", "redo", "selection",
+    "sketches", "entities", "undo", "redo", "selection",
 )
 
 
@@ -157,6 +172,7 @@ def to_json(doc) -> str:
         "blocks": [definition.to_dict()
                    for definition in doc._block_table._blocks.values()],
         "layouts": [record.to_dict() for record in doc._layout_table._records],
+        "sketches": [record.to_dict() for record in doc._sketch_table._records],
         "entities": [entity_to_dict(e) for e in doc.entities()],
         "undo": [g.to_dict() for g in doc.undo_groups()],
         "redo": [g.to_dict() for g in doc.redo_groups()],
@@ -169,12 +185,14 @@ def to_json(doc) -> str:
 
 
 def parse(text: str) -> dict:
-    """Parse + structurally validate a ``bcdoc/1`` or ``bcdoc/2`` JSON
-    document (v1 payloads are deterministically upgraded in place).
+    """Parse + structurally validate a ``bcdoc/1``, ``bcdoc/2`` or
+    ``bcdoc/3`` JSON document (older payloads are deterministically
+    upgraded in place: v2 gains ``sketches = []``; v1 gains the v2 shape
+    first, then ``sketches = []``).
 
     Raises :class:`errors.SerializationError` for anything that is not a
     valid payload (wrong schema string, bad JSON, missing keys, malformed
-    entities/journal/selection/tables)."""
+    entities/journal/selection/tables, sketch refs to absent entities)."""
     if not isinstance(text, str):
         raise errors.SerializationError("load() expects a string")
     try:
@@ -186,12 +204,16 @@ def parse(text: str) -> dict:
     schema = data.get("schema")
     if schema == SCHEMA_V1:
         _upgrade_v1(data)
-    elif schema != SCHEMA_V2:
+        data["sketches"] = []       # v1 -> v2 shape -> v3 shape (deterministic)
+    elif schema == SCHEMA_V2:
+        data["sketches"] = []       # v2 -> v3 shape (deterministic upgrade)
+    elif schema != SCHEMA_V3:
         raise errors.SerializationError(
-            f"unsupported schema {schema!r} (expected {SCHEMA_V2!r} or {SCHEMA_V1!r})"
+            f"unsupported schema {schema!r} (expected {SCHEMA_V3!r}, "
+            f"{SCHEMA_V2!r} or {SCHEMA_V1!r})"
         )
 
-    for key in _V2_REQUIRED_KEYS:
+    for key in _V3_REQUIRED_KEYS:
         if key not in data:
             raise errors.SerializationError(f"document payload missing key {key!r}")
 
@@ -273,6 +295,10 @@ def parse(text: str) -> dict:
         definitions.append(definition)
         handles = handles + [definition.handle]
 
+    # -- sketches (bcdoc/3, contract §3: cross-validated against the
+    # payload's entity list — blocks-handle-collision precedent) --------
+    sketch_records = _sketch_records(data["sketches"], entities)
+
     # -- journal stacks --------------------------------------------------------
     for stackkey in ("undo", "redo"):
         stack = data[stackkey]
@@ -297,10 +323,64 @@ def parse(text: str) -> dict:
     data["__dim_styles__"] = dim_styles
     data["__layouts__"] = layout_records
     data["__blocks__"] = definitions
+    data["__sketches__"] = sketch_records
     data["__entities__"] = entities
     data["__undo__"] = [UndoGroup.from_dict(g) for g in data["undo"]]
     data["__redo__"] = [UndoGroup.from_dict(g) for g in data["redo"]]
     return data
+
+
+def _sketch_records(payload, entities: list) -> list:
+    """Rebuild the sketch records + cross-validate every entity ref
+    against the parsed entity list (contract §3): refs must exist, slot
+    refs must address line-kind entities, junction refs must be
+    sketch-local, ids must be unique per sketch/table."""
+    if not isinstance(payload, list):
+        raise errors.SerializationError("'sketches' must be a list")
+    by_id = {entity.id: entity for entity in entities}
+
+    def _check_ref(sketch, ref, where):
+        if "junction" in ref:
+            if ref["junction"] not in {j.junction_id for j in sketch.junctions}:
+                raise errors.SerializationError(
+                    f"{where} references junction {ref['junction']!r} "
+                    "which is not in the same sketch")
+            return
+        entity = by_id.get(ref["entity"])
+        if entity is None:
+            raise errors.SerializationError(
+                f"{where} references entity {ref['entity']!r} which is not "
+                "in the document's 'entities'")
+        if "slot" in ref and entity.kind != "line":
+            raise errors.SerializationError(
+                f"{where} slot ref addresses a {entity.kind} entity; slots "
+                "address line endpoints only")
+
+    records = []
+    for item in payload:
+        try:
+            record = SketchRecord.from_dict(item)
+        except (KeyError, TypeError, ValueError) as exc:
+            raise errors.SerializationError(
+                f"invalid sketch record: {exc}") from None
+        for junction in record.junctions:
+            for member in junction.members:
+                _check_ref(record, member,
+                           f"sketch {record.sketch_id!r} junction "
+                           f"{junction.junction_id!r} member")
+        for constraint in record.constraints:
+            if constraint.kind not in CONSTRAINT_KINDS:  # pragma: no cover
+                raise errors.SerializationError(  # ctor already rejects;
+                    f"unknown constraint kind {constraint.kind!r}")     # kept loud
+            for ref in constraint.refs:
+                _check_ref(record, ref,
+                           f"sketch {record.sketch_id!r} constraint "
+                           f"{constraint.c_id!r}")
+        records.append(record)
+    ids = [record.sketch_id for record in records]
+    if len(set(ids)) != len(ids):
+        raise errors.SerializationError("'sketches' contains duplicate ids")
+    return records
 
 
 def _style_records(payload, record_cls, key: str) -> list:
@@ -356,7 +436,8 @@ def _upgrade_v1(data: dict) -> None:
     shape (in place). Layer names become default records; settings take
     the registry defaults; entities/journals are handled by the tolerant
     readers (``entity_from_dict`` defaults for lineweight/space, journal
-    layer ops replay with default props)."""
+    layer ops replay with default props). The caller then adds the v3
+    ``sketches = []`` (same deterministic rule as the v2 -> v3 upgrade)."""
     layers = data.get("layers")
     if not isinstance(layers, list) or any(not isinstance(n, str) for n in layers):
         # keep the M1 validation error for malformed v1 layer lists
@@ -460,3 +541,83 @@ def _validate_group(group, where: str) -> None:
                 raise errors.SerializationError(
                     f"journal reorder_layout op needs 'name' + int 'old_index' "
                     f"in {where}")
+        # -- sketches (bcdoc/3, contract m3 §3: same mandatory-key
+        # discipline as the existing ops) ----------------------------------
+        elif kind in ("add_sketch", "remove_sketch"):
+            if "sketch_id" not in op:
+                raise errors.SerializationError(
+                    f"journal {kind} op missing 'sketch_id' in {where}: {op!r}")
+            if "record" in op and not isinstance(op["record"], dict):
+                raise errors.SerializationError(
+                    f"journal {kind} op 'record' must be a dict in {where}")
+            if "index" in op and (not isinstance(op["index"], int)
+                                  or isinstance(op["index"], bool)):
+                raise errors.SerializationError(
+                    f"journal {kind} op 'index' must be an int in {where}")
+        elif kind == "mutate_sketch":
+            if "sketch_id" not in op or not isinstance(op.get("changes"), dict):
+                raise errors.SerializationError(
+                    f"journal mutate_sketch op needs 'sketch_id' + dict "
+                    f"'changes' in {where}: {op!r}")
+        elif kind == "add_constraint":
+            if "sketch_id" not in op or not isinstance(op.get("constraint"), dict):
+                raise errors.SerializationError(
+                    f"journal add_constraint op needs 'sketch_id' + dict "
+                    f"'constraint' in {where}: {op!r}")
+            if "index" in op and (not isinstance(op["index"], int)
+                                  or isinstance(op["index"], bool)):
+                raise errors.SerializationError(
+                    f"journal add_constraint op 'index' must be an int "
+                    f"in {where}")
+        elif kind == "remove_constraint":
+            for key in ("sketch_id", "c_id"):
+                if key not in op:
+                    raise errors.SerializationError(
+                        f"journal remove_constraint op missing {key!r} "
+                        f"in {where}: {op!r}")
+            if "constraint" in op and not isinstance(op["constraint"], dict):
+                raise errors.SerializationError(
+                    f"journal remove_constraint op 'constraint' must be a "
+                    f"dict in {where}")
+            if "index" in op and (not isinstance(op["index"], int)
+                                  or isinstance(op["index"], bool)):
+                raise errors.SerializationError(
+                    f"journal remove_constraint op 'index' must be an int "
+                    f"in {where}")
+        elif kind == "mutate_constraint":
+            if "sketch_id" not in op or "c_id" not in op \
+                    or not isinstance(op.get("changes"), dict):
+                raise errors.SerializationError(
+                    f"journal mutate_constraint op needs 'sketch_id' + "
+                    f"'c_id' + dict 'changes' in {where}: {op!r}")
+        elif kind == "add_junction":
+            if "sketch_id" not in op or not isinstance(op.get("junction"), dict):
+                raise errors.SerializationError(
+                    f"journal add_junction op needs 'sketch_id' + dict "
+                    f"'junction' in {where}: {op!r}")
+            if "index" in op and (not isinstance(op["index"], int)
+                                  or isinstance(op["index"], bool)):
+                raise errors.SerializationError(
+                    f"journal add_junction op 'index' must be an int "
+                    f"in {where}")
+        elif kind == "remove_junction":
+            for key in ("sketch_id", "junction_id"):
+                if key not in op:
+                    raise errors.SerializationError(
+                        f"journal remove_junction op missing {key!r} "
+                        f"in {where}: {op!r}")
+            if "junction" in op and not isinstance(op["junction"], dict):
+                raise errors.SerializationError(
+                    f"journal remove_junction op 'junction' must be a dict "
+                    f"in {where}")
+            if "index" in op and (not isinstance(op["index"], int)
+                                  or isinstance(op["index"], bool)):
+                raise errors.SerializationError(
+                    f"journal remove_junction op 'index' must be an int "
+                    f"in {where}")
+        elif kind == "mutate_junction":
+            if "sketch_id" not in op or "junction_id" not in op \
+                    or not isinstance(op.get("changes"), dict):
+                raise errors.SerializationError(
+                    f"journal mutate_junction op needs 'sketch_id' + "
+                    f"'junction_id' + dict 'changes' in {where}: {op!r}")

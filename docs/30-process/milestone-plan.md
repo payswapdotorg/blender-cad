@@ -123,6 +123,14 @@ graph LR
 
 ## 6. M3 — Precision & parametrics
 
+<!-- m3 status note (2026-10-20, schema lane): the "constraints (PlaneGCS)"
+objective below is the ORIGINAL plan text; the measured outcome superseded
+it — see docs/00-architecture/par-solver-head-to-head.md (SolidCraft-solver
+recommended behind the bcdoc-first seam; PlaneGCS fallback+reference; the
+M3-entry "PlaneGCS license verification" criterion IS satisfied at the
+pin). The bcdoc/3 schema (constrained-sketch document content) is landed
+per m3-module-contracts.md. -->
+
 - **Objective:** OCCT integration live; constraints (PlaneGCS); 3D solids;
   parametric edits; DWG read (LibreDWG).
 - **Entry criteria:** M2 exit; OCCT/OCP packaging gates passed (performance

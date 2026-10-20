@@ -314,7 +314,8 @@ class Entity:
 
     def to_json_dict(self) -> dict:
         """Fixed-order JSON-safe dict of every field (the single source for
-        bcdoc/2 entity records and journal snapshots; key order is part of
+        bcdoc entity records (bcdoc/2 format, kept by bcdoc/3) and journal
+        snapshots; key order is part of
         the byte-stable serialization contract: common properties in the
         pinned order, then geometry fields in registry order)."""
         data = {

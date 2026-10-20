@@ -7,7 +7,9 @@ registered through ``bcdraft.register_all``), the session command history,
 the feedback message sink and the prompt/dynamic-overlay text the N-panel
 status line renders.
 
-The v2 document (M2, bcdoc/2) adds layers/blocks/layouts/settings/styles —
+The v2 document (M2, bcdoc/2; writes bcdoc/3 since the m3 schema lane) adds
+layers/blocks/layouts/settings/styles (and, at bcdoc/3, constrained-sketch
+content) —
 :func:`panel_state` exposes them to the N-panel sections and
 :func:`resolve_cmdline_token` implements the v2 command-line behavior
 (empty token = repeat last, unknown token = suggestions when W-A's
@@ -15,8 +17,8 @@ The v2 document (M2, bcdoc/2) adds layers/blocks/layouts/settings/styles —
 
 Persistence (the M1 save/reopen gate): after EVERY committed transaction
 the document serializes into the ``bpy.data.texts`` block
-``"blender_cad_document.json"`` (bcdoc/2; ``Document.load`` still upgrades
-legacy bcdoc/1 files) — native ``Ctrl+S`` therefore persists CAD
+``"blender_cad_document.json"`` (bcdoc/3; ``Document.load`` still upgrades
+legacy bcdoc/1/bcdoc/2 files) — native ``Ctrl+S`` therefore persists CAD
 documents inside the .blend. The ``load_post`` handler (handlers.py)
 restores the document on reopen; ``save_pre`` flushes right before saving.
 The on_change chain refreshes DIMENSION caches first

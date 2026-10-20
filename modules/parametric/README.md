@@ -1,6 +1,10 @@
 # Module: parametric
 
-- **Status:** planned (no code at M0)
+- **Status:** planned (no module code yet; the DOCUMENT-side data model it
+  consumes is landed — bcdoc/3 SketchTable/ConstraintRecord/JunctionRecord/
+  SolveReport per docs/00-architecture/m3-module-contracts.md; integration
+  gated on the port-vs-FFI decision + the open (verify) gates, per
+  par-solver-head-to-head.md §4/§6)
 - **Owner:** W2
 - **Date:** 2026-10-19 (UTC)
 - **Vocabulary:** docs/GLOSSARY.md (binding)

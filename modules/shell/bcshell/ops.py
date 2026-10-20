@@ -575,7 +575,7 @@ class BCSHELL_OT_dxf_export(bpy.types.Operator):
 # ---------------------------------------------------------------------------
 
 class BCSHELL_OT_doc_save_json(bpy.types.Operator):
-    """Save the CAD document as bcdoc/2 JSON"""
+    """Save the CAD document as bcdoc/3 JSON"""
 
     bl_idname = "bcshell.doc_save_json"
     bl_label = "Save Document JSON"
@@ -604,7 +604,7 @@ class BCSHELL_OT_doc_save_json(bpy.types.Operator):
 
 
 class BCSHELL_OT_doc_load_json(bpy.types.Operator):
-    """Load a bcdoc/2 (or legacy bcdoc/1) JSON document as the active document"""
+    """Load a bcdoc/3 (or legacy bcdoc/1/bcdoc/2) JSON document as the active document"""
 
     bl_idname = "bcshell.doc_load_json"
     bl_label = "Load Document JSON"

@@ -49,6 +49,27 @@ Journal op vocabulary (plain dicts; JSON-serializable via ``UndoGroup.to_dict``)
 ``{"op": "mutate_text_style"|"mutate_dim_style", "name", "changes"}``
     Style table edits (same shapes as the layer ops).
 
+``{"op": "add_sketch", "sketch_id", "record": {...}}`` /
+``{"op": "remove_sketch", "sketch_id", "record"}`` /
+``{"op": "mutate_sketch", "sketch_id", "changes"}``
+    Sketch-table lifecycle (bcdoc/3, contract m3 §2): add/remove carry the
+    FULL record (the inverse re-adds byte-exactly); mutate carries the
+    PRIOR field values (name/workplane), so the pure inverse is the op
+    itself.
+
+``{"op": "add_constraint", "sketch_id", "constraint": {...}}`` /
+``{"op": "remove_constraint", "sketch_id", "c_id", "constraint"}`` /
+``{"op": "mutate_constraint", "sketch_id", "c_id", "changes"}``
+    Constraint edits (the parametric edit is the first-class op): mutate
+    carries the PRIOR values of value/driven/refs/kind; undo granularity is
+    per-constraint, never per-sketch.
+
+``{"op": "add_junction", "sketch_id", "junction": {...}}`` /
+``{"op": "remove_junction", "sketch_id", "junction_id", "junction"}`` /
+``{"op": "mutate_junction", "sketch_id", "junction_id", "changes"}``
+    Junction-map edits: identity (``junction_id``) is immutable and
+    survives member changes (the record's whole point).
+
 Every committed transaction appends one :class:`UndoGroup` whose entries
 are the *reversed* journal — applying them in order undoes the
 transaction. Undo itself re-applies those entries as a new committed
@@ -173,4 +194,47 @@ def inverse_of_applied(op: dict) -> dict:
         return inverse
     if kind in ("mutate_text_style", "mutate_dim_style"):
         return {"op": kind, "name": op["name"], "changes": dict(op["changes"])}
+    # -- sketches (bcdoc/3 — contract m3 §2) ------------------------------
+    if kind == "add_sketch":
+        return {"op": "remove_sketch", "sketch_id": op["sketch_id"]}
+    if kind == "remove_sketch":
+        inverse = {"op": "add_sketch", "sketch_id": op["sketch_id"]}
+        record = op.get("record")
+        if record is not None:  # full-payload ops carry the record
+            inverse["record"] = dict(record)
+        if "index" in op:  # position restoring (entity-add precedent)
+            inverse["index"] = op["index"]
+        return inverse
+    if kind == "mutate_sketch":
+        return {"op": "mutate_sketch", "sketch_id": op["sketch_id"],
+                "changes": dict(op["changes"])}
+    if kind == "add_constraint":
+        return {"op": "remove_constraint", "sketch_id": op["sketch_id"],
+                "c_id": op["constraint"]["c_id"]}
+    if kind == "remove_constraint":
+        inverse = {"op": "add_constraint", "sketch_id": op["sketch_id"]}
+        record = op.get("constraint")
+        if record is not None:  # full-payload ops carry the record
+            inverse["constraint"] = dict(record)
+        if "index" in op:  # position restoring (entity-add precedent)
+            inverse["index"] = op["index"]
+        return inverse
+    if kind == "mutate_constraint":
+        return {"op": "mutate_constraint", "sketch_id": op["sketch_id"],
+                "c_id": op["c_id"], "changes": dict(op["changes"])}
+    if kind == "add_junction":
+        return {"op": "remove_junction", "sketch_id": op["sketch_id"],
+                "junction_id": op["junction"]["junction_id"]}
+    if kind == "remove_junction":
+        inverse = {"op": "add_junction", "sketch_id": op["sketch_id"]}
+        record = op.get("junction")
+        if record is not None:  # full-payload ops carry the record
+            inverse["junction"] = dict(record)
+        if "index" in op:  # position restoring (entity-add precedent)
+            inverse["index"] = op["index"]
+        return inverse
+    if kind == "mutate_junction":
+        return {"op": "mutate_junction", "sketch_id": op["sketch_id"],
+                "junction_id": op["junction_id"],
+                "changes": dict(op["changes"])}
     raise ValueError(f"unknown journal op {op!r}")
