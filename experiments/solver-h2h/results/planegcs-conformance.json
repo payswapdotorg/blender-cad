@@ -1,0 +1,4337 @@
+{
+ "experiment": "h2h-planegcs-side",
+ "issue_ref": "m3-solver-h2h (m3-eval \u00a78 item 1; solidcraft-evaluation \u00a74.1 gate (a)) \u2014 PlaneGCS conformance on the canonical corpus",
+ "command": "python3 experiments/solver-h2h/planegcs-side/gen_planegcs_results.py",
+ "started_utc": "2026-10-20T16:01:42Z",
+ "finished_utc": "2026-10-20T16:01:43Z",
+ "upstream": {
+  "solver": "PlaneGCS (FreeCAD src/Mod/Sketcher/App/planegcs, 11 files)",
+  "repo": "https://github.com/FreeCAD/FreeCAD.git",
+  "tag": "1.1.4",
+  "tag_sha": "4fd3bf320d9566a27e60069fc8387448aaa3a094",
+  "pinned_by": "experiments/solver-h2h/fetch-planegcs.sh (tag sha-verified)",
+  "eigen": {
+   "artifact": "eigen3_3.4.0.orig.tar.bz2",
+   "sha256": "b4c198460eba6f28d34894e3a5710998818515104d6e74e5cc331ce31e46e626",
+   "provenance": "Debian pool mirror of the upstream release tarball (canonical gitlab intermittently 403 from this sandbox \u2014 recorded in license-planegcs-eigen.md \u00a73)"
+  },
+  "build": "g++ 14.2, -std=c++20 -O2 (FreeCAD 1.1.4 requires C++20), system boost 1.83, the lane's compat shims (null-sink Console, FCGlobal/FCConfig stubs) \u2014 never product code"
+ },
+ "w1_fixture_source": "experiments/cad-sketcher/fixtures/solver/cases.json (READ-ONLY; transcribed from tl2 w1_sketch.rs @ 685f7c453409d470998394e27dcbad3a53a384ef by m3-eval; transcription machine-verified here)",
+ "transcription_verification": {
+  "issues": {},
+  "clean": true
+ },
+ "host": {
+  "cpus": 2,
+  "python": "3.12.15"
+ },
+ "solve_status_vocabulary": {
+  "Success(0)": {
+   "gcs": "Success",
+   "status": "solved",
+   "note": "error zeroed; applySolution writes back (FreeCAD Sketch.cpp:4823)"
+  },
+  "Converged(1)": {
+   "gcs": "Converged",
+   "status": "no-write-back",
+   "note": "minimized without zeroing \u2014 treated as failure by FreeCAD's contract (no write-back)"
+  },
+  "Failed(2)": {
+   "gcs": "Failed",
+   "status": "failed"
+  },
+  "SuccessfulSolutionInvalid(3)": {
+   "gcs": "SuccessfulSolutionInvalid",
+   "status": "solved_invalid_geometry",
+   "note": "not produced by this corpus"
+  },
+  "chain": "DogLeg -> BFGS -> LevenbergMarquardt -> SQP-augmented (Sketch.cpp:4795-4905 verbatim; the 4th step pins every parameter to its current value via temporary equalities)"
+ },
+ "api_surface": {
+  "constraint_kinds_available": "GCS.h System API: Horizontal/Vertical/Parallel/Perpendicular/P2PCoincident/P2PDistance/Difference/CircleDiameter/ArcDiameter/ArcRadius/L2LAngle/AngleViaPoint/EqualLength/EqualRadius/P2PSymmetric(point+line forms)/MidpointOnLine/Tangent(line,arc|circle|arc-arc)/PointOn*/... (GCS.h:270-560)",
+  "value_mutation": {
+   "available": true,
+   "api": "constraint datums are caller-owned plain double* \u2014 set the value, initSolution(), solve() (no rebuild of the object graph); verified by the mutation-path checks in triangle_value_edit / circle_radius_only_edit / the staircase edit at N=200",
+   "contrast": "slvs has NO mutation API (m3-eval rejection pillar 2); SolidCraft has set_value + solve_after_value_edit with continuation substeps"
+  },
+  "diagnostics": "dofsNumber() + getConflicting/getRedundant/getPartiallyRedundant (TAGS \u2014 the label mapping is caller-owned) + getDependentParams (GCS.h:608-651); diagnose runs inside initSolution (GCS.cpp:1731-1737)",
+  "diagnose_caveats": "diagnose outcomes are formulation- and order-dependent for degenerate/redundant systems \u2014 demonstrated by the slot formulation_probes: the same fixture yields dof 0 (AngleViaPoint form, constraint-addition order A) vs dof 2 + 4 flagged (P2LDistance form) vs dof 4 + 10 flagged (corpus order); rank itself should be read from the structurally-clean probe, and the solver's own report recorded as-is per formulation",
+  "failure_semantics": "copy-solve + applySolution only on Success = bitwise restore on failure (reference/undoSolution, GCS.cpp:1849-1888) \u2014 verified by every failure case"
+ },
+ "cases": [
+  {
+   "id": "bare_line",
+   "group": "mapping",
+   "description": "single line, no constraints: unknowns = 4 point coordinates",
+   "equivalence": {
+    "mark": "identical",
+    "reason": "same entities + zero constraints; slvs lines carry no params of their own (endpoints carry the 4 unknowns), like SolidCraft"
+   },
+   "source": "tl2 w1_sketch.rs case_bare_line @ 685f7c453409d470998394e27dcbad3a53a384ef",
+   "expected": {
+    "dof": 4,
+    "status": "solved"
+   },
+   "solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 4,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "l1.start",
+      "pos": [
+       0,
+       0
+      ]
+     },
+     {
+      "id": "l1.end",
+      "pos": [
+       10,
+       1
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "l1",
+      "kind": "line",
+      "p_a": [
+       0,
+       0
+      ],
+      "p_b": [
+       10,
+       1
+      ]
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "l1.start"
+     },
+     {
+      "id": "l1.end"
+     }
+    ],
+    "curves": [
+     {
+      "id": "l1",
+      "kind": "line"
+     }
+    ],
+    "constraints": []
+   },
+   "checks": [
+    {
+     "name": "dof_4",
+     "pass": true,
+     "detail": "dof=4"
+    },
+    {
+     "name": "solved_no_constraints",
+     "pass": true,
+     "detail": "solved"
+    },
+    {
+     "name": "geometry_untouched",
+     "pass": true,
+     "detail": "[0, 0] [10, 1] (bitwise input)"
+    }
+   ],
+   "notes": "a line contributes only its two end points as unknowns; DOF = 4",
+   "bits_equal_input_after_solve": true
+  },
+  {
+   "id": "bare_circle",
+   "group": "mapping",
+   "description": "single circle, no constraints: unknowns = centre (2) + radius (1)",
+   "equivalence": {
+    "mark": "identical",
+    "reason": "circle = 2D centre point + radius as explicit distance param (slvs circles store radius via a distance entity) \u2014 SolidCraft models the radius as an explicit rvar too"
+   },
+   "source": "tl2 w1_sketch.rs case_bare_circle @ 685f7c453409d470998394e27dcbad3a53a384ef",
+   "expected": {
+    "dof": 3,
+    "status": "solved",
+    "radius": 5.0
+   },
+   "solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 3,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "c1.center",
+      "pos": [
+       3,
+       4
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "c1",
+      "kind": "circle",
+      "p_center": [
+       3,
+       4
+      ],
+      "radius": 5
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "c1.center"
+     }
+    ],
+    "curves": [
+     {
+      "id": "c1",
+      "kind": "circle"
+     }
+    ],
+    "constraints": []
+   },
+   "checks": [
+    {
+     "name": "dof_3",
+     "pass": true,
+     "detail": "dof=3"
+    },
+    {
+     "name": "solved",
+     "pass": true,
+     "detail": "solved"
+    },
+    {
+     "name": "radius_is_explicit_param",
+     "pass": true,
+     "detail": "r=5"
+    },
+    {
+     "name": "center_untouched",
+     "pass": true,
+     "detail": "[3, 4]"
+    }
+   ],
+   "notes": "the radius is an explicit solver variable for circles (a slvs distance entity param), like SolidCraft's Layout::rvar",
+   "bits_equal_input_after_solve": true
+  },
+  {
+   "id": "bare_arc",
+   "group": "mapping",
+   "description": "single arc, no constraints: unknowns = 3 points (6 coords) minus the arc's |start-centre|==|end-centre| equation (1)",
+   "equivalence": {
+    "mark": "identical",
+    "reason": "same 3-point construction; slvs arcs also enforce |start-c|==|end-c| with NO radius variable"
+   },
+   "source": "tl2 w1_sketch.rs case_bare_arc @ 685f7c453409d470998394e27dcbad3a53a384ef",
+   "expected": {
+    "dof": 5,
+    "status": "solved",
+    "radius": 5.0
+   },
+   "solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 5,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "a1.center",
+      "pos": [
+       1,
+       2
+      ]
+     },
+     {
+      "id": "a1.start",
+      "pos": [
+       6,
+       2
+      ]
+     },
+     {
+      "id": "a1.end",
+      "pos": [
+       1,
+       7
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "a1",
+      "kind": "arc",
+      "p_center": [
+       1,
+       2
+      ],
+      "p_start": [
+       6,
+       2
+      ],
+      "p_end": [
+       1,
+       7
+      ]
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "a1.center"
+     },
+     {
+      "id": "a1.start"
+     },
+     {
+      "id": "a1.end"
+     }
+    ],
+    "curves": [
+     {
+      "id": "a1",
+      "kind": "arc"
+     }
+    ],
+    "constraints": [
+     {
+      "label": "arcrule:a1",
+      "kind": "arcrules",
+      "detail": "ArcRules(a1): start/end bound to centre+radius+angles (FreeCAD's own arc formulation)"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "dof_5",
+     "pass": true,
+     "detail": "dof=5"
+    },
+    {
+     "name": "solved",
+     "pass": true,
+     "detail": "solved"
+    },
+    {
+     "name": "radius_is_derived",
+     "pass": true,
+     "detail": "r=5.0"
+    },
+    {
+     "name": "endpoints_untouched",
+     "pass": true,
+     "detail": "c=[1, 2] s=[6, 2] e=[1, 7]"
+    }
+   ],
+   "notes": "an arc has NO radius variable; radius is derived \u2014 a bcdoc Arc(center,radius,start,end) maps through the derived values",
+   "bits_equal_input_after_solve": true
+  },
+  {
+   "id": "circle_origin_radius",
+   "group": "fully_constrained",
+   "description": "circle: centre coincident with the fixed origin + radius dimension",
+   "equivalence": {
+    "mark": "adapted",
+    "reason": "TL2 Radius{5} expressed as slvs DIAMETER=10 (no radius primitive; the addon's diameter.py does the same); point_determined checked via perturbed re-solve"
+   },
+   "source": "tl2 w1_sketch.rs case_circle_origin_radius @ 685f7c453409d470998394e27dcbad3a53a384ef",
+   "expected": {
+    "dof": 0,
+    "status": "solved",
+    "center": [
+     0.0,
+     0.0
+    ],
+    "radius": 5.0
+   },
+   "solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "c1.center",
+      "pos": [
+       0,
+       0
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "c1",
+      "kind": "circle",
+      "p_center": [
+       0,
+       0
+      ],
+      "radius": 5
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "c1.center"
+     }
+    ],
+    "curves": [
+     {
+      "id": "c1",
+      "kind": "circle"
+     }
+    ],
+    "constraints": [
+     {
+      "label": "k1",
+      "kind": "coincident_to_origin",
+      "detail": "c1.center <-> fixed origin"
+     },
+     {
+      "label": "d1",
+      "kind": "diameter",
+      "detail": "diameter(c1) = 10"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "solved",
+     "pass": true,
+     "detail": "solved"
+    },
+    {
+     "name": "dof_0",
+     "pass": true,
+     "detail": "dof=0"
+    },
+    {
+     "name": "center_at_origin",
+     "pass": true,
+     "detail": "[0, 0]"
+    },
+    {
+     "name": "radius_5",
+     "pass": true,
+     "detail": "r=5"
+    },
+    {
+     "name": "all_determined_via_perturbed_resolve",
+     "pass": true,
+     "detail": "perturbed re-solve: status=solved dof=0 center=[0, 0]"
+    }
+   ],
+   "notes": "Coincident with the group-1 fixed origin point == TL2's point 0",
+   "perturbed_resolve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "perturbed_resolve_geometry": {
+    "c1.center": [
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "triangle_constrained",
+   "group": "fully_constrained",
+   "description": "rough triangle; A on origin, l1 horizontal, |AB|=50, |BC|=45, angle(l1,l3)=60deg interior at A",
+   "equivalence": {
+    "mark": "adapted",
+    "reason": "TL2 Angle{a:l1,b:l3,60deg,flip:true} expressed as slvs angle(l1,l3,60,inverse=True) \u2014 the direction-cosine form with entityA's vector flipped (constrainteq.cpp:890-910); formulation probe-verified to select the same branch"
+   },
+   "source": "tl2 w1_sketch.rs case_triangle (oracle 25) @ 685f7c453409d470998394e27dcbad3a53a384ef",
+   "expected": {
+    "dof": 0,
+    "status": "solved",
+    "A": [
+     0,
+     0
+    ],
+    "B": [
+     50,
+     0
+    ],
+    "C": [
+     18.623724356957947,
+     32.257236812409175
+    ]
+   },
+   "solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "A",
+      "pos": [
+       0,
+       0
+      ]
+     },
+     {
+      "id": "B",
+      "pos": [
+       50,
+       0
+      ]
+     },
+     {
+      "id": "C",
+      "pos": [
+       18.62372435696452,
+       32.25723681241973
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "l1",
+      "kind": "line",
+      "p_a": [
+       0,
+       0
+      ],
+      "p_b": [
+       50,
+       0
+      ]
+     },
+     {
+      "id": "l2",
+      "kind": "line",
+      "p_a": [
+       50,
+       0
+      ],
+      "p_b": [
+       18.62372435696452,
+       32.25723681241973
+      ]
+     },
+     {
+      "id": "l3",
+      "kind": "line",
+      "p_a": [
+       18.62372435696452,
+       32.25723681241973
+      ],
+      "p_b": [
+       0,
+       0
+      ]
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "A"
+     },
+     {
+      "id": "B"
+     },
+     {
+      "id": "C"
+     }
+    ],
+    "curves": [
+     {
+      "id": "l1",
+      "kind": "line"
+     },
+     {
+      "id": "l2",
+      "kind": "line"
+     },
+     {
+      "id": "l3",
+      "kind": "line"
+     }
+    ],
+    "constraints": [
+     {
+      "label": "k1",
+      "kind": "coincident_to_origin",
+      "detail": "A <-> fixed origin"
+     },
+     {
+      "label": "k2",
+      "kind": "horizontal",
+      "detail": "l1"
+     },
+     {
+      "label": "d1",
+      "kind": "distance",
+      "detail": "|A B| = 50"
+     },
+     {
+      "label": "d2",
+      "kind": "distance",
+      "detail": "|B C| = 45"
+     },
+     {
+      "label": "d3",
+      "kind": "angle",
+      "detail": "angle(l1,l3) = 60 deg, inverse=True (l1 vector flipped via the 4-point form)"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "solved",
+     "pass": true,
+     "detail": "solved conflicting=[]"
+    },
+    {
+     "name": "dof_0",
+     "pass": true,
+     "detail": "dof=0"
+    },
+    {
+     "name": "a_at_origin",
+     "pass": true,
+     "detail": "[0, 0]"
+    },
+    {
+     "name": "b_at_50_0",
+     "pass": true,
+     "detail": "[50, 0]"
+    },
+    {
+     "name": "c_matches_analytic_60deg_far_branch",
+     "pass": true,
+     "detail": "got [18.62372435696452, 32.25723681241973] want (18.623724356957947, 32.257236812409175) (t=37.24744871391589)"
+    },
+    {
+     "name": "all_points_determined_via_perturbed_resolve",
+     "pass": true,
+     "detail": "perturbed re-solve -> [50, 0] [18.62372435695803, 32.25723681240933]"
+    }
+   ],
+   "notes": "analytic far branch t=25+5*sqrt(6)=37.24744871391589; near branch 12.75 rejected by the seed",
+   "perturbed_resolve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "perturbed_resolve_geometry": {
+    "A": [
+     0,
+     0
+    ],
+    "B": [
+     50,
+     0
+    ],
+    "C": [
+     18.62372435695803,
+     32.25723681240933
+    ]
+   }
+  },
+  {
+   "id": "triangle_value_edit",
+   "group": "value_edit",
+   "description": "triangle solved, then |AB| edited 50->40 and re-solved from the previous solution",
+   "equivalence": {
+    "mark": "adapted",
+    "reason": "slvs exposes NO constraint-value mutation API; the edit is performed by rebuilding the system from the previous solution with the new value \u2014 exactly CAD Sketcher's own edit path (curve_solver.py rebuilds the full system on every solve)"
+   },
+   "source": "tl2 w1_sketch.rs case_triangle_value_edit @ 685f7c453409d470998394e27dcbad3a53a384ef",
+   "expected": {
+    "dof": 0,
+    "B": [
+     40,
+     0
+    ],
+    "C": [
+     24.36140661634508,
+     42.19519400335427
+    ]
+   },
+   "solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "A",
+      "pos": [
+       0,
+       0
+      ]
+     },
+     {
+      "id": "B",
+      "pos": [
+       40,
+       0
+      ]
+     },
+     {
+      "id": "C",
+      "pos": [
+       24.361406616345107,
+       42.19519400335428
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "l1",
+      "kind": "line",
+      "p_a": [
+       0,
+       0
+      ],
+      "p_b": [
+       40,
+       0
+      ]
+     },
+     {
+      "id": "l2",
+      "kind": "line",
+      "p_a": [
+       40,
+       0
+      ],
+      "p_b": [
+       24.361406616345107,
+       42.19519400335428
+      ]
+     },
+     {
+      "id": "l3",
+      "kind": "line",
+      "p_a": [
+       24.361406616345107,
+       42.19519400335428
+      ],
+      "p_b": [
+       0,
+       0
+      ]
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "A"
+     },
+     {
+      "id": "B"
+     },
+     {
+      "id": "C"
+     }
+    ],
+    "curves": [
+     {
+      "id": "l1",
+      "kind": "line"
+     },
+     {
+      "id": "l2",
+      "kind": "line"
+     },
+     {
+      "id": "l3",
+      "kind": "line"
+     }
+    ],
+    "constraints": [
+     {
+      "label": "k1",
+      "kind": "coincident_to_origin",
+      "detail": "A <-> fixed origin"
+     },
+     {
+      "label": "k2",
+      "kind": "horizontal",
+      "detail": "l1"
+     },
+     {
+      "label": "d1",
+      "kind": "distance",
+      "detail": "|A B| = 40"
+     },
+     {
+      "label": "d2",
+      "kind": "distance",
+      "detail": "|B C| = 45"
+     },
+     {
+      "label": "d3",
+      "kind": "angle",
+      "detail": "angle(l1,l3) = 60 deg, inverse=True (l1 vector flipped via the 4-point form)"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "solved_after_edit",
+     "pass": true,
+     "detail": "solved conflicting=[]"
+    },
+    {
+     "name": "dof_still_0",
+     "pass": true,
+     "detail": "dof=0"
+    },
+    {
+     "name": "b_moved_to_40_0",
+     "pass": true,
+     "detail": "[40, 0]"
+    },
+    {
+     "name": "c_matches_analytic_after_edit",
+     "pass": true,
+     "detail": "got [24.361406616345107, 42.19519400335428] want (24.36140661634508, 42.19519400335427)"
+    },
+    {
+     "name": "anchored_point_immovable",
+     "pass": true,
+     "detail": "A bits before/after the rebuild edit (coincident with the fixed origin \u2014 never moves)"
+    },
+    {
+     "name": "no_orientation_flip",
+     "pass": true,
+     "detail": "C.y=42.19519400335428 > 0"
+    },
+    {
+     "name": "first_solve_was_solved_dof0",
+     "pass": true,
+     "detail": "solved dof=0"
+    },
+    {
+     "name": "mutation_path_solves_without_rebuild",
+     "pass": true,
+     "detail": "solved chain=DogLeg=0;via=DogLeg"
+    },
+    {
+     "name": "mutation_path_c_matches_analytic",
+     "pass": true,
+     "detail": "got [24.361406616345107, 42.19519400335428] want (24.36140661634508, 42.19519400335427)"
+    }
+   ],
+   "notes": "anchored vertex never moves; the rest follows the driving dimension",
+   "first_solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "solve_rebuild_path": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "solve_mutation_path": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "warm_resolve_same_system": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "a_bits_before": {
+    "A:x": "0000000000000000",
+    "A:y": "0000000000000000",
+    "B:x": "4049000000000000",
+    "B:y": "0000000000000000",
+    "C:x": "40329fac6642e199",
+    "C:y": "404020ed22c855c3"
+   },
+   "a_bits_after_rebuild": {
+    "A:x": "0000000000000000",
+    "A:y": "0000000000000000",
+    "B:x": "4044000000000000",
+    "B:y": "0000000000000000",
+    "C:x": "40385c8524ddc2a0",
+    "C:y": "404518fc1dfa6417"
+   },
+   "mutation_geometry": {
+    "A": [
+     0,
+     0
+    ],
+    "B": [
+     40,
+     0
+    ],
+    "C": [
+     24.361406616345107,
+     42.19519400335428
+    ]
+   }
+  },
+  {
+   "id": "l_bracket_constrained",
+   "group": "fully_constrained",
+   "description": "6-line L outline, H/V constraints, corner on origin, 4 dimensions (60/8/40/8)",
+   "equivalence": {
+    "mark": "adapted",
+    "reason": "TL2 DistanceX/DistanceY are UNSIGNED magnitudes; slvs PROJ distances are signed dp.axis \u2014 signs chosen to reproduce TL2's expected corners exactly (d3=-40, d4=-8; magnitudes identical). The binding's distance_proj helper is broken (entityA=E_NONE aborts, probe-verified); raw add_constraint with fixed +x/+y reference lines is used"
+   },
+   "source": "tl2 w1_sketch.rs case_l_bracket(True) (oracle 19) @ 685f7c453409d470998394e27dcbad3a53a384ef",
+   "expected": {
+    "dof": 0,
+    "status": "solved",
+    "corners": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      60.0,
+      0.0
+     ],
+     [
+      60.0,
+      8.0
+     ],
+     [
+      8.0,
+      8.0
+     ],
+     [
+      8.0,
+      40.0
+     ],
+     [
+      0.0,
+      40.0
+     ]
+    ]
+   },
+   "solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "p0",
+      "pos": [
+       0,
+       0
+      ]
+     },
+     {
+      "id": "p1",
+      "pos": [
+       60,
+       0
+      ]
+     },
+     {
+      "id": "p2",
+      "pos": [
+       60,
+       7.999999999999999
+      ]
+     },
+     {
+      "id": "p3",
+      "pos": [
+       8,
+       7.999999999999999
+      ]
+     },
+     {
+      "id": "p4",
+      "pos": [
+       8,
+       40
+      ]
+     },
+     {
+      "id": "p5",
+      "pos": [
+       0,
+       40
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "l1",
+      "kind": "line",
+      "p_a": [
+       0,
+       0
+      ],
+      "p_b": [
+       60,
+       0
+      ]
+     },
+     {
+      "id": "l2",
+      "kind": "line",
+      "p_a": [
+       60,
+       0
+      ],
+      "p_b": [
+       60,
+       7.999999999999999
+      ]
+     },
+     {
+      "id": "l3",
+      "kind": "line",
+      "p_a": [
+       60,
+       7.999999999999999
+      ],
+      "p_b": [
+       8,
+       7.999999999999999
+      ]
+     },
+     {
+      "id": "l4",
+      "kind": "line",
+      "p_a": [
+       8,
+       7.999999999999999
+      ],
+      "p_b": [
+       8,
+       40
+      ]
+     },
+     {
+      "id": "l5",
+      "kind": "line",
+      "p_a": [
+       8,
+       40
+      ],
+      "p_b": [
+       0,
+       40
+      ]
+     },
+     {
+      "id": "l6",
+      "kind": "line",
+      "p_a": [
+       0,
+       40
+      ],
+      "p_b": [
+       0,
+       0
+      ]
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "p0"
+     },
+     {
+      "id": "p1"
+     },
+     {
+      "id": "p2"
+     },
+     {
+      "id": "p3"
+     },
+     {
+      "id": "p4"
+     },
+     {
+      "id": "p5"
+     }
+    ],
+    "curves": [
+     {
+      "id": "l1",
+      "kind": "line"
+     },
+     {
+      "id": "l2",
+      "kind": "line"
+     },
+     {
+      "id": "l3",
+      "kind": "line"
+     },
+     {
+      "id": "l4",
+      "kind": "line"
+     },
+     {
+      "id": "l5",
+      "kind": "line"
+     },
+     {
+      "id": "l6",
+      "kind": "line"
+     }
+    ],
+    "constraints": [
+     {
+      "label": "k1",
+      "kind": "horizontal",
+      "detail": "l1"
+     },
+     {
+      "label": "k3",
+      "kind": "horizontal",
+      "detail": "l3"
+     },
+     {
+      "label": "k5",
+      "kind": "horizontal",
+      "detail": "l5"
+     },
+     {
+      "label": "k2",
+      "kind": "vertical",
+      "detail": "l2"
+     },
+     {
+      "label": "k4",
+      "kind": "vertical",
+      "detail": "l4"
+     },
+     {
+      "label": "k6",
+      "kind": "vertical",
+      "detail": "l6"
+     },
+     {
+      "label": "k7",
+      "kind": "coincident_to_origin",
+      "detail": "p0 <-> fixed origin"
+     },
+     {
+      "label": "d1",
+      "kind": "distance_x",
+      "detail": "X(p0->p1) = 60 (as Difference(p.x, q.x))"
+     },
+     {
+      "label": "d2",
+      "kind": "distance_y",
+      "detail": "Y(p1->p2) = 8 (as Difference(p.y, q.y))"
+     },
+     {
+      "label": "d3",
+      "kind": "distance_y",
+      "detail": "Y(p5->p0) = -40 (as Difference(p.y, q.y))"
+     },
+     {
+      "label": "d4",
+      "kind": "distance_x",
+      "detail": "X(p4->p5) = -8 (as Difference(p.x, q.x))"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "solved",
+     "pass": true,
+     "detail": "solved"
+    },
+    {
+     "name": "dof_0",
+     "pass": true,
+     "detail": "dof=0"
+    },
+    {
+     "name": "corner_0_at_0,0",
+     "pass": true,
+     "detail": "[0, 0]"
+    },
+    {
+     "name": "corner_1_at_60,0",
+     "pass": true,
+     "detail": "[60, 0]"
+    },
+    {
+     "name": "corner_2_at_60,8",
+     "pass": true,
+     "detail": "[60, 7.999999999999999]"
+    },
+    {
+     "name": "corner_3_at_8,8",
+     "pass": true,
+     "detail": "[8, 7.999999999999999]"
+    },
+    {
+     "name": "corner_4_at_8,40",
+     "pass": true,
+     "detail": "[8, 40]"
+    },
+    {
+     "name": "corner_5_at_0,40",
+     "pass": true,
+     "detail": "[0, 40]"
+    },
+    {
+     "name": "all_points_determined_via_perturbed_resolve",
+     "pass": true,
+     "detail": "perturbed re-solve dof=0"
+    }
+   ],
+   "notes": "expected corners (0,0)(60,0)(60,8)(8,8)(8,40)(0,40)",
+   "perturbed_resolve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "perturbed_resolve_geometry": {
+    "p0": [
+     0,
+     0
+    ],
+    "p1": [
+     60,
+     0
+    ],
+    "p2": [
+     60,
+     8
+    ],
+    "p3": [
+     7.999999999999999,
+     8
+    ],
+    "p4": [
+     7.999999999999999,
+     40
+    ],
+    "p5": [
+     0,
+     40
+    ]
+   }
+  },
+  {
+   "id": "l_bracket_no_dims",
+   "group": "underconstrained",
+   "description": "6-line L outline, H/V constraints, corner on origin, no dimensions",
+   "equivalence": {
+    "mark": "identical",
+    "reason": "H/V + coincident-only fixture: identical constraint set"
+   },
+   "source": "tl2 w1_sketch.rs case_l_bracket(False) (oracle 19) @ 685f7c453409d470998394e27dcbad3a53a384ef",
+   "expected": {
+    "dof": 4,
+    "status": "solved",
+    "corners": null
+   },
+   "solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 4,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "p0",
+      "pos": [
+       0,
+       0
+      ]
+     },
+     {
+      "id": "p1",
+      "pos": [
+       55,
+       0
+      ]
+     },
+     {
+      "id": "p2",
+      "pos": [
+       55,
+       9
+      ]
+     },
+     {
+      "id": "p3",
+      "pos": [
+       10,
+       9
+      ]
+     },
+     {
+      "id": "p4",
+      "pos": [
+       10,
+       45
+      ]
+     },
+     {
+      "id": "p5",
+      "pos": [
+       0,
+       45
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "l1",
+      "kind": "line",
+      "p_a": [
+       0,
+       0
+      ],
+      "p_b": [
+       55,
+       0
+      ]
+     },
+     {
+      "id": "l2",
+      "kind": "line",
+      "p_a": [
+       55,
+       0
+      ],
+      "p_b": [
+       55,
+       9
+      ]
+     },
+     {
+      "id": "l3",
+      "kind": "line",
+      "p_a": [
+       55,
+       9
+      ],
+      "p_b": [
+       10,
+       9
+      ]
+     },
+     {
+      "id": "l4",
+      "kind": "line",
+      "p_a": [
+       10,
+       9
+      ],
+      "p_b": [
+       10,
+       45
+      ]
+     },
+     {
+      "id": "l5",
+      "kind": "line",
+      "p_a": [
+       10,
+       45
+      ],
+      "p_b": [
+       0,
+       45
+      ]
+     },
+     {
+      "id": "l6",
+      "kind": "line",
+      "p_a": [
+       0,
+       45
+      ],
+      "p_b": [
+       0,
+       0
+      ]
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "p0"
+     },
+     {
+      "id": "p1"
+     },
+     {
+      "id": "p2"
+     },
+     {
+      "id": "p3"
+     },
+     {
+      "id": "p4"
+     },
+     {
+      "id": "p5"
+     }
+    ],
+    "curves": [
+     {
+      "id": "l1",
+      "kind": "line"
+     },
+     {
+      "id": "l2",
+      "kind": "line"
+     },
+     {
+      "id": "l3",
+      "kind": "line"
+     },
+     {
+      "id": "l4",
+      "kind": "line"
+     },
+     {
+      "id": "l5",
+      "kind": "line"
+     },
+     {
+      "id": "l6",
+      "kind": "line"
+     }
+    ],
+    "constraints": [
+     {
+      "label": "k1",
+      "kind": "horizontal",
+      "detail": "l1"
+     },
+     {
+      "label": "k3",
+      "kind": "horizontal",
+      "detail": "l3"
+     },
+     {
+      "label": "k5",
+      "kind": "horizontal",
+      "detail": "l5"
+     },
+     {
+      "label": "k2",
+      "kind": "vertical",
+      "detail": "l2"
+     },
+     {
+      "label": "k4",
+      "kind": "vertical",
+      "detail": "l4"
+     },
+     {
+      "label": "k6",
+      "kind": "vertical",
+      "detail": "l6"
+     },
+     {
+      "label": "k7",
+      "kind": "coincident_to_origin",
+      "detail": "p0 <-> fixed origin"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "solved",
+     "pass": true,
+     "detail": "solved"
+    },
+    {
+     "name": "dof_4",
+     "pass": true,
+     "detail": "dof=4"
+    },
+    {
+     "name": "anchored_corner_determined",
+     "pass": true,
+     "detail": "p0=[0, 0]"
+    },
+    {
+     "name": "free_corners_recorded",
+     "pass": true,
+     "detail": "underconstrained placement (recorded, no pass/fail): {\"p0\": [0, 0], \"p1\": [55, 0], \"p2\": [55, 9], \"p3\": [10, 9], \"p4\": [10, 45], \"p5\": [0, 45]}"
+    },
+    {
+     "name": "underconstrained_landing_perturbation_stability_recorded",
+     "pass": true,
+     "detail": "max corner drift after 0.3-magnitude seed perturbation + re-solve: 0.205913 \u2014 recorded, no pass/fail (slvs closes the gap onto one point via substitution; SolidCraft keeps free geometry at its seed)"
+    }
+   ],
+   "notes": "H/V + coincident only: dof 4 (the L can shear); only the origin-anchored corner is determined",
+   "bits_equal_input_after_solve": false,
+   "input_bits": {
+    "p0:x": "3ff0000000000000",
+    "p0:y": "3ff0000000000000",
+    "p1:x": "404b800000000000",
+    "p1:y": "c000000000000000",
+    "p2:x": "404c800000000000",
+    "p2:y": "4022000000000000",
+    "p3:x": "4024000000000000",
+    "p3:y": "401c000000000000",
+    "p4:x": "4022000000000000",
+    "p4:y": "4046800000000000",
+    "p5:x": "bff0000000000000",
+    "p5:y": "4043000000000000"
+   },
+   "after_bits": {
+    "p0:x": "0000000000000000",
+    "p0:y": "0000000000000000",
+    "p1:x": "404b800000000000",
+    "p1:y": "0000000000000000",
+    "p2:x": "404b800000000000",
+    "p2:y": "4022000000000000",
+    "p3:x": "4024000000000000",
+    "p3:y": "4022000000000000",
+    "p4:x": "4024000000000000",
+    "p4:y": "4046800000000000",
+    "p5:x": "0000000000000000",
+    "p5:y": "4046800000000000"
+   },
+   "max_corner_drift_after_perturbation": 0.20591260281974044
+  },
+  {
+   "id": "slot_constrained",
+   "group": "fully_constrained",
+   "description": "obround: 2 arcs + 2 lines sharing end points, 4 endpoint tangencies, equal radii, horizontal line, a1 centre on origin, radius 6, centre distance 40",
+   "equivalence": {
+    "mark": "adapted",
+    "reason": "tangent() requires (arc,line) order + structurally shared endpoints (same topology as TL2); Radius{6} expressed as DIAMETER=12; DistanceX via PROJ onto the fixed +x reference line"
+   },
+   "source": "tl2 w1_sketch.rs case_slot (oracle 20) @ 685f7c453409d470998394e27dcbad3a53a384ef",
+   "expected": {
+    "dof": 0,
+    "status": "solved",
+    "positions": {
+     "a1c": [
+      0.0,
+      0.0
+     ],
+     "a1s": [
+      0.0,
+      6.0
+     ],
+     "a1e": [
+      0.0,
+      -6.0
+     ],
+     "a2c": [
+      40.0,
+      0.0
+     ],
+     "a2s": [
+      40.0,
+      -6.0
+     ],
+     "a2e": [
+      40.0,
+      6.0
+     ]
+    },
+    "radii": [
+     6,
+     6
+    ]
+   },
+   "solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 2,
+    "conflicting": [
+     "arcrule:a1",
+     "arcrule:a2",
+     "k4",
+     "k5"
+    ],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "a1c",
+      "pos": [
+       0,
+       0
+      ]
+     },
+     {
+      "id": "a1e",
+      "pos": [
+       2.4463381754529104e-05,
+       -6
+      ]
+     },
+     {
+      "id": "a1s",
+      "pos": [
+       2.4968232184485016e-05,
+       6.000000000000001
+      ]
+     },
+     {
+      "id": "a2c",
+      "pos": [
+       40,
+       6.554008606183743e-16
+      ]
+     },
+     {
+      "id": "a2e",
+      "pos": [
+       39.999983079760106,
+       6.000000000000002
+      ]
+     },
+     {
+      "id": "a2s",
+      "pos": [
+       39.99998399109354,
+       -6
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "a1",
+      "kind": "arc",
+      "p_center": [
+       0,
+       0
+      ],
+      "p_start": [
+       2.4968232184485016e-05,
+       6.000000000000001
+      ],
+      "p_end": [
+       2.4463381754529104e-05,
+       -6
+      ]
+     },
+     {
+      "id": "a2",
+      "kind": "arc",
+      "p_center": [
+       40,
+       6.554008606183743e-16
+      ],
+      "p_start": [
+       39.99998399109354,
+       -6
+      ],
+      "p_end": [
+       39.999983079760106,
+       6.000000000000002
+      ]
+     },
+     {
+      "id": "l1",
+      "kind": "line",
+      "p_a": [
+       2.4463381754529104e-05,
+       -6
+      ],
+      "p_b": [
+       39.99998399109354,
+       -6
+      ]
+     },
+     {
+      "id": "l2",
+      "kind": "line",
+      "p_a": [
+       39.999983079760106,
+       6.000000000000002
+      ],
+      "p_b": [
+       2.4968232184485016e-05,
+       6.000000000000001
+      ]
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "a1c"
+     },
+     {
+      "id": "a1e"
+     },
+     {
+      "id": "a1s"
+     },
+     {
+      "id": "a2c"
+     },
+     {
+      "id": "a2e"
+     },
+     {
+      "id": "a2s"
+     }
+    ],
+    "curves": [
+     {
+      "id": "a1",
+      "kind": "arc"
+     },
+     {
+      "id": "a2",
+      "kind": "arc"
+     },
+     {
+      "id": "l1",
+      "kind": "line"
+     },
+     {
+      "id": "l2",
+      "kind": "line"
+     }
+    ],
+    "constraints": [
+     {
+      "label": "arcrule:a1",
+      "kind": "arcrules",
+      "detail": "ArcRules(a1): start/end bound to centre+radius+angles (FreeCAD's own arc formulation)"
+     },
+     {
+      "label": "arcrule:a2",
+      "kind": "arcrules",
+      "detail": "ArcRules(a2): start/end bound to centre+radius+angles (FreeCAD's own arc formulation)"
+     },
+     {
+      "label": "k1",
+      "kind": "coincident_to_origin",
+      "detail": "a1c <-> fixed origin"
+     },
+     {
+      "label": "k2",
+      "kind": "tangent_arc_line",
+      "detail": "tangent(a1,l1) (curve-level Line-Arc tangent = P2LDistance(a.center, l, a.rad), structural endpoint sharing as in the corpus)"
+     },
+     {
+      "label": "k3",
+      "kind": "tangent_arc_line",
+      "detail": "tangent(a2,l1) (curve-level Line-Arc tangent = P2LDistance(a.center, l, a.rad), structural endpoint sharing as in the corpus)"
+     },
+     {
+      "label": "k4",
+      "kind": "tangent_arc_line",
+      "detail": "tangent(a2,l2) (curve-level Line-Arc tangent = P2LDistance(a.center, l, a.rad), structural endpoint sharing as in the corpus)"
+     },
+     {
+      "label": "k5",
+      "kind": "tangent_arc_line",
+      "detail": "tangent(a1,l2) (curve-level Line-Arc tangent = P2LDistance(a.center, l, a.rad), structural endpoint sharing as in the corpus)"
+     },
+     {
+      "label": "k6",
+      "kind": "equal",
+      "detail": "equal(a1,a2)"
+     },
+     {
+      "label": "k7",
+      "kind": "horizontal",
+      "detail": "l1"
+     },
+     {
+      "label": "d1",
+      "kind": "diameter",
+      "detail": "diameter(a1) = 12"
+     },
+     {
+      "label": "d2",
+      "kind": "distance_x",
+      "detail": "X(a1c->a2c) = 40 (as Difference(p.x, q.x))"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "solved",
+     "pass": true,
+     "detail": "solved conflicting=['arcrule:a1', 'arcrule:a2', 'k4', 'k5']"
+    },
+    {
+     "name": "dof_0",
+     "pass": false,
+     "detail": "dof=2 (raw reported value \u2014 planegcs's diagnose reports 2 with ['arcrule:a1', 'arcrule:a2', 'k4', 'k5'] flagged for THIS formulation; the structurally-clean analysis exists in the formulation probes)"
+    },
+    {
+     "name": "a1c_at_0,0",
+     "pass": true,
+     "detail": "[0, 0]"
+    },
+    {
+     "name": "a1s_at_0,6",
+     "pass": false,
+     "detail": "[2.4968232184485016e-05, 6.000000000000001]"
+    },
+    {
+     "name": "a1e_at_0,-6",
+     "pass": false,
+     "detail": "[2.4463381754529104e-05, -6]"
+    },
+    {
+     "name": "a2c_at_40,0",
+     "pass": true,
+     "detail": "[40, 6.554008606183743e-16]"
+    },
+    {
+     "name": "a2s_at_40,-6",
+     "pass": false,
+     "detail": "[39.99998399109354, -6]"
+    },
+    {
+     "name": "a2e_at_40,6",
+     "pass": false,
+     "detail": "[39.999983079760106, 6.000000000000002]"
+    },
+    {
+     "name": "radius_6_both_caps",
+     "pass": true,
+     "detail": "r1=6.000000000051952 r2=6.000000000021358"
+    },
+    {
+     "name": "no_redundancy_reported_for_endpoint_tangency",
+     "pass": false,
+     "detail": "planegcs diagnose at this formulation flags ['arcrule:a1', 'arcrule:a2', 'k4', 'k5'] as conflicting (dof 2) \u2014 an honest divergence; see formulation_probes"
+    }
+   ],
+   "notes": "12 unknowns (6 points) vs 12 independent equations; tangency at the shared end points replaces a symmetry constraint",
+   "perturbed_resolve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "perturbed_resolve_geometry": {
+    "a1c": [
+     0,
+     0
+    ],
+    "a1e": [
+     -2.573206581168656e-05,
+     -6.000000000000001
+    ],
+    "a1s": [
+     1.1702149135591674e-05,
+     6
+    ],
+    "a2c": [
+     40,
+     3.2877785672774203e-16
+    ],
+    "a2e": [
+     40.000032690057495,
+     6
+    ],
+    "a2s": [
+     40.00000843811278,
+     -6.000000000000001
+    ]
+   },
+   "formulation_probes": [
+    {
+     "after": "A: AngleViaPoint + sharing (diagnose)",
+     "dof": 4,
+     "conflicting": [
+      "arcrule:a1",
+      "arcrule:a2",
+      "k2",
+      "k3",
+      "k4",
+      "k5",
+      "k6",
+      "k7",
+      "d1",
+      "d2"
+     ],
+     "redundant": []
+    },
+    {
+     "after": "A: AngleViaPoint + sharing (solve)",
+     "status": "failed",
+     "chain": "DogLeg=2;BFGS=1;LevenbergMarquardt=2;SQP-augmented=1;none-success",
+     "dof": 4,
+     "conflicting": [
+      "arcrule:a1",
+      "arcrule:a2",
+      "k2",
+      "k3",
+      "k4",
+      "k5",
+      "k6",
+      "k7",
+      "d1",
+      "d2"
+     ],
+     "positions": {
+      "a1c": [
+       1,
+       1
+      ],
+      "a1s": [
+       1,
+       7
+      ],
+      "a1e": [
+       1,
+       -5
+      ],
+      "a2c": [
+       37,
+       2
+      ],
+      "a2s": [
+       37,
+       -3
+      ],
+      "a2e": [
+       37,
+       7
+      ],
+      "r1": 4.6538818155407e-310
+     }
+    },
+    {
+     "after": "B: coincidents + AngleViaPoint (diagnose)",
+     "dof": 24,
+     "conflicting": [
+      "arcrule:a1",
+      "arcrule:a2",
+      "c1",
+      "c2",
+      "c3",
+      "c4",
+      "k1",
+      "k2",
+      "k3",
+      "k4",
+      "k5",
+      "k6",
+      "k7",
+      "d1",
+      "d2"
+     ],
+     "redundant": []
+    },
+    {
+     "after": "B: coincidents + AngleViaPoint (solve)",
+     "status": "failed",
+     "chain": "DogLeg=2;BFGS=2;LevenbergMarquardt=2;SQP-augmented=1;none-success",
+     "dof": 24,
+     "conflicting": [
+      "arcrule:a1",
+      "arcrule:a2",
+      "c1",
+      "c2",
+      "c3",
+      "c4",
+      "k1",
+      "k2",
+      "k3",
+      "k4",
+      "k5",
+      "k6",
+      "k7",
+      "d1",
+      "d2"
+     ],
+     "positions": {
+      "a1c": [
+       1,
+       1
+      ],
+      "a1s": [
+       1,
+       7
+      ],
+      "a1e": [
+       1,
+       -5
+      ],
+      "a2c": [
+       37,
+       2
+      ],
+      "a2s": [
+       37,
+       -3
+      ],
+      "a2e": [
+       37,
+       7
+      ],
+      "r1": 1.4e-322
+     }
+    },
+    {
+     "after": "C: corpus P2LDistance + sharing (diagnose)",
+     "dof": 2,
+     "conflicting": [
+      "arcrule:a1",
+      "arcrule:a2",
+      "k4",
+      "k5"
+     ],
+     "redundant": []
+    },
+    {
+     "after": "C: corpus P2LDistance + sharing (solve)",
+     "status": "solved",
+     "chain": "DogLeg=0;via=DogLeg",
+     "dof": 2,
+     "conflicting": [
+      "arcrule:a1",
+      "arcrule:a2",
+      "k4",
+      "k5"
+     ],
+     "positions": {
+      "a1c": [
+       0,
+       0
+      ],
+      "a1s": [
+       2.4968232184485016e-05,
+       6.000000000000001
+      ],
+      "a1e": [
+       2.4463381754529104e-05,
+       -6
+      ],
+      "a2c": [
+       40,
+       6.554008606183743e-16
+      ],
+      "a2s": [
+       39.99998399109354,
+       -6
+      ],
+      "a2e": [
+       39.999983079760106,
+       6.000000000000002
+      ],
+      "r1": 6
+     }
+    }
+   ]
+  },
+  {
+   "id": "line_horizontal_only",
+   "group": "underconstrained",
+   "description": "single line, horizontal only: 3 DOF remain",
+   "equivalence": {
+    "mark": "identical",
+    "reason": "same line + Horizontal constraint; the recorded motion split is the behavioral comparison datum"
+   },
+   "source": "tl2 w1_sketch.rs case_line_horizontal_only @ 685f7c453409d470998394e27dcbad3a53a384ef",
+   "expected": {
+    "dof": 3,
+    "status": "solved"
+   },
+   "solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 3,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "l1.start",
+      "pos": [
+       0,
+       0
+      ]
+     },
+     {
+      "id": "l1.end",
+      "pos": [
+       10,
+       0
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "l1",
+      "kind": "line",
+      "p_a": [
+       0,
+       0
+      ],
+      "p_b": [
+       10,
+       0
+      ]
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "l1.start"
+     },
+     {
+      "id": "l1.end"
+     }
+    ],
+    "curves": [
+     {
+      "id": "l1",
+      "kind": "line"
+     }
+    ],
+    "constraints": [
+     {
+      "label": "k1",
+      "kind": "horizontal",
+      "detail": "l1"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "solved",
+     "pass": true,
+     "detail": "solved"
+    },
+    {
+     "name": "dof_3",
+     "pass": true,
+     "detail": "dof=3"
+    },
+    {
+     "name": "horizontalized",
+     "pass": true,
+     "detail": "a=[0, 0] b=[10, 0]"
+    },
+    {
+     "name": "underconstrained_motion_split_recorded",
+     "pass": true,
+     "detail": "a=[0, 0] b=[10, 0] (input y's were 0.0 and 1.0). The recorded motion split is the behavioral comparison datum vs slvs (all-on-one-end) and SolidCraft (~even split, TL2 record)."
+    }
+   ],
+   "notes": "remaining DOF: translation x, translation y, length",
+   "bits_equal_input_after_solve": false
+  },
+  {
+   "id": "circle_radius_only_edit",
+   "group": "underconstrained",
+   "description": "circle with only a radius dimension (centre free); edit radius 5->8 and re-solve",
+   "equivalence": {
+    "mark": "adapted",
+    "reason": "Radius{5}/Radius{8} as DIAMETER 10/16; edit via rebuild seeded from the previous solution"
+   },
+   "source": "tl2 w1_sketch.rs case_circle_radius_only_and_edit @ 685f7c453409d470998394e27dcbad3a53a384ef",
+   "expected": {
+    "dof": 2,
+    "radius_after_edit": 8.0,
+    "center_bitwise_stable": true
+   },
+   "solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 2,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "c1.center",
+      "pos": [
+       3,
+       4
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "c1",
+      "kind": "circle",
+      "p_center": [
+       3,
+       4
+      ],
+      "radius": 8
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "c1.center"
+     }
+    ],
+    "curves": [
+     {
+      "id": "c1",
+      "kind": "circle"
+     }
+    ],
+    "constraints": [
+     {
+      "label": "d1",
+      "kind": "diameter",
+      "detail": "diameter(c1) = 16"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "solved_radius_only",
+     "pass": true,
+     "detail": "solved"
+    },
+    {
+     "name": "dof_2_center_free",
+     "pass": true,
+     "detail": "dof=2"
+    },
+    {
+     "name": "radius_applied_5",
+     "pass": true,
+     "detail": "r=5"
+    },
+    {
+     "name": "center_undetermined_left_at_seed",
+     "pass": true,
+     "detail": "center after the first solve: [3, 4] (free centre stays where the equations leave it)"
+    },
+    {
+     "name": "solved_after_edit",
+     "pass": true,
+     "detail": "solved"
+    },
+    {
+     "name": "dof_still_2",
+     "pass": true,
+     "detail": "dof=2"
+    },
+    {
+     "name": "radius_now_8",
+     "pass": true,
+     "detail": "r=8"
+    },
+    {
+     "name": "free_center_does_not_move",
+     "pass": true,
+     "detail": "center bits before/after the rebuild edit (bitwise equality)"
+    },
+    {
+     "name": "mutation_path_solves_without_rebuild",
+     "pass": true,
+     "detail": "solved \u2014 datum double set to 16, re-init, re-solve on the same System object (no rebuild)"
+    },
+    {
+     "name": "mutation_path_radius_8",
+     "pass": true,
+     "detail": "r=8"
+    },
+    {
+     "name": "mutation_path_center_bitwise_stable",
+     "pass": true,
+     "detail": "center bits identical through the mutation edit"
+    }
+   ],
+   "notes": "which DOF remain: centre x/y; the radius edit does not touch the centre params (no equation references them)",
+   "solve_rebuild_path": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 2,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "solve_mutation_path": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 2,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "solve_radius_only": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 2,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "center_bits_before": {
+    "c1.center:x": "4008000000000000",
+    "c1.center:y": "4010000000000000"
+   },
+   "center_bits_after_rebuild": {
+    "c1.center:x": "4008000000000000",
+    "c1.center:y": "4010000000000000"
+   },
+   "center_bits_mutation_path": {
+    "c1.center:x": "4008000000000000",
+    "c1.center:y": "4010000000000000"
+   },
+   "radius_first_solve": 5,
+   "radius_after_edit_rebuild": 8,
+   "radius_after_edit_mutation": 8
+  },
+  {
+   "id": "rect_redundant_duplicate_dimension",
+   "group": "redundancy",
+   "description": "fully constrained rectangle + duplicate Vertical on the same side (case id verbatim from TL2; the fixture is a duplicate Vertical)",
+   "equivalence": {
+    "mark": "adapted",
+    "reason": "TL2 Length{l} expressed as endpoint distance; the duplicate Vertical is identical"
+   },
+   "source": "tl2 w1_sketch.rs case_rect_redundant @ 685f7c453409d470998394e27dcbad3a53a384ef",
+   "expected": {
+    "dof": 0,
+    "status": "solved",
+    "corners": [
+     [
+      0,
+      0
+     ],
+     [
+      40,
+      0
+     ],
+     [
+      40,
+      30
+     ],
+     [
+      0,
+      30
+     ]
+    ],
+    "redundant": [
+     "k6"
+    ],
+    "note": "W1/SolidCraft expectation; slvs does not meet it \u2014 see checks and findings"
+   },
+   "solve": {
+    "status": "failed",
+    "chain": "DogLeg=1;BFGS=1;LevenbergMarquardt=1;SQP-augmented=1;none-success",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [
+     "k6"
+    ],
+    "partially_redundant": [],
+    "wrote_back": false
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "p0",
+      "pos": [
+       0.3,
+       -0.2
+      ]
+     },
+     {
+      "id": "p1",
+      "pos": [
+       38,
+       1
+      ]
+     },
+     {
+      "id": "p2",
+      "pos": [
+       41,
+       29
+      ]
+     },
+     {
+      "id": "p3",
+      "pos": [
+       -1,
+       31
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "l0",
+      "kind": "line",
+      "p_a": [
+       0.3,
+       -0.2
+      ],
+      "p_b": [
+       38,
+       1
+      ]
+     },
+     {
+      "id": "l1",
+      "kind": "line",
+      "p_a": [
+       38,
+       1
+      ],
+      "p_b": [
+       41,
+       29
+      ]
+     },
+     {
+      "id": "l2",
+      "kind": "line",
+      "p_a": [
+       41,
+       29
+      ],
+      "p_b": [
+       -1,
+       31
+      ]
+     },
+     {
+      "id": "l3",
+      "kind": "line",
+      "p_a": [
+       -1,
+       31
+      ],
+      "p_b": [
+       0.3,
+       -0.2
+      ]
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "p0"
+     },
+     {
+      "id": "p1"
+     },
+     {
+      "id": "p2"
+     },
+     {
+      "id": "p3"
+     }
+    ],
+    "curves": [
+     {
+      "id": "l0",
+      "kind": "line"
+     },
+     {
+      "id": "l1",
+      "kind": "line"
+     },
+     {
+      "id": "l2",
+      "kind": "line"
+     },
+     {
+      "id": "l3",
+      "kind": "line"
+     }
+    ],
+    "constraints": [
+     {
+      "label": "k1",
+      "kind": "horizontal",
+      "detail": "l0"
+     },
+     {
+      "label": "k2",
+      "kind": "horizontal",
+      "detail": "l2"
+     },
+     {
+      "label": "k3",
+      "kind": "vertical",
+      "detail": "l1"
+     },
+     {
+      "label": "k4",
+      "kind": "vertical",
+      "detail": "l3"
+     },
+     {
+      "label": "k5",
+      "kind": "coincident_to_origin",
+      "detail": "p0 <-> fixed origin"
+     },
+     {
+      "label": "d1",
+      "kind": "length",
+      "detail": "|l0| = 40"
+     },
+     {
+      "label": "d2",
+      "kind": "length",
+      "detail": "|l1| = 30"
+     },
+     {
+      "label": "k6",
+      "kind": "vertical",
+      "detail": "l1"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "solved_despite_redundancy",
+     "pass": false,
+     "detail": "failed \u2014 planegcs's full 4-step chain (DogLeg/BFGS/LM/SQP-augmented, FreeCAD Sketch.cpp:4795-4905 verbatim) does NOT zero the exactly-redundant system: all four return Converged (minimized-not-zeroed), so no write-back. Contrast: SolidCraft solves and names the duplicate; slvs fails with a MISATTRIBUTED bad list. planegcs fails with the CORRECT attribution."
+    },
+    {
+     "name": "dof_0",
+     "pass": true,
+     "detail": "dof=0 (the rank analysis is correct WITH the duplicate)"
+    },
+    {
+     "name": "redundant_listed",
+     "pass": true,
+     "detail": "redundant=['k6'] \u2014 the duplicate Vertical k6, named correctly (the W1 expectation)"
+    },
+    {
+     "name": "failure_leaves_geometry_at_input",
+     "pass": true,
+     "detail": "corners bitwise == the rough input (copy-solve, no write-back on failure \u2014 FreeCAD Sketch.cpp:4823-4826 applySolution-on-Success only)"
+    },
+    {
+     "name": "w1_corners_expected_but_not_reached",
+     "pass": false,
+     "detail": "corners=[[0.3, -0.2], [38, 1], [41, 29], [-1, 31]] \u2014 the solve failed; recorded as the honest divergence from SolidCraft on the same fixture"
+    }
+   ],
+   "notes": "HONEST FAILURE RECORD: SolveSpace's exposed path fails exactly-redundant systems (probe-verified: duplicate V and duplicate H variants both return flag 1; a trivial duplicate-Horizontal on a single line returns OKAY with dof 2 \u2014 not the rank-accurate 3). CAD Sketcher itself treats implied redundancy as a failure mode to engineer around: curve_solver.py:335-352 (issue #674) \u2014 'Submitting them consumes a DOF and, when the quantity is already implied, forces REDUNDANT_OK and flags the group failed' \u2014 and gates reference dimensions out of the system; its UI does define a REDUNDANT_OK info state (global_data.py:96-105). SolidCraft solves the same fixture and names the duplicate (TL2 redundant=['k8']).",
+   "bits_equal_input_after_solve": true,
+   "input_bits": {
+    "p0:x": "3fd3333333333333",
+    "p0:y": "bfc999999999999a",
+    "p1:x": "4043000000000000",
+    "p1:y": "3ff0000000000000",
+    "p2:x": "4044800000000000",
+    "p2:y": "403d000000000000",
+    "p3:x": "bff0000000000000",
+    "p3:y": "403f000000000000"
+   },
+   "after_bits": {
+    "p0:x": "3fd3333333333333",
+    "p0:y": "bfc999999999999a",
+    "p1:x": "4043000000000000",
+    "p1:y": "3ff0000000000000",
+    "p2:x": "4044800000000000",
+    "p2:y": "403d000000000000",
+    "p3:x": "bff0000000000000",
+    "p3:y": "403f000000000000"
+   }
+  },
+  {
+   "id": "conflicting_distances",
+   "group": "conflict",
+   "description": "the same pair of points given two different distances (10 and 20)",
+   "equivalence": {
+    "mark": "identical",
+    "reason": "identical entities + constraints (Horizontal + two point-point distances)"
+   },
+   "source": "tl2 w1_sketch.rs case_conflicting_distances @ 685f7c453409d470998394e27dcbad3a53a384ef",
+   "expected": {
+    "status": "failed",
+    "bad_contains": [
+     "d1",
+     "d2"
+    ],
+    "geometry_unchanged": true
+   },
+   "solve": {
+    "status": "failed",
+    "chain": "DogLeg=2;BFGS=1;LevenbergMarquardt=2;SQP-augmented=1;none-success",
+    "dof": 2,
+    "conflicting": [
+     "d1",
+     "d2"
+    ],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": false
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "l1.start",
+      "pos": [
+       0,
+       0
+      ]
+     },
+     {
+      "id": "l1.end",
+      "pos": [
+       10,
+       0
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "l1",
+      "kind": "line",
+      "p_a": [
+       0,
+       0
+      ],
+      "p_b": [
+       10,
+       0
+      ]
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "l1.start"
+     },
+     {
+      "id": "l1.end"
+     }
+    ],
+    "curves": [
+     {
+      "id": "l1",
+      "kind": "line"
+     }
+    ],
+    "constraints": [
+     {
+      "label": "k1",
+      "kind": "horizontal",
+      "detail": "l1"
+     },
+     {
+      "label": "d1",
+      "kind": "distance",
+      "detail": "|l1.start l1.end| = 10"
+     },
+     {
+      "label": "d2",
+      "kind": "distance",
+      "detail": "|l1.start l1.end| = 20"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "fails",
+     "pass": true,
+     "detail": "failed"
+    },
+    {
+     "name": "bad_lists_conflicting_dims",
+     "pass": true,
+     "detail": "conflicting=['d1', 'd2'] \u2014 planegcs names BOTH conflicting dimensions (getConflicting tags)"
+    },
+    {
+     "name": "geometry_unchanged_bitwise_on_failure",
+     "pass": true,
+     "detail": "input positions written back exactly (bitwise); applySolution only on Success"
+    }
+   ],
+   "notes": "failure surface: result flag + bad list naming BOTH conflicting dimensions (d1, d2). No residual surface is exposed by the binding (TL2 measured per-constraint residuals; not measurable here).",
+   "bits_equal_input_after_solve": true,
+   "input_bits": {
+    "l1.end:x": "4024000000000000",
+    "l1.end:y": "0000000000000000",
+    "l1.start:x": "0000000000000000",
+    "l1.start:y": "0000000000000000"
+   },
+   "after_bits": {
+    "l1.end:x": "4024000000000000",
+    "l1.end:y": "0000000000000000",
+    "l1.start:x": "0000000000000000",
+    "l1.start:y": "0000000000000000"
+   }
+  },
+  {
+   "id": "coincident_plus_distance",
+   "group": "failure",
+   "description": "genuinely unsolvable: two points forced coincident AND dimensioned 5 apart",
+   "equivalence": {
+    "mark": "identical",
+    "reason": "identical entities + constraints (Coincident + point-point Distance 5)"
+   },
+   "source": "tl2 w1_sketch.rs case_coincident_plus_distance @ 685f7c453409d470998394e27dcbad3a53a384ef",
+   "expected": {
+    "status": "failed",
+    "geometry_unchanged": true
+   },
+   "solve": {
+    "status": "failed",
+    "chain": "DogLeg=2;BFGS=2;LevenbergMarquardt=2;SQP-augmented=1;none-success",
+    "dof": 2,
+    "conflicting": [
+     "k1",
+     "d1"
+    ],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": false
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "p1",
+      "pos": [
+       1,
+       1
+      ]
+     },
+     {
+      "id": "p2",
+      "pos": [
+       6,
+       5
+      ]
+     }
+    ],
+    "curves": []
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "p1"
+     },
+     {
+      "id": "p2"
+     }
+    ],
+    "curves": [],
+    "constraints": [
+     {
+      "label": "k1",
+      "kind": "coincident",
+      "detail": "p1 <-> p2"
+     },
+     {
+      "label": "d1",
+      "kind": "distance",
+      "detail": "|p1 p2| = 5"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "fails",
+     "pass": true,
+     "detail": "failed"
+    },
+    {
+     "name": "constraints_named_in_bad",
+     "pass": true,
+     "detail": "conflicting=['k1', 'd1']"
+    },
+    {
+     "name": "geometry_unchanged_bitwise_on_failure",
+     "pass": true,
+     "detail": "p1/p2 untouched (bitwise identical)"
+    }
+   ],
+   "notes": "the canonical unsolvable case: the solver terminates with a failure flag and names the violated constraint(s); geometry untouched (no partial write-back). No residual surface exposed.",
+   "bits_equal_input_after_solve": true,
+   "input_bits": {
+    "p1:x": "3ff0000000000000",
+    "p1:y": "3ff0000000000000",
+    "p2:x": "4018000000000000",
+    "p2:y": "4014000000000000"
+   },
+   "after_bits": {
+    "p1:x": "3ff0000000000000",
+    "p1:y": "3ff0000000000000",
+    "p2:x": "4018000000000000",
+    "p2:y": "4014000000000000"
+   }
+  },
+  {
+   "id": "triangle_edit_unsolvable",
+   "group": "failure",
+   "description": "driving dimension edited to a value with no real solution (d1=55; t^2-55t+1000 discriminant<0)",
+   "equivalence": {
+    "mark": "adapted",
+    "reason": "edit via rebuild (no mutation API); expected FAILED regardless \u2014 same logical fixture as TL2"
+   },
+   "source": "tl2 w1_sketch.rs case_triangle_edit_unsolvable @ 685f7c453409d470998394e27dcbad3a53a384ef",
+   "expected": {
+    "status": "failed",
+    "geometry_unchanged": true
+   },
+   "solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "A",
+      "pos": [
+       0,
+       0
+      ]
+     },
+     {
+      "id": "B",
+      "pos": [
+       50,
+       0
+      ]
+     },
+     {
+      "id": "C",
+      "pos": [
+       18.62372435696452,
+       32.25723681241973
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "l1",
+      "kind": "line",
+      "p_a": [
+       0,
+       0
+      ],
+      "p_b": [
+       50,
+       0
+      ]
+     },
+     {
+      "id": "l2",
+      "kind": "line",
+      "p_a": [
+       50,
+       0
+      ],
+      "p_b": [
+       18.62372435696452,
+       32.25723681241973
+      ]
+     },
+     {
+      "id": "l3",
+      "kind": "line",
+      "p_a": [
+       18.62372435696452,
+       32.25723681241973
+      ],
+      "p_b": [
+       0,
+       0
+      ]
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "A"
+     },
+     {
+      "id": "B"
+     },
+     {
+      "id": "C"
+     }
+    ],
+    "curves": [
+     {
+      "id": "l1",
+      "kind": "line"
+     },
+     {
+      "id": "l2",
+      "kind": "line"
+     },
+     {
+      "id": "l3",
+      "kind": "line"
+     }
+    ],
+    "constraints": [
+     {
+      "label": "k1",
+      "kind": "coincident_to_origin",
+      "detail": "A <-> fixed origin"
+     },
+     {
+      "label": "k2",
+      "kind": "horizontal",
+      "detail": "l1"
+     },
+     {
+      "label": "d1",
+      "kind": "distance",
+      "detail": "|A B| = 55"
+     },
+     {
+      "label": "d2",
+      "kind": "distance",
+      "detail": "|B C| = 45"
+     },
+     {
+      "label": "d3",
+      "kind": "angle",
+      "detail": "angle(l1,l3) = 60 deg, inverse=True (l1 vector flipped via the 4-point form)"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "fails",
+     "pass": true,
+     "detail": "failed"
+    },
+    {
+     "name": "bad_list_nonempty",
+     "pass": false,
+     "detail": "conflicting=[] (the full 4-step chain cannot zero d1=55; t^2-55t+1000 discriminant<0)"
+    },
+    {
+     "name": "geometry_unchanged_bitwise_on_failure",
+     "pass": true,
+     "detail": "all point bits identical to the stored solved state \u2014 copy-solve + no write-back, same observable as SolidCraft's explicit restore"
+    },
+    {
+     "name": "mutation_path_also_fails_and_restores",
+     "pass": true,
+     "detail": "failed \u2014 the native mutation path cannot rescue a value with no real solution; bits restored: True"
+    }
+   ],
+   "notes": "SolveSpace names the constraints unsatisfied at Newton's final internal iterate, which is NOT necessarily every logically conflicting constraint (TL2/SolidCraft names k3+k4+k5 for this fixture; compare in findings). No residual/iteration surface is exposed by the binding \u2014 per-constraint residuals are NOT measurable.",
+   "first_solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "solve_rebuild_path": {
+    "status": "failed",
+    "chain": "DogLeg=2;BFGS=1;LevenbergMarquardt=2;SQP-augmented=1;none-success",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": false
+   },
+   "solve_mutation_path": {
+    "status": "failed",
+    "chain": "DogLeg=2;BFGS=1;LevenbergMarquardt=2;SQP-augmented=1;none-success",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": false
+   },
+   "solved_bits_before": {
+    "A:x": "0000000000000000",
+    "A:y": "0000000000000000",
+    "B:x": "4049000000000000",
+    "B:y": "0000000000000000",
+    "C:x": "40329fac6642e199",
+    "C:y": "404020ed22c855c3"
+   },
+   "bits_after_rebuild": {
+    "A:x": "0000000000000000",
+    "A:y": "0000000000000000",
+    "B:x": "4049000000000000",
+    "B:y": "0000000000000000",
+    "C:x": "40329fac6642e199",
+    "C:y": "404020ed22c855c3"
+   },
+   "bits_after_mutation": {
+    "A:x": "0000000000000000",
+    "A:y": "0000000000000000",
+    "B:x": "4049000000000000",
+    "B:y": "0000000000000000",
+    "C:x": "40329fac6642e199",
+    "C:y": "404020ed22c855c3"
+   },
+   "rebuild_restores_solved_bits_bitwise": true,
+   "mutation_restores_bits_bitwise": true
+  },
+  {
+   "id": "determinism_inprocess_5x",
+   "group": "determinism",
+   "description": "the same constrained triangle built and solved 5 times in one process",
+   "equivalence": {
+    "mark": "identical",
+    "reason": "same 5x protocol; iteration-count/residual comparison impossible (slvs exposes no iteration or residual surface \u2014 recorded as an API gap)"
+   },
+   "source": "tl2 w1_sketch.rs case_determinism_inprocess @ 685f7c453409d470998394e27dcbad3a53a384ef",
+   "expected": {
+    "bitwise_identical": true,
+    "runs": 5
+   },
+   "solve": null,
+   "geometry": null,
+   "inputs": null,
+   "checks": [
+    {
+     "name": "bitwise_identical_geometry_5x",
+     "pass": true,
+     "detail": "max coordinate delta = 0 over 5 in-process rounds"
+    },
+    {
+     "name": "identical_status_and_dof",
+     "pass": true,
+     "detail": "statuses+dof per round identical"
+    },
+    {
+     "name": "identical_digests",
+     "pass": true,
+     "detail": "61a28ac5d660149c"
+    }
+   ],
+   "notes": "SolveSpace's Newton + SVD-based least squares is deterministic in process; the digest is FNV-1a-64 over coordinate BITS (TL2's algorithm, applied to this solver's entity layout)",
+   "runs": [
+    {
+     "digest": "61a28ac5d660149c",
+     "status": "solved",
+     "dof": 0
+    },
+    {
+     "digest": "61a28ac5d660149c",
+     "status": "solved",
+     "dof": 0
+    },
+    {
+     "digest": "61a28ac5d660149c",
+     "status": "solved",
+     "dof": 0
+    },
+    {
+     "digest": "61a28ac5d660149c",
+     "status": "solved",
+     "dof": 0
+    },
+    {
+     "digest": "61a28ac5d660149c",
+     "status": "solved",
+     "dof": 0
+    }
+   ],
+   "bitwise_identical": true,
+   "digests_identical": true,
+   "statuses_identical": true
+  },
+  {
+   "id": "determinism_crossprocess_3x",
+   "group": "determinism",
+   "description": "the canonical cases (triangle, L-bracket, slot) solved in 3 separate OS processes (--hash submode)",
+   "runs": 3,
+   "child_stdout": [
+    "PLANEGCS_HASH 61a28ac5d660149c 0b5d4f0fee186525 dd7ba596bb9d6df4 ok=1",
+    "PLANEGCS_HASH 61a28ac5d660149c 0b5d4f0fee186525 dd7ba596bb9d6df4 ok=1",
+    "PLANEGCS_HASH 61a28ac5d660149c 0b5d4f0fee186525 dd7ba596bb9d6df4 ok=1"
+   ],
+   "exit_codes": [
+    0,
+    0,
+    0
+   ],
+   "identical": true,
+   "expected": {
+    "bitwise_identical": true,
+    "runs": 3
+   },
+   "checks": [
+    {
+     "name": "all_child_processes_exit_0",
+     "pass": true,
+     "detail": "[0, 0, 0]"
+    },
+    {
+     "name": "hashes_identical_across_processes",
+     "pass": true,
+     "detail": "PLANEGCS_HASH 61a28ac5d660149c 0b5d4f0fee186525 dd7ba596bb9d6df4 ok=1 | PLANEGCS_HASH 61a28ac5d660149c 0b5d4f0fee186525 dd7ba596bb9d6df4 ok=1 | PLANEGCS_HASH 61a28ac5d660149c 0b5d4f0fee186525 dd7ba596bb9d6df4 ok=1"
+    }
+   ],
+   "notes": "cross-process determinism of the pinned planegcs build at the bit level (FNV-1a-64 over the m3-eval digest layout)"
+  },
+  {
+   "id": "parallel_offset",
+   "group": "coverage_probes",
+   "description": "line B parallel to a fully-constrained horizontal line A, offset 3 in y, length 9: exercises slvs.parallel directly",
+   "equivalence": {
+    "mark": "new",
+    "reason": "beyond W1; PAR-area coverage probe with exact expected values (1e-6)"
+   },
+   "source": "m3-eval phase 2a new case (PAR list, document-model \u00a73.8)",
+   "expected": {
+    "dof": 0,
+    "status": "solved"
+   },
+   "solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "A0",
+      "pos": [
+       0,
+       0
+      ]
+     },
+     {
+      "id": "A1",
+      "pos": [
+       10,
+       0
+      ]
+     },
+     {
+      "id": "B0",
+      "pos": [
+       0,
+       3
+      ]
+     },
+     {
+      "id": "B1",
+      "pos": [
+       9,
+       3
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "lA",
+      "kind": "line",
+      "p_a": [
+       0,
+       0
+      ],
+      "p_b": [
+       10,
+       0
+      ]
+     },
+     {
+      "id": "lB",
+      "kind": "line",
+      "p_a": [
+       0,
+       3
+      ],
+      "p_b": [
+       9,
+       3
+      ]
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "A0"
+     },
+     {
+      "id": "A1"
+     },
+     {
+      "id": "B0"
+     },
+     {
+      "id": "B1"
+     }
+    ],
+    "curves": [
+     {
+      "id": "lA",
+      "kind": "line"
+     },
+     {
+      "id": "lB",
+      "kind": "line"
+     }
+    ],
+    "constraints": [
+     {
+      "label": "kA1",
+      "kind": "coincident_to_origin",
+      "detail": "A0 <-> fixed origin"
+     },
+     {
+      "label": "kA2",
+      "kind": "horizontal",
+      "detail": "lA"
+     },
+     {
+      "label": "kA3",
+      "kind": "distance_x",
+      "detail": "X(A0->A1) = 10 (as Difference(p.x, q.x))"
+     },
+     {
+      "label": "k1",
+      "kind": "parallel",
+      "detail": "parallel(lB,lA)"
+     },
+     {
+      "label": "k2",
+      "kind": "distance_y",
+      "detail": "Y(A0->B0) = 3 (as Difference(p.y, q.y))"
+     },
+     {
+      "label": "k3",
+      "kind": "distance_x",
+      "detail": "X(A0->B0) = 0 (as Difference(p.x, q.x))"
+     },
+     {
+      "label": "d1",
+      "kind": "length",
+      "detail": "|lB| = 9"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "solved",
+     "pass": true,
+     "detail": "solved"
+    },
+    {
+     "name": "dof_0",
+     "pass": true,
+     "detail": "dof=0"
+    },
+    {
+     "name": "A0_at_0,0",
+     "pass": true,
+     "detail": "[0, 0]"
+    },
+    {
+     "name": "A1_at_10,0",
+     "pass": true,
+     "detail": "[10, 0]"
+    },
+    {
+     "name": "B0_at_0,3",
+     "pass": true,
+     "detail": "[0, 3]"
+    },
+    {
+     "name": "B1_at_9,3",
+     "pass": true,
+     "detail": "[9, 3]"
+    }
+   ],
+   "notes": "",
+   "bits_equal_input_after_solve": false
+  },
+  {
+   "id": "perpendicular_pair",
+   "group": "coverage_probes",
+   "description": "line B through (5,0) perpendicular to a fully-constrained horizontal A, length 4: exercises slvs.perpendicular directly",
+   "equivalence": {
+    "mark": "new",
+    "reason": "beyond W1; PAR-area coverage probe with exact expected values (1e-6)"
+   },
+   "source": "m3-eval phase 2a new case (PAR list, document-model \u00a73.8)",
+   "expected": {
+    "dof": 0,
+    "status": "solved"
+   },
+   "solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "A0",
+      "pos": [
+       0,
+       0
+      ]
+     },
+     {
+      "id": "A1",
+      "pos": [
+       10,
+       0
+      ]
+     },
+     {
+      "id": "B0",
+      "pos": [
+       5,
+       0
+      ]
+     },
+     {
+      "id": "B1",
+      "pos": [
+       5,
+       4
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "lA",
+      "kind": "line",
+      "p_a": [
+       0,
+       0
+      ],
+      "p_b": [
+       10,
+       0
+      ]
+     },
+     {
+      "id": "lB",
+      "kind": "line",
+      "p_a": [
+       5,
+       0
+      ],
+      "p_b": [
+       5,
+       4
+      ]
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "A0"
+     },
+     {
+      "id": "A1"
+     },
+     {
+      "id": "B0"
+     },
+     {
+      "id": "B1"
+     }
+    ],
+    "curves": [
+     {
+      "id": "lA",
+      "kind": "line"
+     },
+     {
+      "id": "lB",
+      "kind": "line"
+     }
+    ],
+    "constraints": [
+     {
+      "label": "kA1",
+      "kind": "coincident_to_origin",
+      "detail": "A0 <-> fixed origin"
+     },
+     {
+      "label": "kA2",
+      "kind": "horizontal",
+      "detail": "lA"
+     },
+     {
+      "label": "kA3",
+      "kind": "distance_x",
+      "detail": "X(A0->A1) = 10 (as Difference(p.x, q.x))"
+     },
+     {
+      "label": "k1",
+      "kind": "distance_x",
+      "detail": "X(A0->B0) = 5 (as Difference(p.x, q.x))"
+     },
+     {
+      "label": "k2",
+      "kind": "distance_y",
+      "detail": "Y(A0->B0) = 0 (as Difference(p.y, q.y))"
+     },
+     {
+      "label": "k3",
+      "kind": "perpendicular",
+      "detail": "perp(lB,lA)"
+     },
+     {
+      "label": "d1",
+      "kind": "length",
+      "detail": "|lB| = 4"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "solved",
+     "pass": true,
+     "detail": "solved"
+    },
+    {
+     "name": "dof_0",
+     "pass": true,
+     "detail": "dof=0"
+    },
+    {
+     "name": "A0_at_0,0",
+     "pass": true,
+     "detail": "[0, 0]"
+    },
+    {
+     "name": "A1_at_10,0",
+     "pass": true,
+     "detail": "[10, 0]"
+    },
+    {
+     "name": "B0_at_5,0",
+     "pass": true,
+     "detail": "[5, 0]"
+    },
+    {
+     "name": "B1_at_5,4",
+     "pass": true,
+     "detail": "[5, 4]"
+    }
+   ],
+   "notes": "",
+   "bits_equal_input_after_solve": false
+  },
+  {
+   "id": "diameter_dim",
+   "group": "coverage_probes",
+   "description": "circle on origin with diameter=10 -> r=5: exercises slvs.diameter directly",
+   "equivalence": {
+    "mark": "new",
+    "reason": "beyond W1; PAR-area coverage probe with exact expected values (1e-6)"
+   },
+   "source": "m3-eval phase 2a new case (PAR list, document-model \u00a73.8)",
+   "expected": {
+    "dof": 0,
+    "status": "solved"
+   },
+   "solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "c.center",
+      "pos": [
+       0,
+       0
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "c",
+      "kind": "circle",
+      "p_center": [
+       0,
+       0
+      ],
+      "radius": 5
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "c.center"
+     }
+    ],
+    "curves": [
+     {
+      "id": "c",
+      "kind": "circle"
+     }
+    ],
+    "constraints": [
+     {
+      "label": "k1",
+      "kind": "coincident_to_origin",
+      "detail": "c.center <-> fixed origin"
+     },
+     {
+      "label": "d1",
+      "kind": "diameter",
+      "detail": "diameter(c) = 10"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "solved",
+     "pass": true,
+     "detail": "solved"
+    },
+    {
+     "name": "dof_0",
+     "pass": true,
+     "detail": "dof=0"
+    },
+    {
+     "name": "c.center_at_0,0",
+     "pass": true,
+     "detail": "[0, 0]"
+    },
+    {
+     "name": "c_radius_5.0",
+     "pass": true,
+     "detail": "5"
+    }
+   ],
+   "notes": "",
+   "bits_equal_input_after_solve": false
+  },
+  {
+   "id": "symmetric_points",
+   "group": "coverage_probes",
+   "description": "two points symmetric about the origin, p fully determined: symmetric-about-point DERIVED as AT_MIDPOINT of the connecting segment (slvs exposes symmetric about line/plane only)",
+   "equivalence": {
+    "mark": "new",
+    "reason": "beyond W1; PAR-area coverage probe with exact expected values (1e-6)"
+   },
+   "source": "m3-eval phase 2a new case (PAR list, document-model \u00a73.8)",
+   "expected": {
+    "dof": 0,
+    "status": "solved"
+   },
+   "solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "p",
+      "pos": [
+       2.0000000000000004,
+       3
+      ]
+     },
+     {
+      "id": "q",
+      "pos": [
+       -2,
+       -3
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "lM",
+      "kind": "line",
+      "p_a": [
+       2.0000000000000004,
+       3
+      ],
+      "p_b": [
+       -2,
+       -3
+      ]
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "p"
+     },
+     {
+      "id": "q"
+     }
+    ],
+    "curves": [
+     {
+      "id": "lM",
+      "kind": "line"
+     }
+    ],
+    "constraints": [
+     {
+      "label": "k1",
+      "kind": "midpoint",
+      "detail": "fixed origin at midpoint of lM (derived point symmetry; as P2PSymmetric(l.p1, l.p2, origin))"
+     },
+     {
+      "label": "d1",
+      "kind": "distance_x",
+      "detail": "X(p->q) = -4 (as Difference(p.x, q.x))"
+     },
+     {
+      "label": "d2",
+      "kind": "distance_y",
+      "detail": "Y(p->q) = -6 (as Difference(p.y, q.y))"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "solved",
+     "pass": true,
+     "detail": "solved"
+    },
+    {
+     "name": "dof_0",
+     "pass": true,
+     "detail": "dof=0"
+    },
+    {
+     "name": "p_at_2,3",
+     "pass": true,
+     "detail": "[2.0000000000000004, 3]"
+    },
+    {
+     "name": "q_at_-2,-3",
+     "pass": true,
+     "detail": "[-2, -3]"
+    }
+   ],
+   "notes": "",
+   "bits_equal_input_after_solve": false
+  },
+  {
+   "id": "midpoint_case",
+   "group": "coverage_probes",
+   "description": "point m at the midpoint of a fully-constrained horizontal line: exercises slvs.midpoint (AT_MIDPOINT) directly",
+   "equivalence": {
+    "mark": "new",
+    "reason": "beyond W1; PAR-area coverage probe with exact expected values (1e-6)"
+   },
+   "source": "m3-eval phase 2a new case (PAR list, document-model \u00a73.8)",
+   "expected": {
+    "dof": 0,
+    "status": "solved"
+   },
+   "solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "l0",
+      "pos": [
+       0,
+       0
+      ]
+     },
+     {
+      "id": "l1",
+      "pos": [
+       10,
+       0
+      ]
+     },
+     {
+      "id": "m",
+      "pos": [
+       5,
+       2.220446049250313e-16
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "ll",
+      "kind": "line",
+      "p_a": [
+       0,
+       0
+      ],
+      "p_b": [
+       10,
+       0
+      ]
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "l0"
+     },
+     {
+      "id": "l1"
+     },
+     {
+      "id": "m"
+     }
+    ],
+    "curves": [
+     {
+      "id": "ll",
+      "kind": "line"
+     }
+    ],
+    "constraints": [
+     {
+      "label": "k1",
+      "kind": "coincident_to_origin",
+      "detail": "l0 <-> fixed origin"
+     },
+     {
+      "label": "k2",
+      "kind": "horizontal",
+      "detail": "ll"
+     },
+     {
+      "label": "d1",
+      "kind": "distance_x",
+      "detail": "X(l0->l1) = 10 (as Difference(p.x, q.x))"
+     },
+     {
+      "label": "k3",
+      "kind": "midpoint",
+      "detail": "m at midpoint of ll (as P2PSymmetric(l.p1, l.p2, p))"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "solved",
+     "pass": true,
+     "detail": "solved"
+    },
+    {
+     "name": "dof_0",
+     "pass": true,
+     "detail": "dof=0"
+    },
+    {
+     "name": "l0_at_0,0",
+     "pass": true,
+     "detail": "[0, 0]"
+    },
+    {
+     "name": "l1_at_10,0",
+     "pass": true,
+     "detail": "[10, 0]"
+    },
+    {
+     "name": "m_at_5,0",
+     "pass": true,
+     "detail": "[5, 2.220446049250313e-16]"
+    }
+   ],
+   "notes": "",
+   "bits_equal_input_after_solve": false
+  },
+  {
+   "id": "concentric_circles",
+   "group": "coverage_probes",
+   "description": "two concentric circles (DERIVED: coincident centres \u2014 slvs has no concentric primitive), radii 3 and 5",
+   "equivalence": {
+    "mark": "new",
+    "reason": "beyond W1; PAR-area coverage probe with exact expected values (1e-6)"
+   },
+   "source": "m3-eval phase 2a new case (PAR list, document-model \u00a73.8)",
+   "expected": {
+    "dof": 0,
+    "status": "solved"
+   },
+   "solve": {
+    "status": "solved",
+    "chain": "DogLeg=0;via=DogLeg",
+    "dof": 0,
+    "conflicting": [],
+    "redundant": [],
+    "partially_redundant": [],
+    "wrote_back": true
+   },
+   "geometry": {
+    "points": [
+     {
+      "id": "c1.center",
+      "pos": [
+       0,
+       0
+      ]
+     },
+     {
+      "id": "c2.center",
+      "pos": [
+       0,
+       0
+      ]
+     }
+    ],
+    "curves": [
+     {
+      "id": "c1",
+      "kind": "circle",
+      "p_center": [
+       0,
+       0
+      ],
+      "radius": 3
+     },
+     {
+      "id": "c2",
+      "kind": "circle",
+      "p_center": [
+       0,
+       0
+      ],
+      "radius": 5
+     }
+    ]
+   },
+   "inputs": {
+    "points": [
+     {
+      "id": "c1.center"
+     },
+     {
+      "id": "c2.center"
+     }
+    ],
+    "curves": [
+     {
+      "id": "c1",
+      "kind": "circle"
+     },
+     {
+      "id": "c2",
+      "kind": "circle"
+     }
+    ],
+    "constraints": [
+     {
+      "label": "k1",
+      "kind": "coincident_to_origin",
+      "detail": "c1.center <-> fixed origin"
+     },
+     {
+      "label": "k2",
+      "kind": "coincident",
+      "detail": "c2.center <-> c1.center"
+     },
+     {
+      "label": "d1",
+      "kind": "diameter",
+      "detail": "diameter(c1) = 6"
+     },
+     {
+      "label": "d2",
+      "kind": "diameter",
+      "detail": "diameter(c2) = 10"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "solved",
+     "pass": true,
+     "detail": "solved"
+    },
+    {
+     "name": "dof_0",
+     "pass": true,
+     "detail": "dof=0"
+    },
+    {
+     "name": "c1.center_at_0,0",
+     "pass": true,
+     "detail": "[0, 0]"
+    },
+    {
+     "name": "c2.center_at_0,0",
+     "pass": true,
+     "detail": "[0, 0]"
+    },
+    {
+     "name": "c1_radius_3.0",
+     "pass": true,
+     "detail": "3"
+    },
+    {
+     "name": "c2_radius_5.0",
+     "pass": true,
+     "detail": "5"
+    }
+   ],
+   "notes": "",
+   "bits_equal_input_after_solve": false
+  }
+ ],
+ "scale_performance": {
+  "method": "chain of N alternating H/V line segments, fully constrained (coincident chain to origin, H/V per segment, equal lengths via one driving length dimension, length=1), small deterministic perturbation on the seed; 5 fresh OS processes per N; wall-clock measured around the solve call only (steady clock), build time recorded separately; 2-CPU sandbox \u2014 absolute times are host-specific, the SHAPE of the curve is the finding",
+  "sizes": [
+   {
+    "n": 10,
+    "runs": [
+     {
+      "n": 10,
+      "build_s": 6.5977e-05,
+      "solve_s": 0.000204898,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 21,
+      "max_len_err": 1.5001333508735115e-12
+     },
+     {
+      "n": 10,
+      "build_s": 6.6517e-05,
+      "solve_s": 0.000245438,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 21,
+      "max_len_err": 1.5001333508735115e-12
+     },
+     {
+      "n": 10,
+      "build_s": 6.7964e-05,
+      "solve_s": 0.000198472,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 21,
+      "max_len_err": 1.5001333508735115e-12
+     },
+     {
+      "n": 10,
+      "build_s": 6.9253e-05,
+      "solve_s": 0.000223945,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 21,
+      "max_len_err": 1.5001333508735115e-12
+     },
+     {
+      "n": 10,
+      "build_s": 6.3927e-05,
+      "solve_s": 0.000208634,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 21,
+      "max_len_err": 1.5001333508735115e-12
+     }
+    ],
+    "median_build_s": 6.6517e-05,
+    "median_solve_s": 0.000208634,
+    "all_solved_dof0": true,
+    "max_len_err": 1.5001333508735115e-12
+   },
+   {
+    "n": 50,
+    "runs": [
+     {
+      "n": 50,
+      "build_s": 0.0002046,
+      "solve_s": 0.009376134,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 101,
+      "max_len_err": 1.5010215292932116e-12
+     },
+     {
+      "n": 50,
+      "build_s": 0.00022083,
+      "solve_s": 0.002144735,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 101,
+      "max_len_err": 1.5010215292932116e-12
+     },
+     {
+      "n": 50,
+      "build_s": 0.000188299,
+      "solve_s": 0.002197162,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 101,
+      "max_len_err": 1.5010215292932116e-12
+     },
+     {
+      "n": 50,
+      "build_s": 0.000184917,
+      "solve_s": 0.023342438,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 101,
+      "max_len_err": 1.5010215292932116e-12
+     },
+     {
+      "n": 50,
+      "build_s": 0.000202489,
+      "solve_s": 0.002121818,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 101,
+      "max_len_err": 1.5010215292932116e-12
+     }
+    ],
+    "median_build_s": 0.000202489,
+    "median_solve_s": 0.002197162,
+    "all_solved_dof0": true,
+    "max_len_err": 1.5010215292932116e-12
+   },
+   {
+    "n": 100,
+    "runs": [
+     {
+      "n": 100,
+      "build_s": 0.000346499,
+      "solve_s": 0.011654314,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 201,
+      "max_len_err": 1.5027978861326119e-12
+     },
+     {
+      "n": 100,
+      "build_s": 0.000334581,
+      "solve_s": 0.011895771,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 201,
+      "max_len_err": 1.5027978861326119e-12
+     },
+     {
+      "n": 100,
+      "build_s": 0.00035792,
+      "solve_s": 0.011794916,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 201,
+      "max_len_err": 1.5027978861326119e-12
+     },
+     {
+      "n": 100,
+      "build_s": 0.000330409,
+      "solve_s": 0.011571163,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 201,
+      "max_len_err": 1.5027978861326119e-12
+     },
+     {
+      "n": 100,
+      "build_s": 0.000370781,
+      "solve_s": 0.041850133,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 201,
+      "max_len_err": 1.5027978861326119e-12
+     }
+    ],
+    "median_build_s": 0.000346499,
+    "median_solve_s": 0.011794916,
+    "all_solved_dof0": true,
+    "max_len_err": 1.5027978861326119e-12
+   },
+   {
+    "n": 200,
+    "runs": [
+     {
+      "n": 200,
+      "build_s": 0.000731352,
+      "solve_s": 0.132517839,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 401,
+      "max_len_err": 1.5063505998114124e-12
+     },
+     {
+      "n": 200,
+      "build_s": 0.000702817,
+      "solve_s": 0.104543061,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 401,
+      "max_len_err": 1.5063505998114124e-12
+     },
+     {
+      "n": 200,
+      "build_s": 0.000722885,
+      "solve_s": 0.103621498,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 401,
+      "max_len_err": 1.5063505998114124e-12
+     },
+     {
+      "n": 200,
+      "build_s": 0.000728613,
+      "solve_s": 0.106343858,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 401,
+      "max_len_err": 1.5063505998114124e-12
+     },
+     {
+      "n": 200,
+      "build_s": 0.000713525,
+      "solve_s": 0.108438302,
+      "status": "solved",
+      "dof": 0,
+      "constraint_count": 401,
+      "max_len_err": 1.5063505998114124e-12
+     }
+    ],
+    "median_build_s": 0.000722885,
+    "median_solve_s": 0.106343858,
+    "all_solved_dof0": true,
+    "max_len_err": 1.5063505998114124e-12
+   }
+  ],
+  "edit_at_200": {
+   "n": 200,
+   "build_s": 0.000698556,
+   "solve_s": 0.112945743,
+   "status": "solved",
+   "dof": 0,
+   "constraint_count": 401,
+   "max_len_err": 1.5063505998114124e-12,
+   "edit": {
+    "new_driving": 1.5,
+    "rebuild_s": 0.000629657,
+    "solve_after_edit_s": 0.130433157,
+    "status": "solved",
+    "dof": 0,
+    "max_len_err": 0
+   },
+   "edit_mutation_path": {
+    "solve_after_mutation_s": 0.049286757,
+    "status": "solved",
+    "dof": 0,
+    "max_len_err": 0
+   },
+   "warm_resolve": {
+    "warm_resolve_s": 0.001280445,
+    "status": "solved"
+   }
+  }
+ },
+ "summary": {
+  "cases": 23,
+  "w1_identical_cases": 17,
+  "new_cases": 6,
+  "checks_total": 121,
+  "checks_passed": 112,
+  "checks_failed": 9,
+  "cases_with_failed_checks": [
+   "rect_redundant_duplicate_dimension",
+   "slot_constrained",
+   "triangle_edit_unsolvable"
+  ],
+  "equivalence": {
+   "note": "self-authored implementation of TL2 W1 fixture semantics, transcribed exactly; per-case equivalence marks are binding",
+   "source": "tl2/solidcraft-evaluation @ 685f7c453409d470998394e27dcbad3a53a384ef experiments/solidcraft/harness/src/bin/w1_sketch.rs (read-only)",
+   "w1_identical_cases": 17,
+   "new_cases": "coverage_probes group + scale_performance group are NEW (beyond W1; PAR list, document-model \u00a73.8)",
+   "upstream_pin": "hlorus/CAD_Sketcher v0.32.1 @ e7db7e6f94ad9dcaf2be03e849e1d3a2ac82e7a4",
+   "solver_binary": "slvs-3.2 cp313 manylinux wheel, sha256 9ee04ff5a00482cef1751eed71658f4b01f605de42c56786373c7da9e5b25f80 (byte-identical to PyPI)",
+   "solver_source": "solvespace/solvespace @ 477d4c8",
+   "generated_by": "experiments/cad-sketcher/scripts/gen_solver_cases.py (never hand-edited; regenerate)",
+   "generated_utc": "2026-10-19T21:55:31Z"
+  },
+  "solver": "FreeCAD 1.1.4 planegcs + eigen 3.4.0; FreeCAD's own solve contract (4-step chain, applySolution-on-Success)"
+ },
+ "failures": {
+  "failed_checks": [
+   {
+    "name": "dof_0",
+    "pass": false,
+    "detail": "dof=2 (raw reported value \u2014 planegcs's diagnose reports 2 with ['arcrule:a1', 'arcrule:a2', 'k4', 'k5'] flagged for THIS formulation; the structurally-clean analysis exists in the formulation probes)"
+   },
+   {
+    "name": "a1s_at_0,6",
+    "pass": false,
+    "detail": "[2.4968232184485016e-05, 6.000000000000001]"
+   },
+   {
+    "name": "a1e_at_0,-6",
+    "pass": false,
+    "detail": "[2.4463381754529104e-05, -6]"
+   },
+   {
+    "name": "a2s_at_40,-6",
+    "pass": false,
+    "detail": "[39.99998399109354, -6]"
+   },
+   {
+    "name": "a2e_at_40,6",
+    "pass": false,
+    "detail": "[39.999983079760106, 6.000000000000002]"
+   },
+   {
+    "name": "no_redundancy_reported_for_endpoint_tangency",
+    "pass": false,
+    "detail": "planegcs diagnose at this formulation flags ['arcrule:a1', 'arcrule:a2', 'k4', 'k5'] as conflicting (dof 2) \u2014 an honest divergence; see formulation_probes"
+   },
+   {
+    "name": "solved_despite_redundancy",
+    "pass": false,
+    "detail": "failed \u2014 planegcs's full 4-step chain (DogLeg/BFGS/LM/SQP-augmented, FreeCAD Sketch.cpp:4795-4905 verbatim) does NOT zero the exactly-redundant system: all four return Converged (minimized-not-zeroed), so no write-back. Contrast: SolidCraft solves and names the duplicate; slvs fails with a MISATTRIBUTED bad list. planegcs fails with the CORRECT attribution."
+   },
+   {
+    "name": "w1_corners_expected_but_not_reached",
+    "pass": false,
+    "detail": "corners=[[0.3, -0.2], [38, 1], [41, 29], [-1, 31]] \u2014 the solve failed; recorded as the honest divergence from SolidCraft on the same fixture"
+   },
+   {
+    "name": "bad_list_nonempty",
+    "pass": false,
+    "detail": "conflicting=[] (the full 4-step chain cannot zero d1=55; t^2-55t+1000 discriminant<0)"
+   }
+  ],
+  "transcription_issues": {},
+  "note": "Every failing check is a recorded honest result; see findings/planegcs-conformance.md for analysis."
+ }
+}
