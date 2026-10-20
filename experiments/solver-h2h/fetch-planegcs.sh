@@ -31,16 +31,20 @@ else
   echo "[fetch-planegcs] pin verified: $actual"
 fi
 
-# Materialize exactly the files the planegcs build consumes (read-only copies).
+# Materialize exactly the files the planegcs build consumes (read-only copies)
+# plus the two license-evidence files the record verifies (SetupEigen.cmake =
+# FreeCAD's Eigen requirement at the pin).
 git -C "$DEST" checkout -q FETCH_HEAD -- \
   src/Mod/Sketcher/App/planegcs \
   src/Mod/Sketcher/SketcherGlobal.h \
   src/boost_graph_adjacency_list.hpp \
+  cMake/FreeCAD_Helpers/SetupEigen.cmake \
   LICENSE
 
 echo "[fetch-planegcs] materialized under $DEST/:"
 echo "  src/Mod/Sketcher/App/planegcs/  (11 files — the solver, LGPL header per file)"
 echo "  src/Mod/Sketcher/SketcherGlobal.h (export macros; LGPL)"
 echo "  src/boost_graph_adjacency_list.hpp (11-line boost>=1.75 workaround; SPDX LGPL-2.1-or-later)"
+echo "  cMake/FreeCAD_Helpers/SetupEigen.cmake (license evidence: the Eigen3 requirement)"
 echo "  LICENSE (FreeCAD root = full LGPL-2.1 text)"
 git -C "$DEST" log -1 --format='  pin: %H %ci %s' FETCH_HEAD
