@@ -1,0 +1,53 @@
+{
+  "commands": [
+    {
+      "command": "sketch.create",
+      "params": {
+        "name": "Sketch1",
+        "plane": "XY"
+      }
+    },
+    {
+      "command": "sketch.circle.center",
+      "params": {
+        "center": [
+          0,
+          0
+        ],
+        "construction": false,
+        "id": "c1",
+        "radius": 15
+      }
+    },
+    {
+      "command": "sketch.finish",
+      "params": {}
+    },
+    {
+      "command": "solid.extrude",
+      "params": {
+        "body_names": [
+          "Cylinder"
+        ],
+        "direction": "positive",
+        "distance": 50,
+        "name": "Extrude1",
+        "operation": "new",
+        "profiles": [
+          {
+            "loops": [
+              {
+                "curves": [
+                  "c1"
+                ],
+                "outer": true
+              }
+            ],
+            "sketch": "Sketch1"
+          }
+        ],
+        "sketch": "Sketch1"
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "provenance": {
+    "author": "TL2-W2 (history/naming lane)",
+    "date": "2026-10-19",
+    "license": "same as repo (experiments tree)",
+    "note": "run with --in s1-baseline.solidcraft (saved by the runner); upstream edit of the sketch-driving parameter"
+  },
+  "description": "W2 scenario 2/3a: upstream edit (len 40->50 mm) -> extrude, fillet, hole must recompute; top-face reference of the hole and edge name of the fillet must survive (topology preserved)",
+  "commands": [
+    {"command": "parameters.change", "params": {"name": "len", "expression": "50 mm"}},
+    {"command": "model.faces", "params": {"body": "Body1"}},
+    {"command": "inspect.measure", "params": {}}
+  ]
+}

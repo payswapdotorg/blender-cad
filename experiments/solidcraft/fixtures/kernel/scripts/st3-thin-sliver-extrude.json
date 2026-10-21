@@ -1,0 +1,111 @@
+{
+ "commands": [
+  {
+   "command": "sketch.create",
+   "params": {
+    "name": "Sliver_sketch",
+    "plane": "XY"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "construction": false,
+    "ids": [
+     "l1"
+    ],
+    "points": [
+     [
+      0,
+      0
+     ],
+     [
+      50,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "construction": false,
+    "ids": [
+     "l2"
+    ],
+    "points": [
+     "l1.end",
+     [
+      50,
+      0.02
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "construction": false,
+    "ids": [
+     "l3"
+    ],
+    "points": [
+     "l2.end",
+     [
+      0,
+      0.02
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "construction": false,
+    "ids": [
+     "l4"
+    ],
+    "points": [
+     "l3.end",
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "body_names": [
+     "Sliver"
+    ],
+    "direction": "positive",
+    "distance": 10,
+    "name": "Extrude1",
+    "operation": "new",
+    "profiles": [
+     {
+      "loops": [
+       {
+        "curves": [
+         "l1",
+         "l2",
+         "l3",
+         "l4"
+        ],
+        "outer": true
+       }
+      ],
+      "sketch": "Sliver_sketch"
+     }
+    ],
+    "sketch": "Sliver_sketch"
+   }
+  }
+ ]
+}

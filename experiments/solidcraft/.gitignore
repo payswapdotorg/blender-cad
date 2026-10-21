@@ -1,0 +1,14 @@
+# External, reproducible-from-SHA state — never committed
+# (no trailing slash: .upstream/.release are symlinks on the dev host)
+.upstream
+.release
+.upstream/
+.release/
+target/
+*.log
+scratch/
+__pycache__/
+*.pyc
+# NOTE: the OCP comparison venv lives OUTSIDE the repo tree
+# (default /home/z/solidcraft-ocp-venv) — see README §4; it was moved out of-tree
+# after the repo secret-scanner walked it (PIL ImageFont.py false positive).

@@ -1,0 +1,29 @@
+{
+ "provenance": {
+  "author": "TL2-W2 (history/naming lane)",
+  "date": "2026-10-19",
+  "license": "same as repo (experiments tree)",
+  "note": "run with --in s6-big-upstream.solidcraft; edits only slot_x (late in the timeline)"
+ },
+ "description": "W2 scenario 6 edit: change slot_x 15->18 and slot_w 10->8 (no coincident walls with the pattern holes); parameters.change reports recomputed/restored and its ms is the incremental re-evaluation cost",
+ "commands": [
+  {
+   "command": "parameters.change",
+   "params": {
+    "name": "slot_x",
+    "expression": "18 mm"
+   }
+  },
+  {
+   "command": "parameters.change",
+   "params": {
+    "name": "slot_w",
+    "expression": "8 mm"
+   }
+  },
+  {
+   "command": "inspect.measure",
+   "params": {}
+  }
+ ]
+}

@@ -1,0 +1,2093 @@
+{
+  "cases": [
+    {
+      "checks": [
+        {
+          "detail": "dof=4",
+          "name": "dof_4",
+          "pass": true
+        },
+        {
+          "detail": "Solved",
+          "name": "solved_no_constraints",
+          "pass": true
+        },
+        {
+          "detail": "no constraints -> nothing moves",
+          "name": "geometry_untouched",
+          "pass": true
+        }
+      ],
+      "description": "single line, no constraints: unknowns = 4 point coordinates, no radius variable",
+      "geometry": {
+        "curves": [
+          {
+            "geom": {
+              "a": 1,
+              "b": 2,
+              "kind": "line",
+              "p_a": [
+                0.0,
+                0.0
+              ],
+              "p_b": [
+                10.0,
+                1.0
+              ]
+            },
+            "id": "l1"
+          }
+        ],
+        "points": [
+          {
+            "fixed": true,
+            "id": "origin",
+            "pos": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "l1.start",
+            "pos": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "l1.end",
+            "pos": [
+              10.0,
+              1.0
+            ]
+          }
+        ]
+      },
+      "group": "mapping",
+      "id": "bare_line",
+      "notes": "a line contributes only its two end points as unknowns; DOF = 4 (x/y of each end)",
+      "setup": {
+        "constraints": 0,
+        "curves": 1,
+        "points": 3
+      },
+      "solve": {
+        "continuations": 0,
+        "curve_determined": [
+          false
+        ],
+        "dof": 4,
+        "failing": [],
+        "folded": [],
+        "iterations": 0,
+        "max_residual": 0.0,
+        "point_determined": [
+          true,
+          false,
+          false
+        ],
+        "redundant": [],
+        "status": "solved"
+      }
+    },
+    {
+      "checks": [
+        {
+          "detail": "dof=3",
+          "name": "dof_3",
+          "pass": true
+        },
+        {
+          "detail": "Solved",
+          "name": "solved",
+          "pass": true
+        },
+        {
+          "detail": "[false]",
+          "name": "curve_not_determined",
+          "pass": true
+        }
+      ],
+      "description": "single circle, no constraints: unknowns = centre (2) + radius (1)",
+      "geometry": {
+        "curves": [
+          {
+            "geom": {
+              "center_point": 1,
+              "kind": "circle",
+              "p_center": [
+                3.0,
+                4.0
+              ],
+              "radius": 5.0
+            },
+            "id": "c1"
+          }
+        ],
+        "points": [
+          {
+            "fixed": true,
+            "id": "origin",
+            "pos": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "c1.center",
+            "pos": [
+              3.0,
+              4.0
+            ]
+          }
+        ]
+      },
+      "group": "mapping",
+      "id": "bare_circle",
+      "notes": "the radius is an explicit solver variable (Layout::rvar) for circles and ellipses only",
+      "setup": {
+        "constraints": 0,
+        "curves": 1,
+        "points": 2
+      },
+      "solve": {
+        "continuations": 0,
+        "curve_determined": [
+          false
+        ],
+        "dof": 3,
+        "failing": [],
+        "folded": [],
+        "iterations": 0,
+        "max_residual": 0.0,
+        "point_determined": [
+          true,
+          false
+        ],
+        "redundant": [],
+        "status": "solved"
+      }
+    },
+    {
+      "checks": [
+        {
+          "detail": "dof=5",
+          "name": "dof_5",
+          "pass": true
+        },
+        {
+          "detail": "Solved",
+          "name": "solved",
+          "pass": true
+        },
+        {
+          "detail": "r=Some(5.0)",
+          "name": "radius_is_derived",
+          "pass": true
+        }
+      ],
+      "description": "single CCW arc, no constraints: unknowns = 3 points (6 coords) minus the arc-radius-equality block (1)",
+      "geometry": {
+        "curves": [
+          {
+            "geom": {
+              "center_point": 1,
+              "derived_radius": 5.0,
+              "derived_start_end_angle_rad": [
+                0.0,
+                1.5707963267948966
+              ],
+              "derived_sweep_rad": 1.5707963267948966,
+              "end_point": 3,
+              "kind": "arc",
+              "p_center": [
+                1.0,
+                2.0
+              ],
+              "p_end": [
+                1.0,
+                7.0
+              ],
+              "p_start": [
+                6.0,
+                2.0
+              ],
+              "reversed": false,
+              "start_point": 2
+            },
+            "id": "a1"
+          }
+        ],
+        "points": [
+          {
+            "fixed": true,
+            "id": "origin",
+            "pos": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "a1.center",
+            "pos": [
+              1.0,
+              2.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "a1.start",
+            "pos": [
+              6.0,
+              2.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "a1.end",
+            "pos": [
+              1.0,
+              7.0
+            ]
+          }
+        ]
+      },
+      "group": "mapping",
+      "id": "bare_arc",
+      "notes": "an arc has NO radius variable: Block::Arc enforces |end-centre| == |start-centre|; radius/sweep are derived quantities (see geometry.curves[0].derived_*) \u2014 a bcdoc Arc(center,radius,start,end) maps through those derived values",
+      "setup": {
+        "constraints": 0,
+        "curves": 1,
+        "points": 4
+      },
+      "solve": {
+        "continuations": 0,
+        "curve_determined": [
+          false
+        ],
+        "dof": 5,
+        "failing": [],
+        "folded": [],
+        "iterations": 0,
+        "max_residual": 0.0,
+        "point_determined": [
+          true,
+          false,
+          false,
+          false
+        ],
+        "redundant": [],
+        "status": "solved"
+      }
+    },
+    {
+      "checks": [
+        {
+          "detail": "Solved",
+          "name": "solved",
+          "pass": true
+        },
+        {
+          "detail": "dof=0",
+          "name": "dof_0",
+          "pass": true
+        },
+        {
+          "detail": "Some(Vec2 { x: 0.0, y: 0.0 })",
+          "name": "center_at_origin",
+          "pass": true
+        },
+        {
+          "detail": "r=5",
+          "name": "radius_5",
+          "pass": true
+        },
+        {
+          "detail": "[true, true]/[true]",
+          "name": "all_determined",
+          "pass": true
+        }
+      ],
+      "description": "circle: centre coincident with the fixed origin point + radius dimension",
+      "geometry": {
+        "curves": [
+          {
+            "geom": {
+              "center_point": 1,
+              "kind": "circle",
+              "p_center": [
+                0.0,
+                0.0
+              ],
+              "radius": 5.0
+            },
+            "id": "c1"
+          }
+        ],
+        "points": [
+          {
+            "fixed": true,
+            "id": "origin",
+            "pos": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "c1.center",
+            "pos": [
+              0.0,
+              0.0
+            ]
+          }
+        ]
+      },
+      "group": "fully_constrained",
+      "id": "circle_origin_radius",
+      "notes": "Coincident{p, 0} uses point 0 = the always-present fixed 'origin' point of Sketch::new()",
+      "solve": {
+        "continuations": 0,
+        "curve_determined": [
+          true
+        ],
+        "dof": 0,
+        "failing": [],
+        "folded": [],
+        "iterations": 0,
+        "max_residual": 0.0,
+        "point_determined": [
+          true,
+          true
+        ],
+        "redundant": [],
+        "status": "solved"
+      }
+    },
+    {
+      "analytic": {
+        "expected_c": [
+          18.623724356957947,
+          32.257236812409175
+        ],
+        "t_far_branch": 37.24744871391589,
+        "t_near_branch": 12.75255128608411
+      },
+      "checks": [
+        {
+          "detail": "Solved failing=[]",
+          "name": "solved",
+          "pass": true
+        },
+        {
+          "detail": "dof=0",
+          "name": "dof_0",
+          "pass": true
+        },
+        {
+          "detail": "Some(Vec2 { x: 0.0, y: 0.0 })",
+          "name": "a_at_origin",
+          "pass": true
+        },
+        {
+          "detail": "Some(Vec2 { x: 50.0, y: 0.0 })",
+          "name": "b_at_50_0",
+          "pass": true
+        },
+        {
+          "detail": "got Some(Vec2 { x: 18.623724356957993, y: 32.257236812409225 }) want Vec2 { x: 18.623724356957947, y: 32.257236812409175 } (t=37.24744871391589)",
+          "name": "c_matches_analytic_60deg_far_branch",
+          "pass": true
+        },
+        {
+          "detail": "[true, true, true, true]",
+          "name": "all_points_determined",
+          "pass": true
+        }
+      ],
+      "geometry": {
+        "curves": [
+          {
+            "geom": {
+              "a": 1,
+              "b": 2,
+              "kind": "line",
+              "p_a": [
+                0.0,
+                0.0
+              ],
+              "p_b": [
+                50.0,
+                0.0
+              ]
+            },
+            "id": "l1"
+          },
+          {
+            "geom": {
+              "a": 2,
+              "b": 3,
+              "kind": "line",
+              "p_a": [
+                50.0,
+                0.0
+              ],
+              "p_b": [
+                18.623724356957993,
+                32.257236812409225
+              ]
+            },
+            "id": "l2"
+          },
+          {
+            "geom": {
+              "a": 3,
+              "b": 1,
+              "kind": "line",
+              "p_a": [
+                18.623724356957993,
+                32.257236812409225
+              ],
+              "p_b": [
+                0.0,
+                0.0
+              ]
+            },
+            "id": "l3"
+          }
+        ],
+        "points": [
+          {
+            "fixed": true,
+            "id": "origin",
+            "pos": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "p1",
+            "pos": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "p2",
+            "pos": [
+              50.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "p3",
+            "pos": [
+              18.623724356957993,
+              32.257236812409225
+            ]
+          }
+        ]
+      },
+      "group": "fully_constrained",
+      "id": "triangle_constrained",
+      "inspired_by": "upstream tests/oracle/25-sketch-triangle/recipe.json (pinned SHA in envelope)",
+      "notes": "Angle(l1,l3)=60deg is expressed as Angle{value:60deg, flip:true}: the interior angle at the shared vertex (the flip adds 180deg to the stored start-to-end angle); the solver keeps the far branch matching the rough sketch",
+      "solve": {
+        "continuations": 0,
+        "curve_determined": [
+          true,
+          true,
+          true
+        ],
+        "dof": 0,
+        "failing": [],
+        "folded": [],
+        "iterations": 0,
+        "max_residual": 0.0,
+        "point_determined": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "redundant": [],
+        "status": "solved"
+      }
+    },
+    {
+      "checks": [
+        {
+          "detail": "Solved failing=[] folded=[]",
+          "name": "solved_after_edit",
+          "pass": true
+        },
+        {
+          "detail": "dof=0",
+          "name": "dof_still_0",
+          "pass": true
+        },
+        {
+          "detail": "Some(Vec2 { x: 40.0, y: 0.0 })",
+          "name": "b_moved_to_40_0",
+          "pass": true
+        },
+        {
+          "detail": "got Some(Vec2 { x: 24.361406616345107, y: 42.19519400335428 }) want Vec2 { x: 24.36140661634508, y: 42.19519400335427 }",
+          "name": "c_matches_analytic_after_edit",
+          "pass": true
+        },
+        {
+          "detail": "Some(Vec2 { x: 0.0, y: 0.0 }) -> Some(Vec2 { x: 0.0, y: 0.0 })",
+          "name": "anchored_point_immovable",
+          "pass": true
+        },
+        {
+          "detail": "[]",
+          "name": "no_orientation_flip",
+          "pass": true
+        },
+        {
+          "detail": "Solved dof=0",
+          "name": "first_solve_was_solved_dof0",
+          "pass": true
+        }
+      ],
+      "first_solve": {
+        "continuations": 0,
+        "curve_determined": [
+          true,
+          true,
+          true
+        ],
+        "dof": 0,
+        "failing": [],
+        "folded": [],
+        "iterations": 0,
+        "max_residual": 0.0,
+        "point_determined": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "redundant": [],
+        "status": "solved"
+      },
+      "geometry": {
+        "curves": [
+          {
+            "geom": {
+              "a": 1,
+              "b": 2,
+              "kind": "line",
+              "p_a": [
+                0.0,
+                0.0
+              ],
+              "p_b": [
+                40.0,
+                0.0
+              ]
+            },
+            "id": "l1"
+          },
+          {
+            "geom": {
+              "a": 2,
+              "b": 3,
+              "kind": "line",
+              "p_a": [
+                40.0,
+                0.0
+              ],
+              "p_b": [
+                24.361406616345107,
+                42.19519400335428
+              ]
+            },
+            "id": "l2"
+          },
+          {
+            "geom": {
+              "a": 3,
+              "b": 1,
+              "kind": "line",
+              "p_a": [
+                24.361406616345107,
+                42.19519400335428
+              ],
+              "p_b": [
+                0.0,
+                0.0
+              ]
+            },
+            "id": "l3"
+          }
+        ],
+        "points": [
+          {
+            "fixed": true,
+            "id": "origin",
+            "pos": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "p1",
+            "pos": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "p2",
+            "pos": [
+              40.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "p3",
+            "pos": [
+              24.361406616345107,
+              42.19519400335428
+            ]
+          }
+        ]
+      },
+      "group": "value_edit",
+      "id": "triangle_value_edit",
+      "inspired_by": "upstream tests.rs fully_constrained_rectangle (dimension edit + re-solve)",
+      "notes": "solve_after_value_edit drives the continuation path; the anchored vertex (coincident with the fixed origin) never moves; the rest follows the driving dimension exactly",
+      "solve": {
+        "continuations": 0,
+        "curve_determined": [
+          true,
+          true,
+          true
+        ],
+        "dof": 0,
+        "failing": [],
+        "folded": [],
+        "iterations": 0,
+        "max_residual": 0.0,
+        "point_determined": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "redundant": [],
+        "status": "solved"
+      }
+    },
+    {
+      "checks": [
+        {
+          "detail": "Solved",
+          "name": "solved",
+          "pass": true
+        },
+        {
+          "detail": "dof=0",
+          "name": "dof_0",
+          "pass": true
+        },
+        {
+          "detail": "Some(Vec2 { x: 0.0, y: 0.0 })",
+          "name": "corner_0_at_0,0",
+          "pass": true
+        },
+        {
+          "detail": "Some(Vec2 { x: 60.0, y: 0.0 })",
+          "name": "corner_1_at_60,0",
+          "pass": true
+        },
+        {
+          "detail": "Some(Vec2 { x: 60.0, y: 8.0 })",
+          "name": "corner_2_at_60,8",
+          "pass": true
+        },
+        {
+          "detail": "Some(Vec2 { x: 8.0, y: 8.0 })",
+          "name": "corner_3_at_8,8",
+          "pass": true
+        },
+        {
+          "detail": "Some(Vec2 { x: 8.0, y: 40.0 })",
+          "name": "corner_4_at_8,40",
+          "pass": true
+        },
+        {
+          "detail": "Some(Vec2 { x: 0.0, y: 40.0 })",
+          "name": "corner_5_at_0,40",
+          "pass": true
+        },
+        {
+          "detail": "[true, true, true, true, true, true, true]",
+          "name": "all_points_determined",
+          "pass": true
+        }
+      ],
+      "geometry": {
+        "curves": [
+          {
+            "geom": {
+              "a": 1,
+              "b": 2,
+              "kind": "line",
+              "p_a": [
+                0.0,
+                0.0
+              ],
+              "p_b": [
+                60.0,
+                0.0
+              ]
+            },
+            "id": "l1"
+          },
+          {
+            "geom": {
+              "a": 2,
+              "b": 3,
+              "kind": "line",
+              "p_a": [
+                60.0,
+                0.0
+              ],
+              "p_b": [
+                60.0,
+                8.0
+              ]
+            },
+            "id": "l2"
+          },
+          {
+            "geom": {
+              "a": 3,
+              "b": 4,
+              "kind": "line",
+              "p_a": [
+                60.0,
+                8.0
+              ],
+              "p_b": [
+                8.0,
+                8.0
+              ]
+            },
+            "id": "l3"
+          },
+          {
+            "geom": {
+              "a": 4,
+              "b": 5,
+              "kind": "line",
+              "p_a": [
+                8.0,
+                8.0
+              ],
+              "p_b": [
+                8.0,
+                40.0
+              ]
+            },
+            "id": "l4"
+          },
+          {
+            "geom": {
+              "a": 5,
+              "b": 6,
+              "kind": "line",
+              "p_a": [
+                8.0,
+                40.0
+              ],
+              "p_b": [
+                0.0,
+                40.0
+              ]
+            },
+            "id": "l5"
+          },
+          {
+            "geom": {
+              "a": 6,
+              "b": 1,
+              "kind": "line",
+              "p_a": [
+                0.0,
+                40.0
+              ],
+              "p_b": [
+                0.0,
+                0.0
+              ]
+            },
+            "id": "l6"
+          }
+        ],
+        "points": [
+          {
+            "fixed": true,
+            "id": "origin",
+            "pos": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "p1",
+            "pos": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "p2",
+            "pos": [
+              60.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "p3",
+            "pos": [
+              60.0,
+              8.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "p4",
+            "pos": [
+              8.0,
+              8.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "p5",
+            "pos": [
+              8.0,
+              40.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "p6",
+            "pos": [
+              0.0,
+              40.0
+            ]
+          }
+        ]
+      },
+      "group": "fully_constrained",
+      "id": "l_bracket_constrained",
+      "inspired_by": "upstream tests/oracle/19-l-bracket-constrained/recipe.json",
+      "notes": "expected corners (0,0)(60,0)(60,8)(8,8)(8,40)(0,40); DistanceX/DistanceY mirror the recipe's oriented dimensions",
+      "solve": {
+        "continuations": 0,
+        "curve_determined": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "dof": 0,
+        "failing": [],
+        "folded": [],
+        "iterations": 0,
+        "max_residual": 0.0,
+        "point_determined": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "redundant": [],
+        "status": "solved"
+      }
+    },
+    {
+      "checks": [
+        {
+          "detail": "Solved",
+          "name": "solved",
+          "pass": true
+        },
+        {
+          "detail": "dof=4",
+          "name": "dof_4",
+          "pass": true
+        },
+        {
+          "detail": "[true, true, false, false, false, false, false]",
+          "name": "only_origin_and_anchored_corner_determined",
+          "pass": true
+        }
+      ],
+      "geometry": {
+        "curves": [
+          {
+            "geom": {
+              "a": 1,
+              "b": 2,
+              "kind": "line",
+              "p_a": [
+                0.0,
+                0.0
+              ],
+              "p_b": [
+                55.999999999791406,
+                -7.396719967956413e-11
+              ]
+            },
+            "id": "l1"
+          },
+          {
+            "geom": {
+              "a": 2,
+              "b": 3,
+              "kind": "line",
+              "p_a": [
+                55.999999999791406,
+                -7.396719967956413e-11
+              ],
+              "p_b": [
+                55.99999999980066,
+                8.00000000021625
+              ]
+            },
+            "id": "l2"
+          },
+          {
+            "geom": {
+              "a": 3,
+              "b": 4,
+              "kind": "line",
+              "p_a": [
+                55.99999999980066,
+                8.00000000021625
+              ],
+              "p_b": [
+                9.500000000150381,
+                8.000000000206997
+              ]
+            },
+            "id": "l3"
+          },
+          {
+            "geom": {
+              "a": 4,
+              "b": 5,
+              "kind": "line",
+              "p_a": [
+                9.500000000150381,
+                8.000000000206997
+              ],
+              "p_b": [
+                9.500000000145755,
+                41.499999999726406
+              ]
+            },
+            "id": "l4"
+          },
+          {
+            "geom": {
+              "a": 5,
+              "b": 6,
+              "kind": "line",
+              "p_a": [
+                9.500000000145755,
+                41.499999999726406
+              ],
+              "p_b": [
+                -3.698360008023354e-11,
+                41.499999999694026
+              ]
+            },
+            "id": "l5"
+          },
+          {
+            "geom": {
+              "a": 6,
+              "b": 1,
+              "kind": "line",
+              "p_a": [
+                -3.698360008023354e-11,
+                41.499999999694026
+              ],
+              "p_b": [
+                0.0,
+                0.0
+              ]
+            },
+            "id": "l6"
+          }
+        ],
+        "points": [
+          {
+            "fixed": true,
+            "id": "origin",
+            "pos": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "p1",
+            "pos": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "p2",
+            "pos": [
+              55.999999999791406,
+              -7.396719967956413e-11
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "p3",
+            "pos": [
+              55.99999999980066,
+              8.00000000021625
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "p4",
+            "pos": [
+              9.500000000150381,
+              8.000000000206997
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "p5",
+            "pos": [
+              9.500000000145755,
+              41.499999999726406
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "p6",
+            "pos": [
+              -3.698360008023354e-11,
+              41.499999999694026
+            ]
+          }
+        ]
+      },
+      "group": "underconstrained",
+      "id": "l_bracket_no_dims",
+      "inspired_by": "upstream tests/oracle/19-l-bracket-constrained/recipe.json",
+      "notes": "H/V + coincident only: dof 4 (2 independent x-offsets + 2 y-offsets \u2014 the L can shear); point 0 (fixed origin) and corner A (coincident with it) are the only determined points",
+      "solve": {
+        "continuations": 0,
+        "curve_determined": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "dof": 4,
+        "failing": [],
+        "folded": [],
+        "iterations": 3,
+        "max_residual": 7.396719967956413e-11,
+        "point_determined": [
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "redundant": [],
+        "status": "solved"
+      }
+    },
+    {
+      "checks": [
+        {
+          "detail": "Solved failing=[]",
+          "name": "solved",
+          "pass": true
+        },
+        {
+          "detail": "dof=0",
+          "name": "dof_0",
+          "pass": true
+        },
+        {
+          "detail": "Vec2 { x: 0.0, y: 0.0 }",
+          "name": "a1.center_at_0,0",
+          "pass": true
+        },
+        {
+          "detail": "Vec2 { x: -6.813323435335475e-14, y: 6.0000000000007 }",
+          "name": "a1.start_at_0,6",
+          "pass": true
+        },
+        {
+          "detail": "Vec2 { x: -2.426837508895072e-14, y: -6.000000000000989 }",
+          "name": "a1.end_at_0,-6",
+          "pass": true
+        },
+        {
+          "detail": "Vec2 { x: 40.00000000000046, y: -1.0887645287860409e-13 }",
+          "name": "a2.center_at_40,0",
+          "pass": true
+        },
+        {
+          "detail": "Vec2 { x: 40.0000000000006, y: -6.000000000001081 }",
+          "name": "a2.start_at_40,-6",
+          "pass": true
+        },
+        {
+          "detail": "Vec2 { x: 40.0000000000006, y: 6.000000000001025 }",
+          "name": "a2.end_at_40,6",
+          "pass": true
+        },
+        {
+          "detail": "Some(6.0000000000007)/Some(6.000000000000972)",
+          "name": "radius_6_both_caps",
+          "pass": true
+        },
+        {
+          "detail": "[true, true, true, true, true, true, true]/[true, true, true, true]",
+          "name": "all_determined",
+          "pass": true
+        }
+      ],
+      "geometry": {
+        "curves": [
+          {
+            "geom": {
+              "center_point": 1,
+              "derived_radius": 6.0000000000007,
+              "derived_start_end_angle_rad": [
+                1.5707963267949079,
+                4.712388980384686
+              ],
+              "derived_sweep_rad": 3.141592653589778,
+              "end_point": 3,
+              "kind": "arc",
+              "p_center": [
+                0.0,
+                0.0
+              ],
+              "p_end": [
+                -2.426837508895072e-14,
+                -6.000000000000989
+              ],
+              "p_start": [
+                -6.813323435335475e-14,
+                6.0000000000007
+              ],
+              "reversed": false,
+              "start_point": 2
+            },
+            "id": "a1"
+          },
+          {
+            "geom": {
+              "center_point": 4,
+              "derived_radius": 6.000000000000972,
+              "derived_start_end_angle_rad": [
+                -1.5707963267948741,
+                1.5707963267948741
+              ],
+              "derived_sweep_rad": 3.1415926535897483,
+              "end_point": 6,
+              "kind": "arc",
+              "p_center": [
+                40.00000000000046,
+                -1.0887645287860409e-13
+              ],
+              "p_end": [
+                40.0000000000006,
+                6.000000000001025
+              ],
+              "p_start": [
+                40.0000000000006,
+                -6.000000000001081
+              ],
+              "reversed": false,
+              "start_point": 5
+            },
+            "id": "a2"
+          },
+          {
+            "geom": {
+              "a": 3,
+              "b": 5,
+              "kind": "line",
+              "p_a": [
+                -2.426837508895072e-14,
+                -6.000000000000989
+              ],
+              "p_b": [
+                40.0000000000006,
+                -6.000000000001081
+              ]
+            },
+            "id": "l1"
+          },
+          {
+            "geom": {
+              "a": 6,
+              "b": 2,
+              "kind": "line",
+              "p_a": [
+                40.0000000000006,
+                6.000000000001025
+              ],
+              "p_b": [
+                -6.813323435335475e-14,
+                6.0000000000007
+              ]
+            },
+            "id": "l2"
+          }
+        ],
+        "points": [
+          {
+            "fixed": true,
+            "id": "origin",
+            "pos": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "a1.center",
+            "pos": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "a1.start",
+            "pos": [
+              -6.813323435335475e-14,
+              6.0000000000007
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "a1.end",
+            "pos": [
+              -2.426837508895072e-14,
+              -6.000000000000989
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "a2.center",
+            "pos": [
+              40.00000000000046,
+              -1.0887645287860409e-13
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "a2.start",
+            "pos": [
+              40.0000000000006,
+              -6.000000000001081
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "a2.end",
+            "pos": [
+              40.0000000000006,
+              6.000000000001025
+            ]
+          }
+        ]
+      },
+      "group": "fully_constrained",
+      "id": "slot_constrained",
+      "inspired_by": "upstream tests/oracle/20-slot-constrained/recipe.json",
+      "notes": "12 unknowns (6 points) vs 12 independent equations (4 tangency + equal + horizontal + radius + centre distance + coincident(2) + 2 arc-radius blocks); tangency at the shared end points replaces a symmetry constraint",
+      "solve": {
+        "continuations": 0,
+        "curve_determined": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "dof": 0,
+        "failing": [],
+        "folded": [],
+        "iterations": 4,
+        "max_residual": 6.998845947236987e-13,
+        "point_determined": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "redundant": [],
+        "status": "solved"
+      }
+    },
+    {
+      "checks": [
+        {
+          "detail": "Solved",
+          "name": "solved",
+          "pass": true
+        },
+        {
+          "detail": "dof=3",
+          "name": "dof_3",
+          "pass": true
+        },
+        {
+          "detail": "a=Vec2 { x: 0.0, y: 0.499999999997738 } b=Vec2 { x: 10.0, y: 0.5000000000023642 }",
+          "name": "horizontalized",
+          "pass": true
+        },
+        {
+          "detail": "a=Vec2 { x: 0.0, y: 0.499999999997738 } b=Vec2 { x: 10.0, y: 0.5000000000023642 } (damped LM splits the 1mm gap ~evenly)",
+          "name": "minimal_motion",
+          "pass": true
+        },
+        {
+          "detail": "[true, false, false] (point 0 is the fixed origin \u2014 trivially determined)",
+          "name": "nothing_determined_except_fixed_origin",
+          "pass": true
+        }
+      ],
+      "geometry": {
+        "curves": [
+          {
+            "geom": {
+              "a": 1,
+              "b": 2,
+              "kind": "line",
+              "p_a": [
+                0.0,
+                0.499999999997738
+              ],
+              "p_b": [
+                10.0,
+                0.5000000000023642
+              ]
+            },
+            "id": "l1"
+          }
+        ],
+        "points": [
+          {
+            "fixed": true,
+            "id": "origin",
+            "pos": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "l1.start",
+            "pos": [
+              0.0,
+              0.499999999997738
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "l1.end",
+            "pos": [
+              10.0,
+              0.5000000000023642
+            ]
+          }
+        ]
+      },
+      "group": "underconstrained",
+      "id": "line_horizontal_only",
+      "inspired_by": "upstream tests.rs under_constrained_reports_dof",
+      "notes": "remaining DOF: translation x, translation y, length; the damped step splits the difference (least motion), which is the design behaviour for free geometry",
+      "solve": {
+        "continuations": 0,
+        "curve_determined": [
+          false
+        ],
+        "dof": 3,
+        "failing": [],
+        "folded": [],
+        "iterations": 3,
+        "max_residual": 4.626243832461796e-12,
+        "point_determined": [
+          true,
+          false,
+          false
+        ],
+        "redundant": [],
+        "status": "solved"
+      }
+    },
+    {
+      "checks": [
+        {
+          "detail": "Solved",
+          "name": "solved_radius_only",
+          "pass": true
+        },
+        {
+          "detail": "dof=2",
+          "name": "dof_2_center_free",
+          "pass": true
+        },
+        {
+          "detail": "[true, false]",
+          "name": "center_undetermined",
+          "pass": true
+        },
+        {
+          "detail": "5",
+          "name": "radius_applied_5",
+          "pass": true
+        },
+        {
+          "detail": "Solved",
+          "name": "solved_after_edit",
+          "pass": true
+        },
+        {
+          "detail": "dof=2",
+          "name": "dof_still_2",
+          "pass": true
+        },
+        {
+          "detail": "8",
+          "name": "radius_now_8",
+          "pass": true
+        },
+        {
+          "detail": "Vec2 { x: 3.0, y: 4.0 } -> Vec2 { x: 3.0, y: 4.0 } (bitwise equality)",
+          "name": "free_center_does_not_move",
+          "pass": true
+        }
+      ],
+      "description": "circle with only a radius dimension: centre DOF remain; editing the radius grows the circle without moving the free centre",
+      "geometry": {
+        "curves": [
+          {
+            "geom": {
+              "center_point": 1,
+              "kind": "circle",
+              "p_center": [
+                3.0,
+                4.0
+              ],
+              "radius": 8.0
+            },
+            "id": "c1"
+          }
+        ],
+        "points": [
+          {
+            "fixed": true,
+            "id": "origin",
+            "pos": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "fixed": false,
+            "id": "c1.center",
+            "pos": [
+              3.0,
+              4.0
+            ]
+          }
+        ]
+      },
+      "group": "underconstrained",
+      "id": "circle_radius_only_edit",
+      "notes": "which DOF remain: centre x/y (point_determined=false); what moves on a dimension edit: only the radius \u2014 minimal motion leaves unconstrained geometry in place (exact here: the residual gradient does not touch the centre)",
+      "solve": {
+        "continuations": 0,
+        "curve_determined": [
+          false
+        ],
+        "dof": 2,
+        "failing": [],
+        "folded": [],
+        "iterations": 0,
+        "max_residual": 0.0,
+        "point_determined": [
+          true,
+          false
+        ],
+        "redundant": [],
+        "status": "solved"
+      },
+      "solve_after_edit": {
+        "continuations": 0,
+        "curve_determined": [
+          false
+        ],
+        "dof": 2,
+        "failing": [],
+        "folded": [],
+        "iterations": 0,
+        "max_residual": 0.0,
+        "point_determined": [
+          true,
+          false
+        ],
+        "redundant": [],
+        "status": "solved"
+      }
+    },
+    {
+      "checks": [
+        {
+          "detail": "Solved",
+          "name": "solved_despite_redundancy",
+          "pass": true
+        },
+        {
+          "detail": "dof=0",
+          "name": "dof_0",
+          "pass": true
+        },
+        {
+          "detail": "[\"k8\"]",
+          "name": "redundant_listed",
+          "pass": true
+        },
+        {
+          "detail": "residual=Some(0.0) (CONSISTENT=0.000001)",
+          "name": "redundant_constraint_consistent",
+          "pass": true
+        },
+        {
+          "detail": "[\"k3(Vertical { l: 1 })\"]",
+          "name": "determined_by_reports_impliers",
+          "pass": true
+        }
+      ],
+      "description": "fully constrained rectangle + duplicate Vertical on the same side",
+      "group": "redundancy",
+      "id": "rect_redundant_duplicate_dimension",
+      "notes": "redundancy = adds no Jacobian rank (orthogonalised Gram walk in redundancy.rs) AND residual ~ 0 (implied, not conflicting); the solve itself stays Solved with dof 0",
+      "redundancy": {
+        "constraint_id": "k8",
+        "constraint_residual_mm": 0.0,
+        "determined_by": [
+          "k3(Vertical { l: 1 })"
+        ],
+        "determined_by_indices": [
+          2
+        ]
+      },
+      "solve": {
+        "continuations": 0,
+        "curve_determined": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "dof": 0,
+        "failing": [],
+        "folded": [],
+        "iterations": 0,
+        "max_residual": 0.0,
+        "point_determined": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "redundant": [
+          "k8"
+        ],
+        "status": "solved"
+      }
+    },
+    {
+      "checks": [
+        {
+          "detail": "Failed",
+          "name": "fails",
+          "pass": true
+        },
+        {
+          "detail": "[\"k2\", \"k3\"]",
+          "name": "failing_lists_conflicting_dims",
+          "pass": true
+        },
+        {
+          "detail": "input positions written back exactly",
+          "name": "geometry_restored_bitwise",
+          "pass": true
+        },
+        {
+          "detail": "d1=Some(0.0) d2=Some(10.0)",
+          "name": "residuals_expose_conflict",
+          "pass": true
+        }
+      ],
+      "description": "the same pair of points given two different distances (10 and 20)",
+      "group": "conflict",
+      "id": "conflicting_distances",
+      "notes": "failure surface: SolveStatus::Failed + failing constraint ids + restored geometry; the rank analysis still reports dof (see solve.dof)",
+      "per_constraint_residual": {
+        "d1": 0.0,
+        "d2": 10.0
+      },
+      "solve": {
+        "continuations": 0,
+        "curve_determined": [
+          false
+        ],
+        "dof": 2,
+        "failing": [
+          "k2",
+          "k3"
+        ],
+        "folded": [],
+        "iterations": 3,
+        "max_residual": 5.000000000002892,
+        "point_determined": [
+          true,
+          false,
+          false
+        ],
+        "redundant": [
+          "k3"
+        ],
+        "status": "failed"
+      }
+    },
+    {
+      "checks": [
+        {
+          "detail": "Failed",
+          "name": "fails",
+          "pass": true
+        },
+        {
+          "detail": "[\"k1\", \"k2\"]",
+          "name": "distance_constraint_named_in_failing",
+          "pass": true
+        },
+        {
+          "detail": "an unsolvable system leaves the geometry untouched",
+          "name": "geometry_restored_bitwise",
+          "pass": true
+        },
+        {
+          "detail": "Some(1.4031242374328485) (input |pq| = sqrt(41) ~ 6.4; LM stalls between the 0 and 5 targets, then the input is restored)",
+          "name": "residual_measured_on_restored_geometry",
+          "pass": true
+        }
+      ],
+      "description": "genuinely unsolvable: two points forced coincident AND dimensioned 5mm apart",
+      "group": "failure",
+      "id": "coincident_plus_distance",
+      "notes": "the assignment's canonical unsolvable case: the solver terminates (bounded iterations / lambda cap) with Failed, names the violated dimension, and restores the input geometry",
+      "per_constraint_residual": {
+        "d1": 1.4031242374328485
+      },
+      "solve": {
+        "continuations": 0,
+        "curve_determined": [],
+        "dof": 2,
+        "failing": [
+          "k1",
+          "k2"
+        ],
+        "folded": [],
+        "iterations": 3,
+        "max_residual": 2.500000000596585,
+        "point_determined": [
+          true,
+          false,
+          false
+        ],
+        "redundant": [
+          "k2"
+        ],
+        "status": "failed"
+      }
+    },
+    {
+      "checks": [
+        {
+          "detail": "Failed",
+          "name": "fails",
+          "pass": true
+        },
+        {
+          "detail": "[\"k3\", \"k4\", \"k5\"]",
+          "name": "failing_nonempty",
+          "pass": true
+        },
+        {
+          "detail": "on failure the solve writes back the pre-solve positions (x0) exactly",
+          "name": "geometry_restored_bitwise",
+          "pass": true
+        },
+        {
+          "detail": "1.1936170177423122",
+          "name": "max_residual_large",
+          "pass": true
+        }
+      ],
+      "description": "driving dimension edited to a value with no real solution (triangle inequality violated)",
+      "group": "failure",
+      "id": "triangle_edit_unsolvable",
+      "notes": "solver reports Failed + names the violated constraint ids; geometry restored to the stored solved state (verified bitwise); no partial write-back",
+      "solve": {
+        "continuations": 1,
+        "curve_determined": [
+          true,
+          false,
+          false
+        ],
+        "dof": 1,
+        "failing": [
+          "k3",
+          "k4",
+          "k5"
+        ],
+        "folded": [],
+        "iterations": 222,
+        "max_residual": 1.1936170177423122,
+        "point_determined": [
+          true,
+          true,
+          true,
+          false
+        ],
+        "redundant": [
+          "k5"
+        ],
+        "status": "failed"
+      }
+    },
+    {
+      "bitwise_identical_points": true,
+      "checks": [
+        {
+          "detail": "max coordinate delta = 0e0",
+          "name": "bitwise_identical_geometry_5x",
+          "pass": true
+        },
+        {
+          "detail": "[0, 0, 0, 0, 0]",
+          "name": "identical_iteration_counts",
+          "pass": true
+        },
+        {
+          "detail": "[0.0, 0.0, 0.0, 0.0, 0.0]",
+          "name": "identical_residuals",
+          "pass": true
+        },
+        {
+          "detail": "0b5ec01b39c194d2,0b5ec01b39c194d2,0b5ec01b39c194d2,0b5ec01b39c194d2,0b5ec01b39c194d2",
+          "name": "identical_digests",
+          "pass": true
+        }
+      ],
+      "description": "the same constrained triangle built and solved 5 times in one process",
+      "digests": [
+        "0b5ec01b39c194d2",
+        "0b5ec01b39c194d2",
+        "0b5ec01b39c194d2",
+        "0b5ec01b39c194d2",
+        "0b5ec01b39c194d2"
+      ],
+      "group": "determinism",
+      "id": "determinism_inprocess_5x",
+      "iterations": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "max_abs_coordinate_delta": 0.0,
+      "max_residuals": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "notes": "no randomness in the solver (fixed LM schedule: lambda0=1e-3, /3 on success, x4 on rejection, cap 1e12; constructive seed is deterministic) \u2014 deterministic by construction, verified empirically at the bit level",
+      "runs": 5
+    },
+    {
+      "checks": [
+        {
+          "detail": "[0, 0, 0]",
+          "name": "all_child_processes_exit_0",
+          "pass": true
+        },
+        {
+          "detail": "W1_GEOM_HASH 0b5ec01b39c194d2 fec63e7881038a4d 5e77e7b8deb94d0a ok=1 | W1_GEOM_HASH 0b5ec01b39c194d2 fec63e7881038a4d 5e77e7b8deb94d0a ok=1 | W1_GEOM_HASH 0b5ec01b39c194d2 fec63e7881038a4d 5e77e7b8deb94d0a ok=1",
+          "name": "hashes_identical_across_processes",
+          "pass": true
+        }
+      ],
+      "child_stdout": [
+        "W1_GEOM_HASH 0b5ec01b39c194d2 fec63e7881038a4d 5e77e7b8deb94d0a ok=1",
+        "W1_GEOM_HASH 0b5ec01b39c194d2 fec63e7881038a4d 5e77e7b8deb94d0a ok=1",
+        "W1_GEOM_HASH 0b5ec01b39c194d2 fec63e7881038a4d 5e77e7b8deb94d0a ok=1"
+      ],
+      "description": "the canonical cases (triangle, L-bracket, slot) solved in 3 separate OS processes (self re-exec); FNV-1a digest over solved point/curve bits",
+      "exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "group": "determinism",
+      "id": "determinism_crossprocess_3x",
+      "identical": true,
+      "notes": "cross-process determinism of the pinned build at the bit level",
+      "runs": 3
+    }
+  ],
+  "command": "cargo run --bin w1_sketch -j 1 (from experiments/solidcraft/harness; env HARNESS_COMMIT/W1_COMMAND/RUSTC_VERSION set)",
+  "experiment": "w1-sketch",
+  "failures": [],
+  "finished_utc": "2026-10-19T17:25:05Z",
+  "harness_commit": "57a0cc3812125676e44616a3c9309295468fcd2b",
+  "harness_commit_note": "branch tip of tl2/solidcraft-evaluation; W1 experiment files were uncommitted in the working tree when run",
+  "host": {
+    "cpus": 2,
+    "mem_total_gb": 3.9468421936035156,
+    "note": "sandbox container (2 CPU, ~4GiB cgroup OOM limit); all cargo invocations -j 1",
+    "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)"
+  },
+  "issue_ref": "payswapdotorg/blender-cad#1",
+  "profile": "dev (harness profile: bin opt-level 1, dependencies opt-level 2, debug-assertions off) \u2014 replicates upstream's dev profile; NOT release; no wall-clock performance claims in this file",
+  "started_utc": "2026-10-19T17:25:05Z",
+  "summary": {
+    "cases": 17,
+    "cases_with_failed_checks": [],
+    "checks_failed": 0,
+    "checks_passed": 85,
+    "checks_total": 85,
+    "conflict_failure_modes": [
+      "conflicting_distances",
+      "coincident_plus_distance",
+      "triangle_edit_unsolvable"
+    ],
+    "determinism_crossprocess_bitwise": true,
+    "determinism_inprocess_bitwise": true,
+    "failure_geometry_restore_verified_bitwise": true,
+    "fully_constrained_dof0_cases": [
+      "circle_origin_radius",
+      "triangle_constrained",
+      "l_bracket_constrained",
+      "slot_constrained",
+      "rect_redundant_duplicate_dimension"
+    ],
+    "redundancy_detected_and_listed": true,
+    "underconstrained_dof": {
+      "bare_arc": 5,
+      "bare_circle": 3,
+      "bare_line": 4,
+      "circle_radius_only_edit": 2,
+      "l_bracket_no_dims": 4,
+      "line_horizontal_only": 3
+    }
+  },
+  "upstream": {
+    "consumed_as": "path dependency on ../.upstream/crates/sketch via harness Cargo.toml ([patch.crates-io] replicated)",
+    "repo": "https://github.com/tangency-labs/solidcraft",
+    "sha": "3b4db52c10279251a068cfca5eb7447068bc28e7",
+    "vendored_truck_patches": true,
+    "version": "0.16.2"
+  },
+  "upstream_tests": {
+    "command": "cd /home/z/solidcraft-upstream && cargo test -p solidcraft-sketch -j 1",
+    "experiment": "w1-upstream-tests",
+    "generated_utc": "2026-10-19T17:24:07Z",
+    "host": {
+      "cpus": 2,
+      "note": "sandbox container; cargo -j 1"
+    },
+    "issue_ref": "payswapdotorg/blender-cad#1",
+    "profile": "dev (upstream workspace dev profile: dependencies opt-level 2, debug-assertions off)",
+    "purpose": "upstream conformance evidence: run SolidCraft's own test suite for the sketch crate at the pinned SHA",
+    "suites": [
+      {
+        "binary": "target/debug/deps/solidcraft_sketch-4effaa84b31d8013",
+        "failed": 0,
+        "filtered_out": 0,
+        "finished_s": 79.32,
+        "ignored": 3,
+        "measured": 0,
+        "passed": 226,
+        "result": "ok",
+        "suite": "unittests src/lib.rs"
+      },
+      {
+        "binary": "target/debug/deps/cursor_target-ad3c5d7034961ad2",
+        "failed": 0,
+        "filtered_out": 0,
+        "finished_s": 0.02,
+        "ignored": 0,
+        "measured": 0,
+        "passed": 9,
+        "result": "ok",
+        "suite": "tests/cursor_target.rs"
+      },
+      {
+        "binary": null,
+        "failed": 0,
+        "filtered_out": 0,
+        "finished_s": 0.0,
+        "ignored": 0,
+        "measured": 0,
+        "passed": 0,
+        "result": "ok",
+        "suite": "doc-tests solidcraft_sketch"
+      }
+    ],
+    "summary": {
+      "failed": 0,
+      "ignored": 3,
+      "passed": 235,
+      "suites": 3,
+      "verdict": "all green"
+    },
+    "upstream": {
+      "crate": "solidcraft-sketch",
+      "repo": "https://github.com/tangency-labs/solidcraft",
+      "sha": "3b4db52c10279251a068cfca5eb7447068bc28e7",
+      "version": "0.16.2"
+    }
+  },
+  "verification_rerun": {
+    "purpose": "Task 97 completion pass (W1 verification): predecessor agent built the artifacts but died before documenting; this block records an independent rerun of the same harness at the same pinned upstream SHA. Original predecessor data above is UNCHANGED.",
+    "rerun_by": "W1 sketch-solver worker \u2014 completion pass (SolidCraft evaluation), Task ID 97",
+    "runs": [
+      {
+        "run": 1,
+        "command": "HARNESS_COMMIT=$(git rev-parse HEAD) RUSTC_VERSION=\"$(rustc -V)\" W1_COMMAND='cargo run --bin w1_sketch -j 1 (from experiments/solidcraft/harness; env HARNESS_COMMIT/W1_COMMAND/RUSTC_VERSION set)' cargo run --bin w1_sketch -j 1",
+        "started_utc": "2026-10-19T17:32:09Z",
+        "finished_utc": "2026-10-19T17:32:09Z",
+        "harness_commit": "9316373c5fad0e0b1019dcc17ff05a37d761bcfe",
+        "harness_commit_note": "branch tip at rerun time (Task 98 commit landed after the predecessor's run, which recorded 57a0cc3); W1 experiment files still uncommitted in the working tree",
+        "host": {
+          "cpus": 2,
+          "mem_total_gb": 3.9468421936035156,
+          "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)"
+        },
+        "summary_line": "85 checks, 85 passed, 0 failed",
+        "exit_code": 0
+      },
+      {
+        "run": 2,
+        "command": "./target/debug/w1_sketch (direct binary invocation, separate OS process, env unset)",
+        "summary_line": "85 checks, 85 passed, 0 failed",
+        "exit_code": 0
+      }
+    ],
+    "comparison_vs_predecessor": {
+      "method": "leaf-by-leaf JSON tree diff (python), predecessor file backed up before rerun; binary rewrites the file wholesale, predecessor version restored then this block appended",
+      "differing_leaves": [
+        ".started_utc",
+        ".finished_utc",
+        ".harness_commit"
+      ],
+      "verdict": "cases (17 cases, 85 checks, all geometry/digests/iterations/residuals) and embedded upstream_tests block are LEAF-IDENTICAL to the predecessor run; only the 3 volatile envelope fields differ (timestamps; harness_commit 57a0cc3->9316373 because the Task-98 commit landed in between). Rerun1 vs rerun2: cases leaf-identical (cross-process determinism across two independent full runs).",
+      "rerun_summary": {
+        "cases": 17,
+        "checks_total": 85,
+        "checks_passed": 85,
+        "checks_failed": 0
+      }
+    },
+    "cross_process_hash_mode": {
+      "command": "./target/debug/w1_sketch hash  (x3, three separate OS processes)",
+      "outputs_identical": true,
+      "output": "W1_GEOM_HASH 0b5ec01b39c194d2 fec63e7881038a4d 5e77e7b8deb94d0a ok=1"
+    },
+    "upstream_tests_rerun": {
+      "command": "cd /home/z/solidcraft-upstream && cargo test -p solidcraft-sketch -j 1",
+      "date_utc": "2026-10-19T17:34:56Z",
+      "suites": [
+        {
+          "suite": "unittests src/lib.rs",
+          "passed": 226,
+          "failed": 0,
+          "ignored": 3,
+          "finished_s": 79.44
+        },
+        {
+          "suite": "tests/cursor_target.rs",
+          "passed": 9,
+          "failed": 0,
+          "ignored": 0,
+          "finished_s": 0.02
+        },
+        {
+          "suite": "doc-tests solidcraft_sketch",
+          "passed": 0,
+          "failed": 0,
+          "ignored": 0,
+          "finished_s": 0.0
+        }
+      ],
+      "summary": {
+        "passed": 235,
+        "failed": 0,
+        "ignored": 3,
+        "verdict": "all green \u2014 identical to w1-upstream-tests.json"
+      }
+    }
+  }
+}

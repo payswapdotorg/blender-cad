@@ -1,0 +1,180 @@
+{
+ "commands": [
+  {
+   "command": "sketch.create",
+   "params": {
+    "name": "BoxA_sketch",
+    "plane": "XY"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "construction": false,
+    "ids": [
+     "l1"
+    ],
+    "points": [
+     [
+      0,
+      0
+     ],
+     [
+      20,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "construction": false,
+    "ids": [
+     "l2"
+    ],
+    "points": [
+     "l1.end",
+     [
+      20,
+      10
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "construction": false,
+    "ids": [
+     "l3"
+    ],
+    "points": [
+     "l2.end",
+     [
+      0,
+      10
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "construction": false,
+    "ids": [
+     "l4"
+    ],
+    "points": [
+     "l3.end",
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "body_names": [
+     "A"
+    ],
+    "direction": "positive",
+    "distance": 10,
+    "name": "BoxA",
+    "operation": "new",
+    "profiles": [
+     {
+      "loops": [
+       {
+        "curves": [
+         "l1",
+         "l2",
+         "l3",
+         "l4"
+        ],
+        "outer": true
+       }
+      ],
+      "sketch": "BoxA_sketch"
+     }
+    ],
+    "sketch": "BoxA_sketch"
+   }
+  },
+  {
+   "command": "construct.plane.offset",
+   "params": {
+    "base": "XY",
+    "name": "Zm5",
+    "offset": -5
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "name": "Cyl_sketch",
+    "plane": "Zm5"
+   }
+  },
+  {
+   "command": "sketch.circle.center",
+   "params": {
+    "center": [
+     10,
+     5
+    ],
+    "construction": false,
+    "id": "c1",
+    "radius": 5.0001
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "body_names": [
+     "B"
+    ],
+    "direction": "positive",
+    "distance": 20,
+    "name": "CylB",
+    "operation": "new",
+    "profiles": [
+     {
+      "loops": [
+       {
+        "curves": [
+         "c1"
+        ],
+        "outer": true
+       }
+      ],
+      "sketch": "Cyl_sketch"
+     }
+    ],
+    "sketch": "Cyl_sketch"
+   }
+  },
+  {
+   "command": "solid.combine",
+   "params": {
+    "keep_tools": false,
+    "name": "Combine1",
+    "operation": "cut",
+    "target": "A",
+    "tools": [
+     "B"
+    ]
+   }
+  }
+ ]
+}

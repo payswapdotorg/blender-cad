@@ -1,0 +1,22 @@
+{
+  "provenance": {
+    "author": "TL2-W2 (history/naming lane)",
+    "date": "2026-10-19",
+    "license": "same as repo (experiments tree)",
+    "note": "self-authored; command ids discovered from solidcraft-cli commands (v0.16.2 release binary)"
+  },
+  "description": "W2 scenario 1 baseline chain: param-driven sketch (len x h) -> extrude -> fillet one top edge -> through hole on the top face -> face listing + measurement",
+  "commands": [
+    {"command": "parameters.change", "params": {"name": "len", "expression": "40 mm"}},
+    {"command": "parameters.change", "params": {"name": "h", "expression": "10 mm"}},
+    {"command": "sketch.create", "params": {"plane": "XY", "name": "S"}},
+    {"command": "sketch.rectangle.two_point", "params": {"p0": [0, 0], "p1": [40, 30]}},
+    {"command": "sketch.dimension", "params": {"entities": ["l1"], "value": "len"}},
+    {"command": "sketch.finish", "params": {}},
+    {"command": "solid.extrude", "params": {"distance": "h", "name": "Block"}},
+    {"command": "solid.fillet", "params": {"edges": [[40, 15, 10]], "radius": 2, "name": "Round"}},
+    {"command": "solid.hole", "params": {"position": [20, 15, 10], "diameter": 5, "name": "Hole"}},
+    {"command": "model.faces", "params": {"body": "Body1"}},
+    {"command": "inspect.measure", "params": {}}
+  ]
+}

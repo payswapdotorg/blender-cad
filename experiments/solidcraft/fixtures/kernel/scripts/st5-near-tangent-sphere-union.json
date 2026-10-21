@@ -1,0 +1,42 @@
+{
+ "commands": [
+  {
+   "command": "solid.sphere",
+   "params": {
+    "radius": 10,
+    "center": [
+     0,
+     0,
+     0
+    ],
+    "body_name": "A",
+    "name": "SphereA"
+   }
+  },
+  {
+   "command": "solid.sphere",
+   "params": {
+    "radius": 10,
+    "center": [
+     19.99,
+     0,
+     0
+    ],
+    "body_name": "B",
+    "name": "SphereB"
+   }
+  },
+  {
+   "command": "solid.combine",
+   "params": {
+    "keep_tools": false,
+    "name": "Combine1",
+    "operation": "join",
+    "target": "A",
+    "tools": [
+     "B"
+    ]
+   }
+  }
+ ]
+}

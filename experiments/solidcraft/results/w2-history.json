@@ -1,0 +1,878 @@
+{
+ "experiment": "w2-history",
+ "issue_ref": "payswapdotorg/blender-cad#1",
+ "upstream": {
+  "repo": "https://github.com/tangency-labs/solidcraft",
+  "sha": "3b4db52c10279251a068cfca5eb7447068bc28e7",
+  "version": "0.16.2",
+  "vendored_truck_patches": true
+ },
+ "harness_commit": "57a0cc3812125676e44616a3c9309295468fcd2b",
+ "driver": "python3.12 python/w2_history_runner.py (from experiments/solidcraft/)",
+ "command": "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli run/eval/script per scenario (exact argv in each case)",
+ "cli": {
+  "path": "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+  "version_output": "solidcraft-cli 0.16.2",
+  "release_binary": true,
+  "release_note": "checksum-verified official v0.16.2 release binary; its tag commit 5de48e9 is 80 commits behind the audited source pin 3b4db52c10279251a068cfca5eb7447068bc28e7 (50 first-parent; same day 2026-10-19, tag 00:39 UTC vs pin 14:38 UTC; 35 of them touch doc/engine/kernel, 3 the CLI app, 3 mcp \u2014 the Task-96 briefing's '8 commits behind' figure is wrong, measured here) \u2014 source audit uses the pin, behavioural evidence uses the binary",
+  "upstream_clone_sha": "3b4db52c10279251a068cfca5eb7447068bc28e7",
+  "upstream_clone_matches_pin": true
+ },
+ "started_utc": "2026-10-19T17:20:28Z",
+ "finished_utc": "2026-10-19T17:20:49Z",
+ "host": {
+  "cpus": 2,
+  "mem_gb": 3.9,
+  "python": "3.12.15",
+  "platform": "Linux-5.10.134-013.15.kangaroo.al8.x86_64-x86_64-with-glibc2.41",
+  "note": "sandbox container (2 CPUs, ~4 GiB cgroup)"
+ },
+ "profile": "release binary (official v0.16.2 build, opt-level 3, thin LTO per upstream release profile)",
+ "cases": [
+  {
+   "id": "s1-baseline-chain",
+   "description": "param-driven sketch -> extrude -> fillet -> hole; volume + named faces verified",
+   "fixture": "fixtures/history/s1-baseline.json",
+   "commands": [
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "run",
+     "/home/z/blender-cad/experiments/solidcraft/fixtures/history/s1-baseline.json",
+     "--results",
+     "--timings",
+     "--profile",
+     "--save",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s1-baseline.solidcraft",
+     "--json-out",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s1-out.json"
+    ]
+   ],
+   "returncode": 0,
+   "stderr": "",
+   "volume_mm3": 11777.908211339332,
+   "volume_mm3_analytic": 11777.898239,
+   "volume_rel_err": 8.467199154941898e-07,
+   "face_count": 9,
+   "face_names": [
+    "F2:start",
+    "F2:side:l1",
+    "F2:side:l2",
+    "F2:side:l3",
+    "F2:side:l4",
+    "F2:top",
+    "F3:blend:F2:side:l2|F2:top",
+    "F4:bore:side:0",
+    "F4:bore:side:1"
+   ],
+   "all_face_names_exact": true,
+   "timings": [
+    {
+     "index": 0,
+     "command": "parameters.change",
+     "ms": 0.215
+    },
+    {
+     "index": 1,
+     "command": "parameters.change",
+     "ms": 0.025
+    },
+    {
+     "index": 2,
+     "command": "sketch.create",
+     "ms": 0.337
+    },
+    {
+     "index": 3,
+     "command": "sketch.rectangle.two_point",
+     "ms": 0.289
+    },
+    {
+     "index": 4,
+     "command": "sketch.dimension",
+     "ms": 0.205
+    },
+    {
+     "index": 5,
+     "command": "sketch.finish",
+     "ms": 0.004
+    },
+    {
+     "index": 6,
+     "command": "solid.extrude",
+     "ms": 1.276
+    },
+    {
+     "index": 7,
+     "command": "solid.fillet",
+     "ms": 19.04
+    },
+    {
+     "index": 8,
+     "command": "solid.hole",
+     "ms": 100.681
+    },
+    {
+     "index": 9,
+     "command": "model.faces",
+     "ms": 5.285
+    },
+    {
+     "index": 10,
+     "command": "inspect.measure",
+     "ms": 52.58
+    }
+   ],
+   "kernel_share_ms": {
+    "parameters.change": {
+     "boolean_ms": 0.0,
+     "other_ms": 0.025,
+     "tessellate_ms": 0.0
+    },
+    "sketch.create": {
+     "boolean_ms": 0.0,
+     "other_ms": 0.337,
+     "tessellate_ms": 0.0
+    },
+    "sketch.rectangle.two_point": {
+     "boolean_ms": 0.0,
+     "other_ms": 0.289,
+     "tessellate_ms": 0.0
+    },
+    "sketch.dimension": {
+     "boolean_ms": 0.0,
+     "other_ms": 0.205,
+     "tessellate_ms": 0.0
+    },
+    "sketch.finish": {
+     "boolean_ms": 0.0,
+     "other_ms": 0.004,
+     "tessellate_ms": 0.0
+    },
+    "solid.extrude": {
+     "boolean_ms": 0.0,
+     "other_ms": 1.276,
+     "tessellate_ms": 0.0
+    },
+    "solid.fillet": {
+     "boolean_ms": 0.0,
+     "other_ms": 1.889,
+     "tessellate_ms": 17.151
+    },
+    "solid.hole": {
+     "boolean_ms": 96.273,
+     "other_ms": 3.471,
+     "tessellate_ms": 0.938
+    },
+    "model.faces": {
+     "boolean_ms": 0.0,
+     "other_ms": 2.407,
+     "tessellate_ms": 2.878
+    },
+    "inspect.measure": {
+     "boolean_ms": 0.0,
+     "other_ms": 0.603,
+     "tessellate_ms": 51.978
+    }
+   },
+   "total_ms": 179.998,
+   "checks": [
+    {
+     "what": "volume matches analytic (rel < 1e-4)",
+     "ok": true
+    },
+    {
+     "what": "all face names exact (lineage-verified)",
+     "ok": true
+    }
+   ],
+   "verdict": "pass",
+   "raw": "{\"results\": [{\"display_value\": 40.0, \"errors\": [], \"expression\": \"40 mm\", \"name\": \"len\", \"recomputed\": 0, \"restored\": 0, \"value\": 40.0}, {\"display_value\": 10.0, \"errors\": [], \"expression\": \"10 mm\", \"name\": \"h\", \"recomputed\": 0, \"restored\": 0, \"value\": 10.0}, {\"attachment\": \"fixed\", \"created\": {\"constraints\": [], \"curves\": [], \"dimensions\": [], \"points\": []}, \"name\": \"S\", \"projected\": null, \"sketch\": 1}, {\"constraints\": [\"k1\", \"k2\", \"k3\", \"k4\", \"k5\"], \"corners\": {\"bottom_left\": \"p1\", \"bottom_right\": \"p2\", \"top_left\": \"p4\", \"top_right\": \"p3\"}, \"created\": {\"constraints\": [\"k1\", \"k2\", \"k3\", \"k4\", \"k5\"], \"curves\": [\"l1\", \"l2\", \"l3\", \"l4\"], \"dimensions\": [], \"points\": [\"p1\", \"p2\", \"p3\", \"p4\"]}, \"curves\": [\"l1\", \"l2\", \"l3\", \"l4\"], \"sides\": {\"bottom\": \"l1\", \"left\": \"l4\", \"right\": \"l2\", \"top\": \"l3\"}, \"sketch\": {\"dof\": 2, \"solved\": true}}, {\"created\": {\"constraints\": [], \"curves\": [], \"dimensions\": [\"k6\"], \"points\": []}, \"expression\": \"len\", \"measured\": 40.0, \"param\": \"d1\", \"sketch\": {\"dof\": 1, \"solved\": true}, \"type\": \"LinearDimension\", \"unit\": \"mm\"}, {\"profiles\": 1, \"sketch\": 1}, {\"bodies\": [\"Body1\"], \"changed_bodies\": [], \"created_bodies\": [\"Body1\"], \"feature\": 2, \"ms\": 1.097714, \"name\": \"Block\", \"removed_bodies\": [], \"warning\": null}, {\"bodies\": [\"Body1\"], \"changed_bodies\": [\"Body1\"], \"created_bodies\": [], \"feature\": 3, \"ms\": 18.000464, \"name\": \"Round\", \"removed_bodies\": [], \"warning\": null}, {\"bodies\": [\"Body1\"], \"changed_bodies\": [\"Body1\"], \"created_bodies\": [], \"feature\": 4, \"ms\": 98.955671, \"name\": \"Hole\", \"removed_bodies\": [], \"warning\": null}, {\"body\": \"Body1\", \"faces\": [{\"area\": 1180.9235294117648, \"centroid\": [20.00000000000698, 14.999999999990077, 0.0], \"exact\": true, \"index\": 0, \"name\": \"F2:start\", \"plane_normal\": [0.0, 0.0, -1.0], \"point\": [6.899308978629819, 15.049614895193612, 0.0]}, {\"area\": 399.06108822824376, \"centroid\": [19.95405118857921, 0.0, 4.9893432202801], \"exact\": true, \"index\": 1, \"name\": \"F2:side:l1\", \"plane_normal\": [0.0, -1.0, 0.0], \"point\": [4.3735685481960225, 0.0, 5.390190248507151]}, {\"area\": 240.0, \"centroid\": [40.0, 15.0, 4.0], \"exact\": true, \"index\": 2, \"name\": \"F2:side:l2\", \"plane_normal\": [1.0, 0.0, 0.0], \"point\": [40.0, 26.524174696260022, 3.4758253037399762]}, {\"area\": 399.06108822824365, \"centroid\": [19.954051188579207, 30.0, 4.989343220280099], \"exact\": true, \"index\": 3, \"name\": \"F2:side:l3\", \"plane_normal\": [0.0, 1.0, 0.0], \"point\": [4.3735685481960225, 30.0, 5.390190248507151]}, {\"area\": 300.0, \"centroid\": [0.0, 15.0, 5.0], \"exact\": true, \"index\": 4, \"name\": \"F2:side:l4\", \"plane_normal\": [-1.0, 0.0, 0.0], \"point\": [0.0, 4.188611699158103, 4.188611699158103]}, {\"area\": 1120.9235294117645, \"centroid\": [18.982981470118656, 14.999999999989546, 10.000000000000004], \"exact\": true, \"index\": 5, \"name\": \"F2:top\", \"plane_normal\": [0.0, 0.0, 1.0], \"point\": [6.899308978603706, 15.049614892922675, 10.0]}, {\"area\": 93.64045375522646, \"centroid\": [39.25659211387997, 14.999999956439169, 9.256592096950662], \"cylinder\": {\"axis\": [0.0, -1.0, -0.0], \"origin\": [38.0, -3.3306690738754696e-15, 8.00000000000001], \"radius\": 2.000000000000002}, \"exact\": true, \"index\": 6, \"name\": \"F3:blend:F2:side:l2|F2:top\", \"plane_normal\": null, \"point\": [39.99163768551643, 14.210761172042007, 8.182700108458567]}, {\"area\": 77.97728757211397, \"centroid\": [19.100681881469967, 16.278541570078083, 5.000000003415743], \"cylinder\": {\"axis\": [0.0, -0.0, -1.0], \"origin\": [20.0, 15.000000000000002, 10.000000000000002], \"radius\": 2.500000000000002}, \"exact\": true, \"index\": 7, \"name\": \"F4:bore:side:0\", \"plane_normal\": null, \"point\": [18.868427194381464, 17.2292471791133, 8.263113176061863]}, {\"area\": 77.97728792233548, \"centroid\": [20.899318114323545, 13.721458436596446, 5.000000003415744], \"cylinder\": {\"axis\": [-0.0, 0.0, -1.0], \"origin\": [20.000000000000007, 14.999999999999998, 10.000000000000002], \"radius\": 2.500000000000006}, \"exact\": true, \"index\": 8, \"name\": \"F4:bore:side:1\", \"plane_normal\": null, \"point\": [21.21515604006165, 12.81518975"
+  },
+  {
+   "id": "s2-upstream-edit-recompute",
+   "description": "len 40->50 via parameters.change on the saved design; downstream features recompute",
+   "fixture": "fixtures/history/s2-edit-len.json (--in s1-baseline.solidcraft)",
+   "commands": [
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "run",
+     "/home/z/blender-cad/experiments/solidcraft/fixtures/history/s2-edit-len.json",
+     "--in",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s1-baseline.solidcraft",
+     "--results",
+     "--timings",
+     "--profile",
+     "--save",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s2-edited.solidcraft",
+     "--json-out",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s2-out.json"
+    ],
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "run",
+     "/home/z/blender-cad/experiments/solidcraft/fixtures/history/s2-full-control.json",
+     "--results",
+     "--json-out",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s2-control-out.json"
+    ]
+   ],
+   "returncode": 0,
+   "stderr": "",
+   "parameters_change_result": {
+    "display_value": 50.0,
+    "errors": [],
+    "expression": "50 mm",
+    "name": "len",
+    "recomputed": 4,
+    "restored": 0,
+    "value": 50.0
+   },
+   "features_recomputed": 4,
+   "volume_mm3": 14777.908211287844,
+   "volume_mm3_analytic": 14777.898239,
+   "cross_path_comparison": {
+    "from_scratch": {
+     "volume_mm3": 14777.908211287851,
+     "faces": 8,
+     "edges": 17
+    },
+    "incremental": {
+     "volume_mm3": 14777.908211287844,
+     "faces": 8,
+     "edges": 17
+    },
+    "volume_abs_diff": 7.275957614183426e-12,
+    "volume_rel_diff": 4.923536883674653e-16
+   },
+   "checks": [
+    {
+     "what": "run succeeds",
+     "ok": true
+    },
+    {
+     "what": "only downstream features recomputed (recomputed == 4)",
+     "ok": true
+    },
+    {
+     "what": "volume matches analytic (rel < 1e-4)",
+     "ok": true
+    },
+    {
+     "what": "cross-path volume equality rel < 1e-9",
+     "ok": true
+    }
+   ],
+   "verdict": "pass",
+   "raw": "{\"results\": [{\"display_value\": 50.0, \"errors\": [], \"expression\": \"50 mm\", \"name\": \"len\", \"recomputed\": 4, \"restored\": 0, \"value\": 50.0}, {\"body\": \"Body1\", \"faces\": [{\"area\": 1480.923529406217, \"centroid\": [25.064407345090252, 14.999999999973356, 0.0], \"exact\": true, \"index\": 0, \"name\": \"F2:start\", \"plane_normal\": [0.0, 0.0, -1.0], \"point\": [41.09533697249742, 14.963493146096713, 0.0]}, {\"area\": 499.06108822824376, \"centroid\": [24.953851458087183, 0.0, 4.991478586064223], \"exact\": true, \"index\": 1, \"name\": \"F2:side:l1\", \"plane_normal\": [0.0, -1.0, 0.0], \"point\": [4.0763961043243215, 0.0, 5.584468544422234]}, {\"area\": 240.0, \"centroid\": [49.99999999981508, 15.0, 4.0], \"exact\": true, \"index\": 2, \"name\": \"F2:side:l2\", \"plane_normal\": [1.0, 1.2327916465437738e-11, 0.0], \"point\": [49.999999999673015, 26.524174696260022, 3.4758253037399762]}, {\"area\": 499.0610882245452, \"centroid\": [24.95385145790227, 30.000000000000004, 4.991478586064159], \"exact\": true, \"index\": 3, \"name\": \"F2:side:l3\", \"plane_normal\": [0.0, 1.0, 0.0], \"point\": [4.076396104318127, 30.0, 5.584468544426339]}, {\"area\": 300.0, \"centroid\": [0.0, 15.0, 5.0], \"exact\": true, \"index\": 4, \"name\": \"F2:side:l4\", \"plane_normal\": [-1.0, 0.0, 0.0], \"point\": [0.0, 4.188611699158103, 4.188611699158103]}, {\"area\": 1420.923529406217, \"centroid\": [24.053701610712245, 14.999999999972234, 9.999999999999998], \"exact\": true, \"index\": 5, \"name\": \"F2:top\", \"plane_normal\": [-0.0, 0.0, 1.0], \"point\": [39.42062488164299, 14.961345725559587, 10.0]}, {\"area\": 93.64045375522636, \"centroid\": [49.256592113695085, 14.999999956434694, 9.256592096950666], \"cylinder\": {\"axis\": [1.2327916465437738e-11, -1.0, -5.739718509874451e-42], \"origin\": [48.00000000000001, -2.4659163599949265e-11, 7.999999999999995], \"radius\": 1.9999999999999942}, \"exact\": true, \"index\": 6, \"name\": \"F3:blend:F2:side:l2|F2:top\", \"plane_normal\": null, \"point\": [49.99163768534124, 14.210761172051752, 8.182700108458567]}, {\"area\": 77.97728756974688, \"centroid\": [19.100681881384055, 16.278541570075962, 5.000000003466288], \"cylinder\": {\"axis\": [0.0, -0.0, -1.0], \"origin\": [20.0, 15.000000000000002, 9.999999999999991], \"radius\": 2.5000000000000018}, \"exact\": true, \"index\": 7, \"name\": \"F4:bore:side:0\", \"plane_normal\": null, \"point\": [18.868427194381663, 17.229247179113404, 8.263113176061845]}, {\"area\": 77.97728792001575, \"centroid\": [20.899318114415966, 13.72145843659944, 5.0000000034662815], \"cylinder\": {\"axis\": [-0.0, 0.0, -1.0], \"origin\": [20.000000000000004, 15.0, 10.000000000000004], \"radius\": 2.500000000000003}, \"exact\": true, \"index\": 8, \"name\": \"F4:bore:side:1\", \"plane_normal\": null, \"point\": [21.215156040493984, 12.815189757152577, 1.7368868220494118]}]}, {\"bodies\": [{\"area_mm2\": 4690.33534048601, \"bbox\": {\"max\": [50.0, 30.000000000000004, 10.000000000000012], \"min\": [0.0, -7.2206157746240395e-12, -8.978632889715032e-15]}, \"center_of_mass\": [25.023609802385167, 14.999999999969084, 4.99206059969886], \"density_g_cm3\": 1.29, \"edges\": 17, \"face_types\": {\"cylinder\": 2, \"plane\": 6}, \"faces\": 8, \"kernel\": {\"edges\": 21, \"faces\": 9, \"shells\": 1, \"vertices\": 14}, \"mass_g\": 19.06350159256132, \"material\": \"Default\", \"name\": \"Body1\", \"vertices\": 12, \"volume_mm3\": 14777.908211287844}], \"body_count\": 1, \"total\": {\"area_mm2\": 4690.33534048601, \"edges\": 17, \"faces\": 8, \"mass_g\": 19.06350159256132, \"vertices\": 12, \"volume_mm3\": 14777.908211287844}}], \"timings\": [{\"command\": \"parameters.change\", \"index\": 0, \"ms\": 121.675, \"profile\": {\"boolean_ms\": 98.201, \"other_ms\": 4.754, \"tessellate_ms\": 18.719}}, {\"command\": \"model.faces\", \"index\": 1, \"ms\": 5.233, \"profile\": {\"boolean_ms\": 0.0, \"other_ms\": 2.461, \"tessellate_ms\": 2.772}}, {\"command\": \"inspect.measure\", \"index\": 2, \"ms\": 51.753, \"profile\": {\"boolean_ms\": 0.0, \"other_ms\": 0.602, \"tessellate_ms\": 51.151}}], \"total_ms\": 178.69}"
+  },
+  {
+   "id": "s3a-reference-stability-topology-preserved",
+   "description": "hole references the top face (F2:top), fillet references edge F2:side:l2|F2:top; after len 40->50 both still resolve; face-name sets identical",
+   "fixture": "s2-edit-len.json + eval of the edited design",
+   "commands": [
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "eval",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s2-edited.solidcraft",
+     "--json-out",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s2-eval.json"
+    ]
+   ],
+   "returncode": 0,
+   "face_names_before": [
+    "F2:start",
+    "F2:side:l1",
+    "F2:side:l2",
+    "F2:side:l3",
+    "F2:side:l4",
+    "F2:top",
+    "F3:blend:F2:side:l2|F2:top",
+    "F4:bore:side:0",
+    "F4:bore:side:1"
+   ],
+   "face_names_after": [
+    "F2:start",
+    "F2:side:l1",
+    "F2:side:l2",
+    "F2:side:l3",
+    "F2:side:l4",
+    "F2:top",
+    "F3:blend:F2:side:l2|F2:top",
+    "F4:bore:side:0",
+    "F4:bore:side:1"
+   ],
+   "face_name_sets_identical": true,
+   "edited_timeline_errors": {},
+   "edited_timeline_warnings": {},
+   "timeline_dependents": {
+    "S": {
+     "deleted_with_it": [
+      "Block"
+     ],
+     "would_fail": [
+      "Round",
+      "Hole"
+     ]
+    },
+    "Block": {
+     "deleted_with_it": [],
+     "would_fail": [
+      "Round",
+      "Hole"
+     ]
+    },
+    "Round": {
+     "deleted_with_it": [],
+     "would_fail": []
+    }
+   },
+   "checks": [
+    {
+     "what": "face-name set unchanged across the edit",
+     "ok": true
+    },
+    {
+     "what": "no feature error after the edit",
+     "ok": true
+    },
+    {
+     "what": "no feature warning after the edit",
+     "ok": true
+    }
+   ],
+   "verdict": "pass",
+   "raw": "{\"bodies\": [{\"area_mm2\": 4690.33534048601, \"bbox\": {\"max\": [50.0, 30.000000000000004, 10.000000000000012], \"min\": [0.0, -7.2206157746240395e-12, -8.978632889715032e-15]}, \"center_of_mass\": [25.023609802385167, 14.999999999969084, 4.99206059969886], \"density_g_cm3\": 1.29, \"edges\": 17, \"face_types\": {\"cylinder\": 2, \"plane\": 6}, \"faces\": 8, \"kernel\": {\"edges\": 21, \"faces\": 9, \"shells\": 1, \"vertices\": 14}, \"mass_g\": 19.06350159256132, \"material\": \"Default\", \"name\": \"Body1\", \"vertices\": 12, \"volume_mm3\": 14777.908211287844}], \"body_count\": 1, \"params\": [{\"comment\": \"\", \"error\": null, \"expression\": \"50 mm\", \"model\": false, \"name\": \"len\", \"unit\": \"mm\", \"value\": 50.0}, {\"comment\": \"\", \"error\": null, \"expression\": \"10 mm\", \"model\": false, \"name\": \"h\", \"unit\": \"mm\", \"value\": 10.0}, {\"comment\": \"\", \"error\": null, \"expression\": \"len\", \"model\": true, \"name\": \"d1\", \"unit\": \"mm\", \"value\": 50.0}], \"sketches\": [{\"curves\": 4, \"dof\": 1, \"id\": 1, \"name\": \"S\", \"profiles\": 1, \"status\": \"solved\", \"visible\": false}], \"timeline\": [{\"boolean_diagnostics\": {\"events\": [], \"truncated\": false}, \"error\": null, \"id\": 1, \"ms\": 0.27161399999999997, \"name\": \"S\", \"rolled_back\": false, \"suppressed\": false, \"type\": \"Sketch\", \"warning\": null}, {\"boolean_diagnostics\": {\"events\": [], \"truncated\": false}, \"error\": null, \"id\": 2, \"ms\": 0.880147, \"name\": \"Block\", \"rolled_back\": false, \"suppressed\": false, \"type\": \"ExtrudeFeature\", \"warning\": null}, {\"boolean_diagnostics\": {\"events\": [], \"truncated\": false}, \"error\": null, \"id\": 3, \"ms\": 18.429931, \"name\": \"Round\", \"rolled_back\": false, \"suppressed\": false, \"type\": \"FilletFeature\", \"warning\": null}, {\"boolean_diagnostics\": {\"events\": [], \"truncated\": false}, \"error\": null, \"id\": 4, \"ms\": 100.895495, \"name\": \"Hole\", \"rolled_back\": false, \"suppressed\": false, \"type\": \"HoleFeature\", \"warning\": null}], \"total\": {\"area_mm2\": 4690.33534048601, \"edges\": 17, \"faces\": 8, \"mass_g\": 19.06350159256132, \"vertices\": 12, \"volume_mm3\": 14777.908211287844}}"
+  },
+  {
+   "id": "s3b-reference-stability-topology-destroyed",
+   "description": "shell thickness 5->2 removes the edges InnerCorners names; the fillet must FAIL loudly (naming every gone edge), the run must write nothing",
+   "fixture": "fixtures/history/s3b-shell-edit.json (--in s3b-baseline.solidcraft)",
+   "commands": [
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "run",
+     "/home/z/blender-cad/experiments/solidcraft/fixtures/history/s3b-shell-baseline.json",
+     "--results",
+     "--save",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s3b-baseline.solidcraft",
+     "--json-out",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s3b-out.json"
+    ],
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "run",
+     "/home/z/blender-cad/experiments/solidcraft/fixtures/history/s3b-shell-edit.json",
+     "--in",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s3b-baseline.solidcraft",
+     "--save",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s3b-edited.solidcraft"
+    ],
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "run",
+     "/home/z/blender-cad/experiments/solidcraft/fixtures/history/s3b-shell-edit.json",
+     "--in",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s3b-baseline.solidcraft",
+     "--save",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s3b-edited-allowed.solidcraft",
+     "--allow-errors"
+    ]
+   ],
+   "baseline_volume_mm3": 46892.62865386548,
+   "edit_returncode": 1,
+   "edit_stderr": "error: 1 timeline feature(s) failed, so nothing was written (--allow-errors writes the bodies anyway):\n  InnerCorners: none of the selected edges exist any more (edge `F4:inner:F2:side:l3|F4:inner:F2:side:l4` no longer exists and was skipped; edge `F4:inner:F2:side:l2|F4:inner:F2:side:l3` no longer exists and was skipped; edge `F4:inner:F2:side:l1|F4:inner:F2:side:l2` no longer exists and was skipped; edge `F4:inner:F2:side:l1|F4:inner:F2:side:l4` no longer exists and was skipped)\n",
+   "edit_wrote_file": false,
+   "allow_errors_returncode": 0,
+   "allow_errors_wrote_file": true,
+   "allow_errors_volume_mm3": 20493.103920116646,
+   "allow_errors_failing_features": [
+    {
+     "name": "InnerCorners",
+     "error": "none of the selected edges exist any more (edge `F4:inner:F2:side:l3|F4:inner:F2:side:l4` no longer exists and was skipped; edge `F4:inner:F2:side:l2|F4:inner:F2:side:l3` no longer exists and was skipped; edge `F4:inner:F2:side:l1|F4:inner:F2:side:l2` no longer exists and was skipped; edge `F4:inner:F2:side:l1|F4:inner:F2:side:l4` no longer exists and was skipped)"
+    }
+   ],
+   "checks": [
+    {
+     "what": "edit run fails (non-zero exit)",
+     "ok": true
+    },
+    {
+     "what": "error names the gone edges ('no longer exists')",
+     "ok": true
+    },
+    {
+     "what": "no --save file written",
+     "ok": true
+    },
+    {
+     "what": "--allow-errors writes the pre-failure bodies",
+     "ok": true
+    },
+    {
+     "what": "--allow-errors output keeps the failing feature's error visible",
+     "ok": true
+    }
+   ],
+   "verdict": "pass",
+   "raw": "{\"bodies\": [{\"area_mm2\": 21015.96243352309, \"bbox\": {\"max\": [27.500000000000007, 40.0, 25.000000000000014], \"min\": [-27.500000000000007, -40.0, 0.0]}, \"center_of_mass\": [-5.481017897628192e-14, -3.827381060754525e-14, 8.158530121652637], \"density_g_cm3\": 1.29, \"edges\": 48, \"face_types\": {\"cylinder\": 8, \"plane\": 11}, \"faces\": 19, \"kernel\": {\"edges\": 48, \"faces\": 19, \"shells\": 1, \"vertices\": 32}, \"mass_g\": 26.436104056950473, \"material\": \"Default\", \"name\": \"Body1\", \"vertices\": 32, \"volume_mm3\": 20493.103920116646}], \"body_count\": 1, \"params\": [], \"sketches\": [{\"curves\": 4, \"dof\": 4, \"id\": 1, \"name\": \"S\", \"profiles\": 1, \"status\": \"solved\", \"visible\": false}], \"timeline\": [{\"boolean_diagnostics\": {\"events\": [], \"truncated\": false}, \"error\": null, \"id\": 1, \"ms\": 0.197518, \"name\": \"S\", \"rolled_back\": false, \"suppressed\": false, \"type\": \"Sketch\", \"warning\": null}, {\"boolean_diagnostics\": {\"events\": [], \"truncated\": false}, \"error\": null, \"id\": 2, \"ms\": 0.835156, \"name\": \"Plate\", \"rolled_back\": false, \"suppressed\": false, \"type\": \"ExtrudeFeature\", \"warning\": null}, {\"boolean_diagnostics\": {\"events\": [], \"truncated\": false}, \"error\": null, \"id\": 3, \"ms\": 48.824948, \"name\": \"OuterCorners\", \"rolled_back\": false, \"suppressed\": false, \"type\": \"FilletFeature\", \"warning\": null}, {\"boolean_diagnostics\": {\"events\": [], \"truncated\": false}, \"error\": null, \"id\": 4, \"ms\": 25.278757, \"name\": \"Shell\", \"rolled_back\": false, \"suppressed\": false, \"type\": \"ShellFeature\", \"warning\": null}, {\"boolean_diagnostics\": {\"events\": [], \"truncated\": false}, \"error\": \"none of the selected edges exist any more (edge `F4:inner:F2:side:l3|F4:inner:F2:side:l4` no longer exists and was skipped; edge `F4:inner:F2:side:l2|F4:inner:F2:side:l3` no longer exists and was skipped; edge `F4:inner:F2:side:l1|F4:inner:F2:side:l2` no longer exists and was skipped; edge `F4:inner:F2:side:l1|F4:inner:F2:side:l4` no longer exists and was skipped)\", \"id\": 5, \"ms\": 21.922002, \"name\": \"InnerCorners\", \"rolled_back\": false, \"suppressed\": false, \"type\": \"FilletFeature\", \"warning\": null}], \"total\": {\"area_mm2\": 21015.96243352309, \"edges\": 48, \"faces\": 19, \"mass_g\": 26.436104056950473, \"vertices\": 32, \"volume_mm3\": 20493.103920116646}}"
+  },
+  {
+   "id": "s3c-stale-pick-in-script",
+   "description": "an imperative script whose fillet pick point [40,15,10] is stale after len 40->50 must refuse ('no edge at ...'), not silently pick the nearest edge \u2014 contrast with the saved design surviving the same edit via stored named references",
+   "fixture": "fixtures/history/s3c-stale-pick.json",
+   "commands": [
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "run",
+     "/home/z/blender-cad/experiments/solidcraft/fixtures/history/s3c-stale-pick.json",
+     "--save",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s3c.solidcraft"
+    ]
+   ],
+   "returncode": 1,
+   "stderr": "error: step 8 (solid.fillet): invalid parameters for `solid.fillet`: no edge at [40, 15, 10]: the nearest edge is 10.000 mm away\n",
+   "wrote_file": false,
+   "checks": [
+    {
+     "what": "command fails loudly",
+     "ok": true
+    },
+    {
+     "what": "error names the pick point and the distance",
+     "ok": true
+    },
+    {
+     "what": "no file written",
+     "ok": true
+    }
+   ],
+   "verdict": "pass"
+  },
+  {
+   "id": "s4-unbuildable-fillet",
+   "description": "fillet radius 200 mm on a 10 mm edge: the command refuses, the script stops, nothing is written",
+   "fixture": "fixtures/history/s4-bad-fillet.json",
+   "commands": [
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "run",
+     "/home/z/blender-cad/experiments/solidcraft/fixtures/history/s4-bad-fillet.json",
+     "--save",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s4.solidcraft"
+    ],
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "run",
+     "/home/z/blender-cad/experiments/solidcraft/fixtures/history/s4-bad-fillet.json",
+     "--save",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s4-allowed.solidcraft",
+     "--allow-errors"
+    ]
+   ],
+   "returncode": 1,
+   "stderr": "error: step 5 (solid.fillet): not supported yet: the blend is larger than the neighbouring faces; the largest radius that fits is 10 mm\n",
+   "wrote_file": false,
+   "allow_errors_returncode": 1,
+   "allow_errors_wrote_file": false,
+   "allow_errors_stderr": "error: step 5 (solid.fillet): not supported yet: the blend is larger than the neighbouring faces; the largest radius that fits is 10 mm\n",
+   "note": "a radius too large fails at the COMMAND level (script stops before any write); --allow-errors cannot rescue it \u2014 it only bypasses the later timeline-feature check, as demonstrated by scenario 3b",
+   "checks": [
+    {
+     "what": "run fails",
+     "ok": true
+    },
+    {
+     "what": "no --save file",
+     "ok": true
+    },
+    {
+     "what": "--allow-errors also writes nothing (script stopped at the command)",
+     "ok": true
+    },
+    {
+     "what": "error names the largest fitting radius",
+     "ok": true
+    }
+   ],
+   "verdict": "pass"
+  },
+  {
+   "id": "s5-determinism",
+   "description": "same script, 3 separate CLI processes: --results outputs compared byte-for-byte",
+   "fixture": "fixtures/history/s1-baseline.json x3",
+   "commands": [
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "run",
+     "/home/z/blender-cad/experiments/solidcraft/fixtures/history/s1-baseline.json",
+     "--results",
+     "--json-out",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s1-det0.json"
+    ],
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "run",
+     "/home/z/blender-cad/experiments/solidcraft/fixtures/history/s1-baseline.json",
+     "--results",
+     "--json-out",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s1-det1.json"
+    ],
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "run",
+     "/home/z/blender-cad/experiments/solidcraft/fixtures/history/s1-baseline.json",
+     "--results",
+     "--json-out",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s1-det2.json"
+    ]
+   ],
+   "byte_identical_across_processes": false,
+   "timing_stripped_identical": true,
+   "timing_stripped_sha256": "4c5eaf865752ed5c5773324f47a59135da16aa07b34ad129b7116b3efe0e37bf",
+   "byte_difference_paths": [
+    "[6]/ms",
+    "[7]/ms",
+    "[8]/ms"
+   ],
+   "checks": [
+    {
+     "what": "outputs identical after removing wall-clock ms fields",
+     "ok": true
+    },
+    {
+     "what": "byte differences (if any) confined to ms timing fields",
+     "ok": true
+    }
+   ],
+   "verdict": "pass"
+  },
+  {
+   "id": "s6-incrementality",
+   "description": "plate+fillet+8-hole pattern upstream of a param-driven pocket; editing only slot_x/slot_w must recompute exactly the downstream features",
+   "fixture": "fixtures/history/s6-big-upstream.json + s6-edit-slot.json (--in) + s6-full-control.json",
+   "commands": [
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "run",
+     "/home/z/blender-cad/experiments/solidcraft/fixtures/history/s6-big-upstream.json",
+     "--results",
+     "--timings",
+     "--profile",
+     "--save",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s6.solidcraft",
+     "--json-out",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s6-full.json"
+    ],
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "run",
+     "/home/z/blender-cad/experiments/solidcraft/fixtures/history/s6-edit-slot.json",
+     "--in",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s6.solidcraft",
+     "--results",
+     "--timings",
+     "--profile",
+     "--json-out",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s6-edit.json"
+    ],
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "run",
+     "/home/z/blender-cad/experiments/solidcraft/fixtures/history/s6-full-control.json",
+     "--results",
+     "--json-out",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s6-control.json"
+    ]
+   ],
+   "full_run_total_ms": 2035.857,
+   "full_run_command_ms": {
+    "parameters.change": 0.014,
+    "sketch.create": 0.147,
+    "sketch.rectangle.two_point": 0.192,
+    "sketch.finish": 0.002,
+    "solid.extrude": 162.824,
+    "solid.fillet": 54.002,
+    "solid.hole": 216.107,
+    "solid.pattern.rectangular": 1149.182,
+    "sketch.dimension": 0.178,
+    "inspect.measure": 329.585
+   },
+   "edit_run_total_ms": 1022.722,
+   "edit_run_command_ms": {
+    "parameters.change": 324.213,
+    "inspect.measure": 348.066
+   },
+   "parameters_change_recomputed": [
+    3,
+    3
+   ],
+   "parameters_change_restored": [
+    0,
+    0
+   ],
+   "cost_decomposition_ms": {
+    "full_run_upstream_features_extrude_fillet_hole_pattern": 1325.8,
+    "full_run_downstream_features_pocket_latehole": 378.9,
+    "edit_run_incremental_parameters_change_total": 674.6
+   },
+   "cross_path_comparison": {
+    "from_scratch": {
+     "volume_mm3": 44462.49332581402,
+     "faces": 24,
+     "edges": 54
+    },
+    "incremental": {
+     "volume_mm3": 44462.4933258139,
+     "faces": 24,
+     "edges": 54
+    },
+    "volume_abs_diff": 1.2369127944111824e-10,
+    "volume_rel_diff": 2.781924048539707e-15
+   },
+   "marginal_tangency_observation": {
+    "fixture": "fixtures/history/s6-marginal-tangency.json (slot wall exactly on a hole axis)",
+    "from_scratch": {
+     "volume_mm3": 44381.020096838016,
+     "faces": 24,
+     "edges": 54
+    },
+    "note": "the edit-side numbers are in the s6-observation-marginal-tangency-divergence case"
+   },
+   "checks": [
+    {
+     "what": "edit recomputes exactly 3 features (Slot, Pocket, LateHole)",
+     "ok": true
+    },
+    {
+     "what": "incremental cost << upstream cost (edit pays only downstream)",
+     "ok": true
+    },
+    {
+     "what": "cross-path topology identical (faces/edges)",
+     "ok": true
+    },
+    {
+     "what": "cross-path volume equality rel < 1e-9",
+     "ok": true
+    }
+   ],
+   "verdict": "pass"
+  },
+  {
+   "id": "s6-observation-marginal-tangency-divergence",
+   "description": "slot_x 15->35 puts the pocket wall exactly on hole (45,32)'s axis: full rebuild and incremental edit DISAGREE on topology (recorded honestly as a marginal-geometry limitation, not a headline number)",
+   "fixture": "s6-big-upstream.json (slot_x=35 from scratch) vs --in s6.solidcraft + slot_x->35",
+   "commands": [
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "run",
+     "/home/z/blender-cad/experiments/solidcraft/fixtures/history/s6-marginal-tangency.json",
+     "--results",
+     "--json-out",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s6-marginal.json"
+    ],
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "run",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s6-marginal-edit.json",
+     "--in",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s6.solidcraft",
+     "--results",
+     "--json-out",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s6-marginal35-edit.json"
+    ]
+   ],
+   "from_scratch": {
+    "volume_mm3": 44381.020096838016,
+    "faces": 24,
+    "edges": 54
+   },
+   "incremental": {
+    "volume_mm3": 44341.75658118395,
+    "faces": 25,
+    "edges": 59
+   },
+   "volume_abs_diff": 39.26351565406367,
+   "interpretation": "the hole's bore wall is coincident with the pocket wall at x=45; one evaluation path keeps the half-bore sliver (24 faces), the other removes it (25 faces); delta volume ~= half a bore over 4 mm (pi*2.5^2*4/2 = 39.27 mm3). Marginal coincident geometry is not stable across evaluation paths \u2014 a known B-rep hazard, NOT specific to incremental evaluation.",
+   "checks": [
+    {
+     "what": "recorded, not silently dropped",
+     "ok": true
+    }
+   ],
+   "verdict": "recorded-observation"
+  },
+  {
+   "id": "s7-identity-model",
+   "description": "how the saved design identifies features/history/references (container format, feature ids, stored persistent names), contrasted with the product's bcdoc identity",
+   "fixture": "s1-baseline.solidcraft (saved by scenario 1) + timeline.export_script",
+   "commands": [
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "script",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s1-baseline.solidcraft",
+     "--out",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s1-exported-script.json"
+    ],
+    [
+     "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+     "eval",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s1-baseline.solidcraft",
+     "--json-out",
+     "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s1-eval.json"
+    ]
+   ],
+   "design_container": {
+    "file": "/home/z/blender-cad/experiments/solidcraft/scratch/w2-history/s1-baseline.solidcraft",
+    "bytes": 1159,
+    "zip_entries": [
+     "document.json",
+     "container.json"
+    ],
+    "format": "solidcraft/27"
+   },
+   "design_about": null,
+   "document_keys": [
+    "features",
+    "format",
+    "name",
+    "next_id",
+    "params",
+    "units"
+   ],
+   "timeline_features": [
+    {
+     "id": 1,
+     "name": "S",
+     "type": "sketch",
+     "edge_names": null,
+     "face_names": null,
+     "param_names": null
+    },
+    {
+     "id": 2,
+     "name": "Block",
+     "type": "extrude",
+     "edge_names": null,
+     "face_names": null,
+     "param_names": [
+      "d2"
+     ]
+    },
+    {
+     "id": 3,
+     "name": "Round",
+     "type": "fillet",
+     "edge_names": [
+      "F2:side:l2|F2:top"
+     ],
+     "face_names": null,
+     "param_names": [
+      "d3"
+     ]
+    },
+    {
+     "id": 4,
+     "name": "Hole",
+     "type": "hole",
+     "edge_names": null,
+     "face_names": [
+      "F2:top"
+     ],
+     "param_names": [
+      "d4"
+     ]
+    }
+   ],
+   "parameters": [
+    {
+     "comment": "",
+     "error": null,
+     "expression": "40 mm",
+     "model": false,
+     "name": "len",
+     "unit": "mm",
+     "value": 40.0
+    },
+    {
+     "comment": "",
+     "error": null,
+     "expression": "10 mm",
+     "model": false,
+     "name": "h",
+     "unit": "mm",
+     "value": 10.0
+    },
+    {
+     "comment": "",
+     "error": null,
+     "expression": "len",
+     "model": true,
+     "name": "d1",
+     "unit": "mm",
+     "value": 40.0
+    }
+   ],
+   "timeline_ms": [
+    {
+     "name": "S",
+     "ms": 0.196651,
+     "type": "Sketch"
+    },
+    {
+     "name": "Block",
+     "ms": 0.835755,
+     "type": "ExtrudeFeature"
+    },
+    {
+     "name": "Round",
+     "ms": 17.470196,
+     "type": "FilletFeature"
+    },
+    {
+     "name": "Hole",
+     "ms": 97.68561700000001,
+     "type": "HoleFeature"
+    }
+   ],
+   "checks": [
+    {
+     "what": "features carry monotonic numeric ids + names",
+     "ok": true
+    },
+    {
+     "what": "fillet stores its picked edge by persistent name",
+     "ok": true
+    }
+   ],
+   "verdict": "pass",
+   "raw": "{\"features\":[{\"id\":1,\"name\":\"S\",\"plane\":{\"name\":\"XY\",\"type\":\"origin\"},\"sketch\":{\"constraints\":[{\"id\":\"k1\",\"l\":0,\"type\":\"horizontal\"},{\"id\":\"k2\",\"l\":2,\"type\":\"horizontal\"},{\"id\":\"k3\",\"l\":1,\"type\":\"vertical\"},{\"id\":\"k4\",\"l\":3,\"type\":\"vertical\"},{\"id\":\"k5\",\"p\":0,\"q\":1,\"type\":\"coincident\"},{\"id\":\"k6\",\"l\":0,\"param\":\"d1\",\"type\":\"length\",\"value\":40.0}],\"counters\":{\"k\":6,\"l\":4,\"p\":4},\"curves\":[{\"a\":1,\"b\":2,\"construction\":false,\"id\":\"l1\",\"type\":\"line\"},{\"a\":2,\"b\":3,\"construction\":false,\"id\":\"l2\",\"type\":\"line\"},{\"a\":3,\"b\":4,\"construction\":false,\"id\":\"l3\",\"type\":\"line\"},{\"a\":4,\"b\":1,\"construction\":false,\"id\":\"l4\",\"type\":\"line\"}],\"points\":[{\"fixed\":true,\"id\":\"origin\",\"pos\":[0.0,0.0]},{\"fixed\":false,\"id\":\"p1\",\"pos\":[0.0,0.0]},{\"fixed\":false,\"id\":\"p2\",\"pos\":[40.0,0.0]},{\"fixed\":false,\"id\":\"p3\",\"pos\":[40.0,30.0]},{\"fixed\":false,\"id\":\"p4\",\"pos\":[0.0,30.0]}]},\"suppressed\":false,\"type\":\"sketch\"},{\"extent\":{\"convention\":\"total_distance\",\"direction\":\"positive\",\"distance\":\"h\"},\"id\":2,\"name\":\"Block\",\"operation\":\"new_body\",\"param_names\":[\"d2\"],\"profiles\":{\"type\":\"all\"},\"sketch\":1,\"suppressed\":false,\"type\":\"extrude\"},{\"edge_names\":[\"F2:side:l2|F2:top\"],\"edge_refs\":[{\"dir\":[0.0,-1.0,0.0],\"max\":[40.0,30.0,10.0],\"min\":[0.0,0.0,0.0]}],\"edges\":[[40.0,15.0,10.0]],\"id\":3,\"name\":\"Round\",\"param_names\":[\"d3\"],\"radius\":\"2\",\"suppressed\":false,\"type\":\"fillet\"},{\"diameter\":\"5\",\"direction\":[-0.0,-0.0,-1.0],\"face_names\":[\"F2:top\"],\"hole\":{\"type\":\"simple\"},\"id\":4,\"name\":\"Hole\",\"param_names\":[\"d4\"],\"position\":[20.0,15.0,10.0],\"suppressed\":false,\"type\":\"hole\"}],\"format\":\"solidcraft/27\",\"name\":\"s1-baseline\",\"next_id\":5,\"params\":[{\"expr\":\"40 mm\",\"model\":false,\"name\":\"len\",\"unit\":\"mm\"},{\"expr\":\"10 mm\",\"model\":false,\"name\":\"h\",\"unit\":\"mm\"},{\"expr\":\"len\",\"model\":true,\"name\":\"d1\",\"unit\":\"mm\"}],\"units\":\"mm\"}"
+  }
+ ],
+ "failures": [],
+ "summary": {
+  "cases_total": 10,
+  "cases_pass": 9,
+  "cases_recorded_observation": 1,
+  "cases_fail": 0,
+  "failures_recorded": 0,
+  "headline": {
+   "s1_baseline_volume_mm3": 11777.908211339332,
+   "s2_edit_recomputed_features": 4,
+   "s2_edit_volume_mm3": 14777.908211287844,
+   "s3a_face_names_stable_across_edit": true,
+   "s3b_gone_edges_fail_loudly": true,
+   "s5_determinism": "identical after stripping wall-clock ms fields; byte diffs confined to ms",
+   "s6_incremental_recomputed": [
+    3,
+    3
+   ],
+   "s6_incremental_cost_ms_vs_upstream_ms": {
+    "incremental_parameters_change": 674.6,
+    "full_run_upstream_extrude_fillet_hole_pattern": 1325.8,
+    "full_run_downstream_pocket_latehole": 378.9
+   },
+   "s6_cross_path_volume_rel_diff": 2.781924048539707e-15
+  }
+ }
+}

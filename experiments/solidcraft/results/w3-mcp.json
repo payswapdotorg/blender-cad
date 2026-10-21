@@ -1,0 +1,2176 @@
+{
+ "experiment": "w3-mcp",
+ "issue_ref": "payswapdotorg/blender-cad#1",
+ "agent": "W3 lane-a (Task 99, retry)",
+ "upstream": {
+  "repo": "https://github.com/tangency-labs/solidcraft",
+  "sha": "3b4db52c10279251a068cfca5eb7447068bc28e7",
+  "version": "0.16.2",
+  "behavioral_binary": {
+   "path": "/home/z/solidcraft-release/solidcraft-0.16.2-linux-x86_64/bin/solidcraft-cli",
+   "sha256": "0c23e21e7b13815a02259f90d7d52986867226235a91bba931e1eab42eee7ae9",
+   "tag_commit": "5de48e9",
+   "commits_behind_source_pin": 80,
+   "note": "behavioral evidence uses the official release binary; the source pin 3b4db52 (used for audits) is 80 commits ahead of the tag"
+  }
+ },
+ "harness_commit": "9316373c5fad0e0b1019dcc17ff05a37d761bcfe",
+ "command": "python3.12 experiments/solidcraft/python/mcp_client_probe.py",
+ "started_utc": "2026-10-19T17:42:42Z",
+ "finished_utc": "2026-10-19T17:42:43Z",
+ "host": {
+  "cpus": 2,
+  "mem_gb": 4.1,
+  "python": "3.12.15",
+  "kernel": "5.10.134-013.15.kangaroo.al8.x86_64",
+  "note": "sandbox container, no GPU"
+ },
+ "profile": "official release binary, headless in-process session, CPU rasterizer",
+ "cases": [
+  {
+   "id": "S0A",
+   "group": "setup",
+   "description": "save empty design into --allow-path folder",
+   "expected": "file written",
+   "observed": {
+    "verbatim_reply": "{\n  \"bytes\": 348,\n  \"name\": \"base\",\n  \"path\": \"/home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs/base.solidcraft\"\n}",
+    "file_exists": true,
+    "bytes": 348
+   },
+   "pass": true
+  },
+  {
+   "id": "S0B",
+   "group": "fs-security",
+   "description": "save HIDDEN file inside a --allow-path root",
+   "expected": "allowed: a named folder is reached in full, hidden files included (docs/mcp.md)",
+   "observed": {
+    "verbatim": "{\n  \"bytes\": 363,\n  \"name\": \".inside-allow-root\",\n  \"path\": \"/home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs/.inside-allow-root.solidcraft\"\n}",
+    "file_exists": true
+   },
+   "pass": true
+  },
+  {
+   "id": "S0X",
+   "group": "shutdown",
+   "description": "session-0 clean shutdown after stdin close",
+   "expected": "exit code 0, no orphan",
+   "observed": {
+    "exit_code": 0,
+    "seconds": 0.0,
+    "orphan": false
+   },
+   "pass": true
+  },
+  {
+   "id": "P1",
+   "group": "handshake",
+   "description": "tools/list BEFORE initialize (lifecycle enforcement?)",
+   "expected": "server.rs has an `initialized` flag but request() never checks it \u2014 probe what happens",
+   "observed": {
+    "replied": true,
+    "tool_count": 15,
+    "note": "server answers; initialize is not enforced at the request layer"
+   },
+   "pass": true,
+   "extra": {
+    "source_ref": "crates/mcp/src/server.rs:114-183"
+   }
+  },
+  {
+   "id": "P2",
+   "group": "handshake",
+   "description": "ping before initialize",
+   "expected": "empty result {}",
+   "observed": {},
+   "pass": true
+  },
+  {
+   "id": "PX",
+   "group": "shutdown",
+   "description": "prelude session clean shutdown",
+   "expected": "exit 0, no orphan",
+   "observed": {
+    "exit_code": 0,
+    "seconds": 0.0,
+    "orphan": false
+   },
+   "pass": true
+  },
+  {
+   "id": "H1",
+   "group": "handshake",
+   "description": "initialize protocolVersion 2025-06-18",
+   "expected": "echo 2025-06-18 + serverInfo + capabilities + instructions",
+   "observed": {
+    "protocolVersion": "2025-06-18",
+    "serverInfo": {
+     "name": "solidcraft",
+     "title": "SolidCraft",
+     "version": "0.16.2"
+    },
+    "capabilities": {
+     "resources": {
+      "listChanged": false
+     },
+     "tools": {
+      "listChanged": false
+     }
+    },
+    "instructions_head": "SolidCraft is a parametric 3D CAD app in the style of Autodesk Fusion. Units are millimetres and degrees in expressions (internally radians), Z is up. Model like in Fusion: `sketch.create {plane: XY}`, draw (`sketch.rectangle.two_point {p0, p1}`, `sketch.circle.center {center, radius}`, `sketch.line\u2026[truncated, 907 chars total]"
+   },
+   "pass": true
+  },
+  {
+   "id": "H2",
+   "group": "handshake",
+   "description": "initialize with UNKNOWN protocolVersion 1999-01-01",
+   "expected": "fallback to the server's newest (2025-06-18) per server.rs:140-141",
+   "observed": {
+    "protocolVersion": "2025-06-18"
+   },
+   "pass": true
+  },
+  {
+   "id": "H2b",
+   "group": "handshake",
+   "description": "initialize with oldest supported 2024-11-05",
+   "expected": "echo 2024-11-05",
+   "observed": {
+    "protocolVersion": "2024-11-05"
+   },
+   "pass": true
+  },
+  {
+   "id": "H3",
+   "group": "handshake",
+   "description": "notifications/initialized produces NO reply line",
+   "expected": "no output on stdout within 0.4s (notifications carry no id)",
+   "observed": {
+    "silence_observed": true
+   },
+   "pass": true
+  },
+  {
+   "id": "H4",
+   "group": "handshake",
+   "description": "ping",
+   "expected": "result {}",
+   "observed": {},
+   "pass": true
+  },
+  {
+   "id": "H5",
+   "group": "handshake",
+   "description": "JSON-RPC array batch (ping + resources/list) in one line",
+   "expected": "one array line back with both replies, in order",
+   "observed": {
+    "reply_count": 2,
+    "ids": [
+     5,
+     6
+    ]
+   },
+   "pass": true
+  },
+  {
+   "id": "H6",
+   "group": "handshake",
+   "description": "unknown method",
+   "expected": "JSON-RPC -32601",
+   "observed": {
+    "code": -32601,
+    "message": "method `no/such/method` not found"
+   },
+   "pass": true,
+   "layer": "json-rpc"
+  },
+  {
+   "id": "H7",
+   "group": "handshake",
+   "description": "malformed line then ping (server keeps serving)",
+   "expected": "-32700 parse error, then ping still answers",
+   "observed": {
+    "parse_error": {
+     "code": -32700,
+     "message": "parse error: expected ident at line 1 column 2"
+    },
+    "ping_after": {}
+   },
+   "pass": true,
+   "layer": "json-rpc"
+  },
+  {
+   "id": "H8",
+   "group": "handshake",
+   "description": "request object without `method`",
+   "expected": "JSON-RPC -32600",
+   "observed": {
+    "code": -32600,
+    "message": "missing `method`"
+   },
+   "pass": true,
+   "layer": "json-rpc"
+  },
+  {
+   "id": "H9",
+   "group": "handshake",
+   "description": "empty JSON-RPC batch []",
+   "expected": "JSON-RPC -32600 'empty batch'",
+   "observed": {
+    "code": -32600,
+    "message": "empty batch"
+   },
+   "pass": true,
+   "layer": "json-rpc"
+  },
+  {
+   "id": "T1",
+   "group": "inventory",
+   "description": "tools/list inventory",
+   "expected": "15 MCP tools with MCP annotations (readOnly/destructive/openWorld hints)",
+   "observed": {
+    "count": 15,
+    "names": [
+     "list_commands",
+     "execute",
+     "batch",
+     "inspect_design",
+     "measure",
+     "body_topology",
+     "set_parameter",
+     "screenshot",
+     "export",
+     "crash_reports",
+     "undo",
+     "redo",
+     "new_design",
+     "open",
+     "save"
+    ],
+    "by_effect_class": {
+     "readOnly": [
+      "list_commands",
+      "inspect_design",
+      "measure",
+      "body_topology",
+      "crash_reports"
+     ],
+     "files": [
+      "execute",
+      "batch",
+      "screenshot",
+      "export",
+      "open",
+      "save"
+     ],
+     "edits": [
+      "set_parameter",
+      "undo",
+      "redo"
+     ],
+     "replaces": [
+      "new_design"
+     ]
+    }
+   },
+   "pass": true
+  },
+  {
+   "id": "T2",
+   "group": "inventory",
+   "description": "list_commands: engine command catalog size",
+   "expected": "engine exposes every modelling action as a command (394 at this tag, per W2)",
+   "observed": {
+    "count": 394,
+    "by_prefix": {
+     "sketch": 105,
+     "solid": 35,
+     "timeline": 21,
+     "surface": 19,
+     "construct": 19,
+     "component": 17,
+     "inspect": 16,
+     "joint": 16,
+     "parameters": 13,
+     "sheet": 12,
+     "motion": 10,
+     "render": 10,
+     "file": 9,
+     "config": 8,
+     "plastic": 7,
+     "contact": 7,
+     "material": 7,
+     "browser": 6,
+     "view": 6,
+     "canvas": 5,
+     "document": 5,
+     "occurrence": 4,
+     "explode": 4,
+     "parts": 4,
+     "edit": 4,
+     "doc": 4,
+     "diagnostics": 4,
+     "model": 3,
+     "appearance": 3,
+     "library": 3,
+     "select": 2,
+     "face": 1,
+     "mesh": 1,
+     "body": 1,
+     "selection": 1,
+     "expr": 1,
+     "engine": 1
+    }
+   },
+   "pass": true
+  },
+  {
+   "id": "R1",
+   "group": "inventory",
+   "description": "resources/list",
+   "expected": "2 resources (design, commands)",
+   "observed": {
+    "resources": [
+     {
+      "description": "document.inspect with measurements",
+      "mimeType": "application/json",
+      "name": "Active design",
+      "uri": "solidcraft://design"
+     },
+     {
+      "description": "every command with its parameter docs",
+      "mimeType": "application/json",
+      "name": "Command catalog",
+      "uri": "solidcraft://commands"
+     }
+    ]
+   },
+   "pass": true
+  },
+  {
+   "id": "R2",
+   "group": "inventory",
+   "description": "resources/read solidcraft://design (empty design)",
+   "expected": null,
+   "observed": {
+    "text_head": "{\"active_sketch\":null,\"bodies\":[],\"dirty\":false,\"hidden_origin\":[],\"marker\":0,\"metadata\":{},\"name\":\"base\",\"params\":[],\"path\":\"/home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs/base.solidcraft\",\"redo\":0,\"revision\":1,\"selection\":[],\"sketches\":[],\"timeline\":[],\"undo\":0,\"units\":\"mm\"}"
+   },
+   "pass": null
+  },
+  {
+   "id": "R3",
+   "group": "inventory",
+   "description": "resources/read unknown uri",
+   "expected": "JSON-RPC -32002",
+   "observed": {
+    "code": -32002,
+    "message": "unknown resource `solidcraft://nope`"
+   },
+   "pass": true,
+   "layer": "json-rpc"
+  },
+  {
+   "id": "R4",
+   "group": "inventory",
+   "description": "crash_reports (read-only tool)",
+   "expected": null,
+   "observed": {
+    "is_error": false,
+    "count": {
+     "dir": "/home/z/.local/share/solidcraft/crashes",
+     "reports": []
+    }
+   },
+   "pass": null
+  },
+  {
+   "id": "C1",
+   "group": "cad-chain",
+   "description": "set_parameter width/height/depth (user parameters)",
+   "expected": "parameters created, timeline recomputes cleanly (errors: [])",
+   "observed": {
+    "replies": [
+     {
+      "errors": [],
+      "name": "width",
+      "recomputed": 0,
+      "restored": 0,
+      "value": 40.0
+     },
+     {
+      "errors": [],
+      "name": "height",
+      "recomputed": 0,
+      "restored": 0,
+      "value": 30.0
+     },
+     {
+      "errors": [],
+      "name": "depth",
+      "recomputed": 0,
+      "restored": 0,
+      "value": 20.0
+     }
+    ]
+   },
+   "pass": true
+  },
+  {
+   "id": "C2",
+   "group": "cad-chain",
+   "description": "batch: sketch.create \u2192 line \u2192 4 HV constraints \u2192 2 dimensions(width/height) \u2192 sketch.finish \u2192 solid.extrude(distance=depth)",
+   "expected": "ok:true, completed=10, created curve/point/constraint/dimension ids + extrude feature",
+   "observed": {
+    "ok": true,
+    "completed": 10,
+    "line_created_ids": {
+     "constraints": [
+      "k1"
+     ],
+     "curves": [
+      "l1",
+      "l2",
+      "l3",
+      "l4"
+     ],
+     "dimensions": [],
+     "points": [
+      "l1.start",
+      "l1.end",
+      "l2.end",
+      "l3.end"
+     ]
+    },
+    "extrude_feature": {
+     "changed_bodies": [],
+     "created_bodies": [
+      "Body1"
+     ],
+     "feature": 2,
+     "name": "Extrude1"
+    },
+    "verbatim_head": "{\n  \"completed\": 10,\n  \"ok\": true,\n  \"results\": [\n    {\n      \"attachment\": \"fixed\",\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"name\": \"Sketch1\",\n      \"projected\": null,\n      \"sketch\": 1\n    },\n    {\n      \"created\": {\n        \"constraints\": [\n          \"k1\"\n        ],\n        \"curves\": [\n          \"l1\",\n          \"l2\",\n          \"l3\",\n          \"l4\"\n        ],\n        \"dimensions\": [],\n        \"points\": [\n          \"l1.start\",\n          \"l1.end\",\n          \"l2.end\",\n          \"l3.end\"\n        ]\n      },\n      \"sketch\": {\n        \"dof\": 6,\n        \"solved\": true\n      }\n    },\n    {\n      \"constraint\": \u2026[truncated, 2667 chars total]"
+   },
+   "pass": true
+  },
+  {
+   "id": "C3",
+   "group": "cad-chain",
+   "description": "measure: 40\u00d730 rectangle extruded 20 mm",
+   "expected": "volume_mm3 = 24000 (analytic; mm\u00b3) within 1e-6 rel",
+   "observed": {
+    "total": {
+     "area_mm2": 5200.0,
+     "edges": 12,
+     "faces": 6,
+     "mass_g": 30.96,
+     "vertices": 8,
+     "volume_mm3": 24000.0
+    },
+    "analytic_mm3": 24000,
+    "rel_err": 0.0
+   },
+   "pass": true
+  },
+  {
+   "id": "C4",
+   "group": "cad-chain",
+   "description": "constrained sketch: DOF and solve status via inspect_design",
+   "expected": "fully constrained rectangle: DOF 0, no solve error",
+   "observed": {
+    "sketch_dof_fields": {
+     "dof": 0,
+     "status": "solved"
+    },
+    "curve_count": 4,
+    "constraint_count": 7,
+    "dimension_count": 0
+   },
+   "pass": true
+  },
+  {
+   "id": "C5",
+   "group": "cad-chain",
+   "description": "second sketch: arc (sketch.arc.three_point) + circle (sketch.circle.center), not extruded",
+   "expected": "arc + circle curve ids created; bodies unchanged (no feature consumed the profile)",
+   "observed": {
+    "ok": true,
+    "completed": 4,
+    "arc_created": {
+     "constraints": [],
+     "curves": [
+      "a1"
+     ],
+     "dimensions": [],
+     "points": [
+      "a1.center",
+      "a1.start",
+      "a1.end"
+     ]
+    },
+    "circle_created": {
+     "constraints": [],
+     "curves": [
+      "c1"
+     ],
+     "dimensions": [],
+     "points": [
+      "c1.center"
+     ]
+    },
+    "bodies_before": [
+     "Body1"
+    ],
+    "bodies_after": [
+     "Body1"
+    ],
+    "volume_before": 24000.0,
+    "volume_after": 24000.0
+   },
+   "pass": true
+  },
+  {
+   "id": "C6",
+   "group": "cad-chain",
+   "description": "parameter edit width 40\u219250, timeline recomputes",
+   "expected": "volume 50\u00d730\u00d720 = 30000 mm\u00b3; reply reports recomputed feature count",
+   "observed": {
+    "reply": {
+     "display_value": 50.0,
+     "errors": [],
+     "expression": "50",
+     "name": "width",
+     "recomputed": 3,
+     "restored": 0,
+     "value": 50.0
+    },
+    "volume_mm3": 30000.0,
+    "analytic_mm3": 30000,
+    "rel_err": 0.0
+   },
+   "pass": true
+  },
+  {
+   "id": "TR1",
+   "group": "transaction",
+   "description": "undo reverts the parameter edit",
+   "expected": "volume back to 24000; undo depth decreases by 1",
+   "observed": {
+    "undo_reply": "{\n  \"undone\": \"Change Parameters\"\n}",
+    "depth_before": 16,
+    "depth_after": 15,
+    "volume_after": 24000.0
+   },
+   "pass": true
+  },
+  {
+   "id": "TR2",
+   "group": "transaction",
+   "description": "redo reapplies the parameter edit",
+   "expected": "volume 30000 again",
+   "observed": {
+    "redo_reply": "{\n  \"redone\": \"Change Parameters\"\n}",
+    "volume_after": 30000.0
+   },
+   "pass": true
+  },
+  {
+   "id": "TR3",
+   "group": "transaction",
+   "description": "failing batch (box ok, fillet on nonexistent edge fails) with rollback",
+   "expected": "ok:false, failed{index,command,error}, completed steps undone, state identical",
+   "observed": {
+    "ok": false,
+    "completed": 1,
+    "failed": {
+     "command": "solid.fillet",
+     "error": "invalid parameters for `solid.fillet`: no edge at [999, 999, 999]: the nearest edge is 1678.417 mm away",
+     "index": 1
+    },
+    "rolled_back": true,
+    "undone": 1,
+    "state_before": {
+     "volume_mm3": 24000.0,
+     "area_mm2": 5200.0,
+     "faces": 6,
+     "edges": 12,
+     "body_count": 1,
+     "body_names": [
+      "Body1"
+     ],
+     "undo_depth": 15
+    },
+    "state_after": {
+     "volume_mm3": 24000.0,
+     "area_mm2": 5200.0,
+     "faces": 6,
+     "edges": 12,
+     "body_count": 1,
+     "body_names": [
+      "Body1"
+     ],
+     "undo_depth": 15
+    },
+    "state_identical": true
+   },
+   "pass": true
+  },
+  {
+   "id": "TR4",
+   "group": "transaction",
+   "description": "single failing execute: design unchanged",
+   "expected": "tool result isError; state identical before/after",
+   "observed": {
+    "is_error": true,
+    "verbatim": "invalid parameters for `solid.fillet`: no edge at [999, 999, 999]: the nearest edge is 1678.417 mm away",
+    "state_identical": true,
+    "layer": "tool result isError"
+   },
+   "pass": true,
+   "layer": "tool result isError"
+  },
+  {
+   "id": "TR5",
+   "group": "transaction",
+   "description": "same failing batch with rollback:false",
+   "expected": "completed box step REMAINS (volume 25000, +1 body); failure still reported",
+   "observed": {
+    "ok": false,
+    "failed": {
+     "command": "solid.fillet",
+     "error": "invalid parameters for `solid.fillet`: no edge at [999, 999, 999]: the nearest edge is 1678.417 mm away",
+     "index": 1
+    },
+    "rolled_back": false,
+    "state_after": {
+     "volume_mm3": 25000.0,
+     "area_mm2": 5800.0,
+     "faces": 12,
+     "edges": 24,
+     "body_count": 2,
+     "body_names": [
+      "Body1",
+      "Body2"
+     ],
+     "undo_depth": 16
+    }
+   },
+   "pass": true
+  },
+  {
+   "id": "TR6",
+   "group": "transaction",
+   "description": "one undo after rollback:false removes the surviving box",
+   "expected": "volume back to 24000 (batch steps are individually undoable)",
+   "observed": {
+    "volume_after": 24000.0
+   },
+   "pass": true
+  },
+  {
+   "id": "SC1",
+   "group": "schema",
+   "description": "missing required argument: body_topology without `body`",
+   "expected": "JSON-RPC -32602 containing 'missing required argument `body`'",
+   "observed": {
+    "layer": "json-rpc error -32602",
+    "rpc_error": {
+     "code": -32602,
+     "message": "body_topology: missing required argument `body`"
+    }
+   },
+   "pass": true,
+   "layer": "json-rpc error -32602"
+  },
+  {
+   "id": "SC2",
+   "group": "schema",
+   "description": "wrong type: body_topology {body: 5}",
+   "expected": "JSON-RPC -32602 containing 'must be of type'",
+   "observed": {
+    "layer": "json-rpc error -32602",
+    "rpc_error": {
+     "code": -32602,
+     "message": "body_topology: argument `body` must be of type \"string\""
+    }
+   },
+   "pass": true,
+   "layer": "json-rpc error -32602"
+  },
+  {
+   "id": "SC3",
+   "group": "schema",
+   "description": "unknown enum value: screenshot {source: 'sideways'}",
+   "expected": "JSON-RPC -32602 containing 'must be one of'",
+   "observed": {
+    "layer": "json-rpc error -32602",
+    "rpc_error": {
+     "code": -32602,
+     "message": "screenshot: `source` must be one of [\"window\",\"model\"]"
+    }
+   },
+   "pass": true,
+   "layer": "json-rpc error -32602"
+  },
+  {
+   "id": "SC4",
+   "group": "schema",
+   "description": "unknown tool name: warp_drive",
+   "expected": "JSON-RPC -32602 containing 'unknown tool `warp_drive`'",
+   "observed": {
+    "layer": "json-rpc error -32602",
+    "rpc_error": {
+     "code": -32602,
+     "message": "unknown tool `warp_drive`"
+    }
+   },
+   "pass": true,
+   "layer": "json-rpc error -32602"
+  },
+  {
+   "id": "SC5",
+   "group": "schema",
+   "description": "unknown argument: measure {bodeez}",
+   "expected": "JSON-RPC -32602 containing 'unknown argument `bodeez`'",
+   "observed": {
+    "layer": "json-rpc error -32602",
+    "rpc_error": {
+     "code": -32602,
+     "message": "measure: unknown argument `bodeez`"
+    }
+   },
+   "pass": true,
+   "layer": "json-rpc error -32602"
+  },
+  {
+   "id": "SC6",
+   "group": "schema",
+   "description": "tool-level type check: execute {command: 42}",
+   "expected": "JSON-RPC -32602 containing 'must be of type'",
+   "observed": {
+    "layer": "json-rpc error -32602",
+    "rpc_error": {
+     "code": -32602,
+     "message": "execute: argument `command` must be of type \"string\""
+    }
+   },
+   "pass": true,
+   "layer": "json-rpc error -32602"
+  },
+  {
+   "id": "SC7",
+   "group": "schema",
+   "description": "engine layer: execute solid.extrude {distance: 'twenty'} (bad value type)",
+   "expected": "tool result isError",
+   "observed": {
+    "layer": "tool result isError",
+    "is_error": true,
+    "verbatim": "invalid parameters for `solid.extrude`: distance: expression: unknown parameter `twenty`"
+   },
+   "pass": true,
+   "layer": "tool result isError"
+  },
+  {
+   "id": "SC8",
+   "group": "schema",
+   "description": "engine layer: execute solid.extrude {operation: 'explode'} (bad enum)",
+   "expected": "tool result isError",
+   "observed": {
+    "layer": "tool result isError",
+    "is_error": true,
+    "verbatim": "invalid parameters for `solid.extrude`: unknown operation `explode` (new, join, cut, intersect)"
+   },
+   "pass": true,
+   "layer": "tool result isError"
+  },
+  {
+   "id": "SC9",
+   "group": "schema",
+   "description": "engine layer: execute unknown command solid.warp_drive",
+   "expected": "tool result isError",
+   "observed": {
+    "layer": "tool result isError",
+    "is_error": true,
+    "verbatim": "unknown command `solid.warp_drive`"
+   },
+   "pass": true,
+   "layer": "tool result isError"
+  },
+  {
+   "id": "FS0",
+   "group": "fs-security",
+   "description": "save into the server's WORKING FOLDER (cwd, not in scope by itself)",
+   "expected": "refused (isError, 'outside the folders this agent may use') and nothing written",
+   "observed": {
+    "layer": "tool result isError",
+    "verbatim": "/home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/canary.solidcraft: outside the folders this agent may use (/home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2194-1817d895, /home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs); allow another folder with `--allow-path DIR`",
+    "target_exists_after": null
+   },
+   "pass": true,
+   "layer": "tool result isError"
+  },
+  {
+   "id": "FS1",
+   "group": "fs-security",
+   "description": "save to /etc/w3-mcp-leak.solidcraft (outside all roots)",
+   "expected": "refused (isError, 'outside the folders this agent may use') and nothing written",
+   "observed": {
+    "layer": "tool result isError",
+    "verbatim": "/etc/w3-mcp-leak.solidcraft: outside the folders this agent may use (/home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2194-1817d895, /home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs); allow another folder with `--allow-path DIR`",
+    "target_exists_after": null
+   },
+   "pass": true,
+   "layer": "tool result isError"
+  },
+  {
+   "id": "FS2",
+   "group": "fs-security",
+   "description": "open /etc/passwd (outside all roots)",
+   "expected": "refused (isError, 'outside the folders this agent may use') and nothing written",
+   "observed": {
+    "layer": "tool result isError",
+    "verbatim": "/etc/passwd: design container: /etc/passwd: outside the folders this agent may use (/home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2194-1817d895, /home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs); allow another folder with `--allow-path DIR`",
+    "target_exists_after": null
+   },
+   "pass": true,
+   "layer": "tool result isError"
+  },
+  {
+   "id": "FS3",
+   "group": "fs-security",
+   "description": "export to /etc/w3-mcp-leak.step (outside all roots)",
+   "expected": "refused (isError, 'outside the folders this agent may use') and nothing written",
+   "observed": {
+    "layer": "tool result isError",
+    "verbatim": "/etc/w3-mcp-leak.step: /etc/w3-mcp-leak.step: outside the folders this agent may use (/home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2194-1817d895, /home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs); allow another folder with `--allow-path DIR`",
+    "target_exists_after": false
+   },
+   "pass": true,
+   "layer": "tool result isError"
+  },
+  {
+   "id": "FS4",
+   "group": "fs-security",
+   "description": "save into hidden folder ~/.config/ (outside roots, hidden)",
+   "expected": "refused (isError, 'outside the folders this agent may use') and nothing written",
+   "observed": {
+    "layer": "tool result isError",
+    "verbatim": "/home/z/.config/w3-mcp-leak.solidcraft: outside the folders this agent may use (/home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2194-1817d895, /home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs); allow another folder with `--allow-path DIR`",
+    "target_exists_after": false
+   },
+   "pass": true,
+   "layer": "tool result isError"
+  },
+  {
+   "id": "FS5",
+   "group": "fs-security",
+   "description": "`..` escape from the design folder: designs/../escaped.step",
+   "expected": "refused (isError, 'outside the folders this agent may use') and nothing written",
+   "observed": {
+    "layer": "tool result isError",
+    "verbatim": "/home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs/../escaped.step: /home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs/../escaped.step: outside the folders this agent may use (/home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2194-1817d895, /home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs); allow another folder with `--allow-path DIR`",
+    "target_exists_after": false
+   },
+   "pass": true,
+   "layer": "tool result isError"
+  },
+  {
+   "id": "FS6",
+   "group": "fs-security",
+   "description": "save to hidden FILE .env inside the design folder",
+   "expected": "refused (isError, 'outside the folders this agent may use') and nothing written",
+   "observed": {
+    "layer": "tool result isError",
+    "verbatim": "/home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs/.env: outside the folders this agent may use (/home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2194-1817d895, /home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs); allow another folder with `--allow-path DIR`",
+    "target_exists_after": false
+   },
+   "pass": true,
+   "layer": "tool result isError"
+  },
+  {
+   "id": "FS7",
+   "group": "fs-security",
+   "description": "save into hidden FOLDER designs/.hidden/ (design-folder root only)",
+   "expected": "refused (isError, 'outside the folders this agent may use') and nothing written",
+   "observed": {
+    "layer": "tool result isError",
+    "verbatim": "/home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs/.hidden/x.solidcraft: outside the folders this agent may use (/home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2194-1817d895, /home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs); allow another folder with `--allow-path DIR`",
+    "target_exists_after": false
+   },
+   "pass": true,
+   "layer": "tool result isError"
+  },
+  {
+   "id": "FS8",
+   "group": "fs-security",
+   "description": "save into MISSING folder inside the design folder (not auto-created)",
+   "expected": "refused (isError, 'does not exist') and nothing written",
+   "observed": {
+    "layer": "tool result isError",
+    "verbatim": "/home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs/noexist/x.solidcraft: its folder does not exist (nothing exists below /home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs); create the folder first",
+    "target_exists_after": null
+   },
+   "pass": true,
+   "layer": "tool result isError"
+  },
+  {
+   "id": "FS9",
+   "group": "fs-security",
+   "description": "symlink escape: designs/lnk-to-etc -> /etc, save through it",
+   "expected": "refused (isError, 'outside the folders this agent may use') and nothing written",
+   "observed": {
+    "layer": "tool result isError",
+    "verbatim": "/home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs/lnk-to-etc/w3-sym.solidcraft: outside the folders this agent may use (/home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2194-1817d895, /home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs); allow another folder with `--allow-path DIR`",
+    "target_exists_after": false
+   },
+   "pass": true,
+   "layer": "tool result isError"
+  },
+  {
+   "id": "FS10",
+   "group": "fs-security",
+   "description": "positive control: save inside the open design's folder",
+   "expected": "allowed: the design's folder is one of the agent's folders (docs/mcp.md)",
+   "observed": {
+    "is_error": false,
+    "verbatim": "{\n  \"bytes\": 1141,\n  \"name\": \"w3-probe\",\n  \"path\": \"/home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs/w3-probe.solidcraft\"\n}",
+    "file_exists": true,
+    "bytes": 1141
+   },
+   "pass": true
+  },
+  {
+   "id": "G1",
+   "group": "rendering",
+   "description": "screenshot {view: iso, 96x64} (no GPU in sandbox)",
+   "expected": null,
+   "observed": {
+    "is_error": false,
+    "content_types": [
+     "image",
+     "text"
+    ],
+    "source": "model",
+    "renderer": "cpu",
+    "warning": "drawn by the CPU rasterizer (no GPU adapter qualified, or SOLIDCRAFT_GPU=cpu): surface analysis colours, highlights and legends are not drawn; `solidcraft-cli gpu` lists the adapters",
+    "bytes": 13741,
+    "width": 96,
+    "height": 64
+   },
+   "pass": null
+  },
+  {
+   "id": "SV1",
+   "group": "transaction",
+   "description": "serial/version fields: persisted document.json (base vs final) + undo depth",
+   "expected": "next_id grows monotonically; features carry u64 ids; undo depth from inspect",
+   "observed": {
+    "base": {
+     "format": "solidcraft/27",
+     "next_id": 1,
+     "feature_ids": []
+    },
+    "final": {
+     "format": "solidcraft/27",
+     "next_id": 4,
+     "feature_ids": [
+      1,
+      2,
+      3
+     ],
+     "feature_names": [
+      "Sketch1",
+      "Extrude1",
+      "Sketch2"
+     ],
+     "param_names": null
+    },
+    "undo_depth_now": 15
+   },
+   "pass": true
+  },
+  {
+   "id": "PM1",
+   "group": "cad-chain",
+   "description": "parameters.list after the run (parametric wiring)",
+   "expected": null,
+   "observed": {
+    "parameters": [
+     {
+      "name": "width",
+      "expression": "40",
+      "unit": "mm",
+      "value": 40.0,
+      "uses": []
+     },
+     {
+      "name": "height",
+      "expression": "30",
+      "unit": "mm",
+      "value": 30.0,
+      "uses": []
+     },
+     {
+      "name": "depth",
+      "expression": "20",
+      "unit": "mm",
+      "value": 20.0,
+      "uses": []
+     },
+     {
+      "name": "d1",
+      "expression": "width",
+      "unit": "mm",
+      "value": 40.0,
+      "uses": [
+       "width"
+      ]
+     },
+     {
+      "name": "d2",
+      "expression": "height",
+      "unit": "mm",
+      "value": 30.0,
+      "uses": [
+       "height"
+      ]
+     },
+     {
+      "name": "d3",
+      "expression": "depth",
+      "unit": "mm",
+      "value": 20.0,
+      "uses": [
+       "depth"
+      ]
+     }
+    ]
+   },
+   "pass": null
+  },
+  {
+   "id": "X1",
+   "group": "shutdown",
+   "description": "main session clean shutdown after stdin close",
+   "expected": "process exits (exit code 0), no orphan process",
+   "observed": {
+    "exit_code": 0,
+    "seconds": 0.0,
+    "orphan": false
+   },
+   "pass": true
+  }
+ ],
+ "failures": [],
+ "blockers": [],
+ "summary": {
+  "case_count": 58,
+  "by_group": {
+   "setup": {
+    "pass": 1,
+    "fail": 0,
+    "info": 0
+   },
+   "fs-security": {
+    "pass": 12,
+    "fail": 0,
+    "info": 0
+   },
+   "shutdown": {
+    "pass": 3,
+    "fail": 0,
+    "info": 0
+   },
+   "handshake": {
+    "pass": 12,
+    "fail": 0,
+    "info": 0
+   },
+   "inventory": {
+    "pass": 4,
+    "fail": 0,
+    "info": 2
+   },
+   "cad-chain": {
+    "pass": 6,
+    "fail": 0,
+    "info": 1
+   },
+   "transaction": {
+    "pass": 7,
+    "fail": 0,
+    "info": 0
+   },
+   "schema": {
+    "pass": 9,
+    "fail": 0,
+    "info": 0
+   },
+   "rendering": {
+    "pass": 0,
+    "fail": 0,
+    "info": 1
+   }
+  },
+  "passed": 54,
+  "failed": 0,
+  "info": 4,
+  "tool_inventory": {
+   "mcp_tools": 15,
+   "engine_commands": 394
+  },
+  "reproducibility": {
+   "run1_duration_s": 0.5,
+   "run2_duration_s": 0.5,
+   "identical_to_run1": true,
+   "diffs": [],
+   "normalization": "run-dir paths, mcp scratch pid-seed folders and engine self-reported \"ms\" step timings redacted; geometry and all error strings compared exactly"
+  }
+ },
+ "notes": {
+  "session0_stderr": "solidcraft mcp: files limited to /home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2190-17a4866c, /home/z/blender-cad/experiments/solidcraft/scratch/w3/run1/designs and the open design's folder (--allow-path DIR adds one, --allow-any-path lifts the limit)\n",
+  "main_stderr": "solidcraft mcp: files limited to /home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2194-1817d895 and the open design's folder (--allow-path DIR adds one, --allow-any-path lifts the limit)\n",
+  "scratch_root": "/home/z/blender-cad/experiments/solidcraft/scratch/w3 (gitignored)"
+ },
+ "reproducibility_run2": {
+  "duration_s": 0.5,
+  "blockers": [],
+  "cases": [
+   {
+    "id": "S0A",
+    "group": "setup",
+    "description": "save empty design into --allow-path folder",
+    "expected": "file written",
+    "observed": {
+     "verbatim_reply": "{\n  \"bytes\": 348,\n  \"name\": \"base\",\n  \"path\": \"/home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs/base.solidcraft\"\n}",
+     "file_exists": true,
+     "bytes": 348
+    },
+    "pass": true
+   },
+   {
+    "id": "S0B",
+    "group": "fs-security",
+    "description": "save HIDDEN file inside a --allow-path root",
+    "expected": "allowed: a named folder is reached in full, hidden files included (docs/mcp.md)",
+    "observed": {
+     "verbatim": "{\n  \"bytes\": 363,\n  \"name\": \".inside-allow-root\",\n  \"path\": \"/home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs/.inside-allow-root.solidcraft\"\n}",
+     "file_exists": true
+    },
+    "pass": true
+   },
+   {
+    "id": "S0X",
+    "group": "shutdown",
+    "description": "session-0 clean shutdown after stdin close",
+    "expected": "exit code 0, no orphan",
+    "observed": {
+     "exit_code": 0,
+     "seconds": 0.0,
+     "orphan": false
+    },
+    "pass": true
+   },
+   {
+    "id": "P1",
+    "group": "handshake",
+    "description": "tools/list BEFORE initialize (lifecycle enforcement?)",
+    "expected": "server.rs has an `initialized` flag but request() never checks it \u2014 probe what happens",
+    "observed": {
+     "replied": true,
+     "tool_count": 15,
+     "note": "server answers; initialize is not enforced at the request layer"
+    },
+    "pass": true,
+    "extra": {
+     "source_ref": "crates/mcp/src/server.rs:114-183"
+    }
+   },
+   {
+    "id": "P2",
+    "group": "handshake",
+    "description": "ping before initialize",
+    "expected": "empty result {}",
+    "observed": {},
+    "pass": true
+   },
+   {
+    "id": "PX",
+    "group": "shutdown",
+    "description": "prelude session clean shutdown",
+    "expected": "exit 0, no orphan",
+    "observed": {
+     "exit_code": 0,
+     "seconds": 0.0,
+     "orphan": false
+    },
+    "pass": true
+   },
+   {
+    "id": "H1",
+    "group": "handshake",
+    "description": "initialize protocolVersion 2025-06-18",
+    "expected": "echo 2025-06-18 + serverInfo + capabilities + instructions",
+    "observed": {
+     "protocolVersion": "2025-06-18",
+     "serverInfo": {
+      "name": "solidcraft",
+      "title": "SolidCraft",
+      "version": "0.16.2"
+     },
+     "capabilities": {
+      "resources": {
+       "listChanged": false
+      },
+      "tools": {
+       "listChanged": false
+      }
+     },
+     "instructions_head": "SolidCraft is a parametric 3D CAD app in the style of Autodesk Fusion. Units are millimetres and degrees in expressions (internally radians), Z is up. Model like in Fusion: `sketch.create {plane: XY}`, draw (`sketch.rectangle.two_point {p0, p1}`, `sketch.circle.center {center, radius}`, `sketch.line\u2026[truncated, 907 chars total]"
+    },
+    "pass": true
+   },
+   {
+    "id": "H2",
+    "group": "handshake",
+    "description": "initialize with UNKNOWN protocolVersion 1999-01-01",
+    "expected": "fallback to the server's newest (2025-06-18) per server.rs:140-141",
+    "observed": {
+     "protocolVersion": "2025-06-18"
+    },
+    "pass": true
+   },
+   {
+    "id": "H2b",
+    "group": "handshake",
+    "description": "initialize with oldest supported 2024-11-05",
+    "expected": "echo 2024-11-05",
+    "observed": {
+     "protocolVersion": "2024-11-05"
+    },
+    "pass": true
+   },
+   {
+    "id": "H3",
+    "group": "handshake",
+    "description": "notifications/initialized produces NO reply line",
+    "expected": "no output on stdout within 0.4s (notifications carry no id)",
+    "observed": {
+     "silence_observed": true
+    },
+    "pass": true
+   },
+   {
+    "id": "H4",
+    "group": "handshake",
+    "description": "ping",
+    "expected": "result {}",
+    "observed": {},
+    "pass": true
+   },
+   {
+    "id": "H5",
+    "group": "handshake",
+    "description": "JSON-RPC array batch (ping + resources/list) in one line",
+    "expected": "one array line back with both replies, in order",
+    "observed": {
+     "reply_count": 2,
+     "ids": [
+      5,
+      6
+     ]
+    },
+    "pass": true
+   },
+   {
+    "id": "H6",
+    "group": "handshake",
+    "description": "unknown method",
+    "expected": "JSON-RPC -32601",
+    "observed": {
+     "code": -32601,
+     "message": "method `no/such/method` not found"
+    },
+    "pass": true,
+    "layer": "json-rpc"
+   },
+   {
+    "id": "H7",
+    "group": "handshake",
+    "description": "malformed line then ping (server keeps serving)",
+    "expected": "-32700 parse error, then ping still answers",
+    "observed": {
+     "parse_error": {
+      "code": -32700,
+      "message": "parse error: expected ident at line 1 column 2"
+     },
+     "ping_after": {}
+    },
+    "pass": true,
+    "layer": "json-rpc"
+   },
+   {
+    "id": "H8",
+    "group": "handshake",
+    "description": "request object without `method`",
+    "expected": "JSON-RPC -32600",
+    "observed": {
+     "code": -32600,
+     "message": "missing `method`"
+    },
+    "pass": true,
+    "layer": "json-rpc"
+   },
+   {
+    "id": "H9",
+    "group": "handshake",
+    "description": "empty JSON-RPC batch []",
+    "expected": "JSON-RPC -32600 'empty batch'",
+    "observed": {
+     "code": -32600,
+     "message": "empty batch"
+    },
+    "pass": true,
+    "layer": "json-rpc"
+   },
+   {
+    "id": "T1",
+    "group": "inventory",
+    "description": "tools/list inventory",
+    "expected": "15 MCP tools with MCP annotations (readOnly/destructive/openWorld hints)",
+    "observed": {
+     "count": 15,
+     "names": [
+      "list_commands",
+      "execute",
+      "batch",
+      "inspect_design",
+      "measure",
+      "body_topology",
+      "set_parameter",
+      "screenshot",
+      "export",
+      "crash_reports",
+      "undo",
+      "redo",
+      "new_design",
+      "open",
+      "save"
+     ],
+     "by_effect_class": {
+      "readOnly": [
+       "list_commands",
+       "inspect_design",
+       "measure",
+       "body_topology",
+       "crash_reports"
+      ],
+      "files": [
+       "execute",
+       "batch",
+       "screenshot",
+       "export",
+       "open",
+       "save"
+      ],
+      "edits": [
+       "set_parameter",
+       "undo",
+       "redo"
+      ],
+      "replaces": [
+       "new_design"
+      ]
+     }
+    },
+    "pass": true
+   },
+   {
+    "id": "T2",
+    "group": "inventory",
+    "description": "list_commands: engine command catalog size",
+    "expected": "engine exposes every modelling action as a command (394 at this tag, per W2)",
+    "observed": {
+     "count": 394,
+     "by_prefix": {
+      "sketch": 105,
+      "solid": 35,
+      "timeline": 21,
+      "surface": 19,
+      "construct": 19,
+      "component": 17,
+      "inspect": 16,
+      "joint": 16,
+      "parameters": 13,
+      "sheet": 12,
+      "motion": 10,
+      "render": 10,
+      "file": 9,
+      "config": 8,
+      "plastic": 7,
+      "contact": 7,
+      "material": 7,
+      "browser": 6,
+      "view": 6,
+      "canvas": 5,
+      "document": 5,
+      "occurrence": 4,
+      "explode": 4,
+      "parts": 4,
+      "edit": 4,
+      "doc": 4,
+      "diagnostics": 4,
+      "model": 3,
+      "appearance": 3,
+      "library": 3,
+      "select": 2,
+      "face": 1,
+      "mesh": 1,
+      "body": 1,
+      "selection": 1,
+      "expr": 1,
+      "engine": 1
+     }
+    },
+    "pass": true
+   },
+   {
+    "id": "R1",
+    "group": "inventory",
+    "description": "resources/list",
+    "expected": "2 resources (design, commands)",
+    "observed": {
+     "resources": [
+      {
+       "description": "document.inspect with measurements",
+       "mimeType": "application/json",
+       "name": "Active design",
+       "uri": "solidcraft://design"
+      },
+      {
+       "description": "every command with its parameter docs",
+       "mimeType": "application/json",
+       "name": "Command catalog",
+       "uri": "solidcraft://commands"
+      }
+     ]
+    },
+    "pass": true
+   },
+   {
+    "id": "R2",
+    "group": "inventory",
+    "description": "resources/read solidcraft://design (empty design)",
+    "expected": null,
+    "observed": {
+     "text_head": "{\"active_sketch\":null,\"bodies\":[],\"dirty\":false,\"hidden_origin\":[],\"marker\":0,\"metadata\":{},\"name\":\"base\",\"params\":[],\"path\":\"/home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs/base.solidcraft\",\"redo\":0,\"revision\":1,\"selection\":[],\"sketches\":[],\"timeline\":[],\"undo\":0,\"units\":\"mm\"}"
+    },
+    "pass": null
+   },
+   {
+    "id": "R3",
+    "group": "inventory",
+    "description": "resources/read unknown uri",
+    "expected": "JSON-RPC -32002",
+    "observed": {
+     "code": -32002,
+     "message": "unknown resource `solidcraft://nope`"
+    },
+    "pass": true,
+    "layer": "json-rpc"
+   },
+   {
+    "id": "R4",
+    "group": "inventory",
+    "description": "crash_reports (read-only tool)",
+    "expected": null,
+    "observed": {
+     "is_error": false,
+     "count": {
+      "dir": "/home/z/.local/share/solidcraft/crashes",
+      "reports": []
+     }
+    },
+    "pass": null
+   },
+   {
+    "id": "C1",
+    "group": "cad-chain",
+    "description": "set_parameter width/height/depth (user parameters)",
+    "expected": "parameters created, timeline recomputes cleanly (errors: [])",
+    "observed": {
+     "replies": [
+      {
+       "errors": [],
+       "name": "width",
+       "recomputed": 0,
+       "restored": 0,
+       "value": 40.0
+      },
+      {
+       "errors": [],
+       "name": "height",
+       "recomputed": 0,
+       "restored": 0,
+       "value": 30.0
+      },
+      {
+       "errors": [],
+       "name": "depth",
+       "recomputed": 0,
+       "restored": 0,
+       "value": 20.0
+      }
+     ]
+    },
+    "pass": true
+   },
+   {
+    "id": "C2",
+    "group": "cad-chain",
+    "description": "batch: sketch.create \u2192 line \u2192 4 HV constraints \u2192 2 dimensions(width/height) \u2192 sketch.finish \u2192 solid.extrude(distance=depth)",
+    "expected": "ok:true, completed=10, created curve/point/constraint/dimension ids + extrude feature",
+    "observed": {
+     "ok": true,
+     "completed": 10,
+     "line_created_ids": {
+      "constraints": [
+       "k1"
+      ],
+      "curves": [
+       "l1",
+       "l2",
+       "l3",
+       "l4"
+      ],
+      "dimensions": [],
+      "points": [
+       "l1.start",
+       "l1.end",
+       "l2.end",
+       "l3.end"
+      ]
+     },
+     "extrude_feature": {
+      "changed_bodies": [],
+      "created_bodies": [
+       "Body1"
+      ],
+      "feature": 2,
+      "name": "Extrude1"
+     },
+     "verbatim_head": "{\n  \"completed\": 10,\n  \"ok\": true,\n  \"results\": [\n    {\n      \"attachment\": \"fixed\",\n      \"created\": {\n        \"constraints\": [],\n        \"curves\": [],\n        \"dimensions\": [],\n        \"points\": []\n      },\n      \"name\": \"Sketch1\",\n      \"projected\": null,\n      \"sketch\": 1\n    },\n    {\n      \"created\": {\n        \"constraints\": [\n          \"k1\"\n        ],\n        \"curves\": [\n          \"l1\",\n          \"l2\",\n          \"l3\",\n          \"l4\"\n        ],\n        \"dimensions\": [],\n        \"points\": [\n          \"l1.start\",\n          \"l1.end\",\n          \"l2.end\",\n          \"l3.end\"\n        ]\n      },\n      \"sketch\": {\n        \"dof\": 6,\n        \"solved\": true\n      }\n    },\n    {\n      \"constraint\": \u2026[truncated, 2667 chars total]"
+    },
+    "pass": true
+   },
+   {
+    "id": "C3",
+    "group": "cad-chain",
+    "description": "measure: 40\u00d730 rectangle extruded 20 mm",
+    "expected": "volume_mm3 = 24000 (analytic; mm\u00b3) within 1e-6 rel",
+    "observed": {
+     "total": {
+      "area_mm2": 5200.0,
+      "edges": 12,
+      "faces": 6,
+      "mass_g": 30.96,
+      "vertices": 8,
+      "volume_mm3": 24000.0
+     },
+     "analytic_mm3": 24000,
+     "rel_err": 0.0
+    },
+    "pass": true
+   },
+   {
+    "id": "C4",
+    "group": "cad-chain",
+    "description": "constrained sketch: DOF and solve status via inspect_design",
+    "expected": "fully constrained rectangle: DOF 0, no solve error",
+    "observed": {
+     "sketch_dof_fields": {
+      "dof": 0,
+      "status": "solved"
+     },
+     "curve_count": 4,
+     "constraint_count": 7,
+     "dimension_count": 0
+    },
+    "pass": true
+   },
+   {
+    "id": "C5",
+    "group": "cad-chain",
+    "description": "second sketch: arc (sketch.arc.three_point) + circle (sketch.circle.center), not extruded",
+    "expected": "arc + circle curve ids created; bodies unchanged (no feature consumed the profile)",
+    "observed": {
+     "ok": true,
+     "completed": 4,
+     "arc_created": {
+      "constraints": [],
+      "curves": [
+       "a1"
+      ],
+      "dimensions": [],
+      "points": [
+       "a1.center",
+       "a1.start",
+       "a1.end"
+      ]
+     },
+     "circle_created": {
+      "constraints": [],
+      "curves": [
+       "c1"
+      ],
+      "dimensions": [],
+      "points": [
+       "c1.center"
+      ]
+     },
+     "bodies_before": [
+      "Body1"
+     ],
+     "bodies_after": [
+      "Body1"
+     ],
+     "volume_before": 24000.0,
+     "volume_after": 24000.0
+    },
+    "pass": true
+   },
+   {
+    "id": "C6",
+    "group": "cad-chain",
+    "description": "parameter edit width 40\u219250, timeline recomputes",
+    "expected": "volume 50\u00d730\u00d720 = 30000 mm\u00b3; reply reports recomputed feature count",
+    "observed": {
+     "reply": {
+      "display_value": 50.0,
+      "errors": [],
+      "expression": "50",
+      "name": "width",
+      "recomputed": 3,
+      "restored": 0,
+      "value": 50.0
+     },
+     "volume_mm3": 30000.0,
+     "analytic_mm3": 30000,
+     "rel_err": 0.0
+    },
+    "pass": true
+   },
+   {
+    "id": "TR1",
+    "group": "transaction",
+    "description": "undo reverts the parameter edit",
+    "expected": "volume back to 24000; undo depth decreases by 1",
+    "observed": {
+     "undo_reply": "{\n  \"undone\": \"Change Parameters\"\n}",
+     "depth_before": 16,
+     "depth_after": 15,
+     "volume_after": 24000.0
+    },
+    "pass": true
+   },
+   {
+    "id": "TR2",
+    "group": "transaction",
+    "description": "redo reapplies the parameter edit",
+    "expected": "volume 30000 again",
+    "observed": {
+     "redo_reply": "{\n  \"redone\": \"Change Parameters\"\n}",
+     "volume_after": 30000.0
+    },
+    "pass": true
+   },
+   {
+    "id": "TR3",
+    "group": "transaction",
+    "description": "failing batch (box ok, fillet on nonexistent edge fails) with rollback",
+    "expected": "ok:false, failed{index,command,error}, completed steps undone, state identical",
+    "observed": {
+     "ok": false,
+     "completed": 1,
+     "failed": {
+      "command": "solid.fillet",
+      "error": "invalid parameters for `solid.fillet`: no edge at [999, 999, 999]: the nearest edge is 1678.417 mm away",
+      "index": 1
+     },
+     "rolled_back": true,
+     "undone": 1,
+     "state_before": {
+      "volume_mm3": 24000.0,
+      "area_mm2": 5200.0,
+      "faces": 6,
+      "edges": 12,
+      "body_count": 1,
+      "body_names": [
+       "Body1"
+      ],
+      "undo_depth": 15
+     },
+     "state_after": {
+      "volume_mm3": 24000.0,
+      "area_mm2": 5200.0,
+      "faces": 6,
+      "edges": 12,
+      "body_count": 1,
+      "body_names": [
+       "Body1"
+      ],
+      "undo_depth": 15
+     },
+     "state_identical": true
+    },
+    "pass": true
+   },
+   {
+    "id": "TR4",
+    "group": "transaction",
+    "description": "single failing execute: design unchanged",
+    "expected": "tool result isError; state identical before/after",
+    "observed": {
+     "is_error": true,
+     "verbatim": "invalid parameters for `solid.fillet`: no edge at [999, 999, 999]: the nearest edge is 1678.417 mm away",
+     "state_identical": true,
+     "layer": "tool result isError"
+    },
+    "pass": true,
+    "layer": "tool result isError"
+   },
+   {
+    "id": "TR5",
+    "group": "transaction",
+    "description": "same failing batch with rollback:false",
+    "expected": "completed box step REMAINS (volume 25000, +1 body); failure still reported",
+    "observed": {
+     "ok": false,
+     "failed": {
+      "command": "solid.fillet",
+      "error": "invalid parameters for `solid.fillet`: no edge at [999, 999, 999]: the nearest edge is 1678.417 mm away",
+      "index": 1
+     },
+     "rolled_back": false,
+     "state_after": {
+      "volume_mm3": 25000.0,
+      "area_mm2": 5800.0,
+      "faces": 12,
+      "edges": 24,
+      "body_count": 2,
+      "body_names": [
+       "Body1",
+       "Body2"
+      ],
+      "undo_depth": 16
+     }
+    },
+    "pass": true
+   },
+   {
+    "id": "TR6",
+    "group": "transaction",
+    "description": "one undo after rollback:false removes the surviving box",
+    "expected": "volume back to 24000 (batch steps are individually undoable)",
+    "observed": {
+     "volume_after": 24000.0
+    },
+    "pass": true
+   },
+   {
+    "id": "SC1",
+    "group": "schema",
+    "description": "missing required argument: body_topology without `body`",
+    "expected": "JSON-RPC -32602 containing 'missing required argument `body`'",
+    "observed": {
+     "layer": "json-rpc error -32602",
+     "rpc_error": {
+      "code": -32602,
+      "message": "body_topology: missing required argument `body`"
+     }
+    },
+    "pass": true,
+    "layer": "json-rpc error -32602"
+   },
+   {
+    "id": "SC2",
+    "group": "schema",
+    "description": "wrong type: body_topology {body: 5}",
+    "expected": "JSON-RPC -32602 containing 'must be of type'",
+    "observed": {
+     "layer": "json-rpc error -32602",
+     "rpc_error": {
+      "code": -32602,
+      "message": "body_topology: argument `body` must be of type \"string\""
+     }
+    },
+    "pass": true,
+    "layer": "json-rpc error -32602"
+   },
+   {
+    "id": "SC3",
+    "group": "schema",
+    "description": "unknown enum value: screenshot {source: 'sideways'}",
+    "expected": "JSON-RPC -32602 containing 'must be one of'",
+    "observed": {
+     "layer": "json-rpc error -32602",
+     "rpc_error": {
+      "code": -32602,
+      "message": "screenshot: `source` must be one of [\"window\",\"model\"]"
+     }
+    },
+    "pass": true,
+    "layer": "json-rpc error -32602"
+   },
+   {
+    "id": "SC4",
+    "group": "schema",
+    "description": "unknown tool name: warp_drive",
+    "expected": "JSON-RPC -32602 containing 'unknown tool `warp_drive`'",
+    "observed": {
+     "layer": "json-rpc error -32602",
+     "rpc_error": {
+      "code": -32602,
+      "message": "unknown tool `warp_drive`"
+     }
+    },
+    "pass": true,
+    "layer": "json-rpc error -32602"
+   },
+   {
+    "id": "SC5",
+    "group": "schema",
+    "description": "unknown argument: measure {bodeez}",
+    "expected": "JSON-RPC -32602 containing 'unknown argument `bodeez`'",
+    "observed": {
+     "layer": "json-rpc error -32602",
+     "rpc_error": {
+      "code": -32602,
+      "message": "measure: unknown argument `bodeez`"
+     }
+    },
+    "pass": true,
+    "layer": "json-rpc error -32602"
+   },
+   {
+    "id": "SC6",
+    "group": "schema",
+    "description": "tool-level type check: execute {command: 42}",
+    "expected": "JSON-RPC -32602 containing 'must be of type'",
+    "observed": {
+     "layer": "json-rpc error -32602",
+     "rpc_error": {
+      "code": -32602,
+      "message": "execute: argument `command` must be of type \"string\""
+     }
+    },
+    "pass": true,
+    "layer": "json-rpc error -32602"
+   },
+   {
+    "id": "SC7",
+    "group": "schema",
+    "description": "engine layer: execute solid.extrude {distance: 'twenty'} (bad value type)",
+    "expected": "tool result isError",
+    "observed": {
+     "layer": "tool result isError",
+     "is_error": true,
+     "verbatim": "invalid parameters for `solid.extrude`: distance: expression: unknown parameter `twenty`"
+    },
+    "pass": true,
+    "layer": "tool result isError"
+   },
+   {
+    "id": "SC8",
+    "group": "schema",
+    "description": "engine layer: execute solid.extrude {operation: 'explode'} (bad enum)",
+    "expected": "tool result isError",
+    "observed": {
+     "layer": "tool result isError",
+     "is_error": true,
+     "verbatim": "invalid parameters for `solid.extrude`: unknown operation `explode` (new, join, cut, intersect)"
+    },
+    "pass": true,
+    "layer": "tool result isError"
+   },
+   {
+    "id": "SC9",
+    "group": "schema",
+    "description": "engine layer: execute unknown command solid.warp_drive",
+    "expected": "tool result isError",
+    "observed": {
+     "layer": "tool result isError",
+     "is_error": true,
+     "verbatim": "unknown command `solid.warp_drive`"
+    },
+    "pass": true,
+    "layer": "tool result isError"
+   },
+   {
+    "id": "FS0",
+    "group": "fs-security",
+    "description": "save into the server's WORKING FOLDER (cwd, not in scope by itself)",
+    "expected": "refused (isError, 'outside the folders this agent may use') and nothing written",
+    "observed": {
+     "layer": "tool result isError",
+     "verbatim": "/home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/canary.solidcraft: outside the folders this agent may use (/home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2203-33ffcfab, /home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs); allow another folder with `--allow-path DIR`",
+     "target_exists_after": null
+    },
+    "pass": true,
+    "layer": "tool result isError"
+   },
+   {
+    "id": "FS1",
+    "group": "fs-security",
+    "description": "save to /etc/w3-mcp-leak.solidcraft (outside all roots)",
+    "expected": "refused (isError, 'outside the folders this agent may use') and nothing written",
+    "observed": {
+     "layer": "tool result isError",
+     "verbatim": "/etc/w3-mcp-leak.solidcraft: outside the folders this agent may use (/home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2203-33ffcfab, /home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs); allow another folder with `--allow-path DIR`",
+     "target_exists_after": null
+    },
+    "pass": true,
+    "layer": "tool result isError"
+   },
+   {
+    "id": "FS2",
+    "group": "fs-security",
+    "description": "open /etc/passwd (outside all roots)",
+    "expected": "refused (isError, 'outside the folders this agent may use') and nothing written",
+    "observed": {
+     "layer": "tool result isError",
+     "verbatim": "/etc/passwd: design container: /etc/passwd: outside the folders this agent may use (/home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2203-33ffcfab, /home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs); allow another folder with `--allow-path DIR`",
+     "target_exists_after": null
+    },
+    "pass": true,
+    "layer": "tool result isError"
+   },
+   {
+    "id": "FS3",
+    "group": "fs-security",
+    "description": "export to /etc/w3-mcp-leak.step (outside all roots)",
+    "expected": "refused (isError, 'outside the folders this agent may use') and nothing written",
+    "observed": {
+     "layer": "tool result isError",
+     "verbatim": "/etc/w3-mcp-leak.step: /etc/w3-mcp-leak.step: outside the folders this agent may use (/home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2203-33ffcfab, /home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs); allow another folder with `--allow-path DIR`",
+     "target_exists_after": false
+    },
+    "pass": true,
+    "layer": "tool result isError"
+   },
+   {
+    "id": "FS4",
+    "group": "fs-security",
+    "description": "save into hidden folder ~/.config/ (outside roots, hidden)",
+    "expected": "refused (isError, 'outside the folders this agent may use') and nothing written",
+    "observed": {
+     "layer": "tool result isError",
+     "verbatim": "/home/z/.config/w3-mcp-leak.solidcraft: outside the folders this agent may use (/home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2203-33ffcfab, /home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs); allow another folder with `--allow-path DIR`",
+     "target_exists_after": false
+    },
+    "pass": true,
+    "layer": "tool result isError"
+   },
+   {
+    "id": "FS5",
+    "group": "fs-security",
+    "description": "`..` escape from the design folder: designs/../escaped.step",
+    "expected": "refused (isError, 'outside the folders this agent may use') and nothing written",
+    "observed": {
+     "layer": "tool result isError",
+     "verbatim": "/home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs/../escaped.step: /home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs/../escaped.step: outside the folders this agent may use (/home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2203-33ffcfab, /home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs); allow another folder with `--allow-path DIR`",
+     "target_exists_after": false
+    },
+    "pass": true,
+    "layer": "tool result isError"
+   },
+   {
+    "id": "FS6",
+    "group": "fs-security",
+    "description": "save to hidden FILE .env inside the design folder",
+    "expected": "refused (isError, 'outside the folders this agent may use') and nothing written",
+    "observed": {
+     "layer": "tool result isError",
+     "verbatim": "/home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs/.env: outside the folders this agent may use (/home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2203-33ffcfab, /home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs); allow another folder with `--allow-path DIR`",
+     "target_exists_after": false
+    },
+    "pass": true,
+    "layer": "tool result isError"
+   },
+   {
+    "id": "FS7",
+    "group": "fs-security",
+    "description": "save into hidden FOLDER designs/.hidden/ (design-folder root only)",
+    "expected": "refused (isError, 'outside the folders this agent may use') and nothing written",
+    "observed": {
+     "layer": "tool result isError",
+     "verbatim": "/home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs/.hidden/x.solidcraft: outside the folders this agent may use (/home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2203-33ffcfab, /home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs); allow another folder with `--allow-path DIR`",
+     "target_exists_after": false
+    },
+    "pass": true,
+    "layer": "tool result isError"
+   },
+   {
+    "id": "FS8",
+    "group": "fs-security",
+    "description": "save into MISSING folder inside the design folder (not auto-created)",
+    "expected": "refused (isError, 'does not exist') and nothing written",
+    "observed": {
+     "layer": "tool result isError",
+     "verbatim": "/home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs/noexist/x.solidcraft: its folder does not exist (nothing exists below /home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs); create the folder first",
+     "target_exists_after": null
+    },
+    "pass": true,
+    "layer": "tool result isError"
+   },
+   {
+    "id": "FS9",
+    "group": "fs-security",
+    "description": "symlink escape: designs/lnk-to-etc -> /etc, save through it",
+    "expected": "refused (isError, 'outside the folders this agent may use') and nothing written",
+    "observed": {
+     "layer": "tool result isError",
+     "verbatim": "/home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs/lnk-to-etc/w3-sym.solidcraft: outside the folders this agent may use (/home/z/.local/share/solidcraft/recovery, /tmp/solidcraft-mcp-2203-33ffcfab, /home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs); allow another folder with `--allow-path DIR`",
+     "target_exists_after": false
+    },
+    "pass": true,
+    "layer": "tool result isError"
+   },
+   {
+    "id": "FS10",
+    "group": "fs-security",
+    "description": "positive control: save inside the open design's folder",
+    "expected": "allowed: the design's folder is one of the agent's folders (docs/mcp.md)",
+    "observed": {
+     "is_error": false,
+     "verbatim": "{\n  \"bytes\": 1141,\n  \"name\": \"w3-probe\",\n  \"path\": \"/home/z/blender-cad/experiments/solidcraft/scratch/w3/run2/designs/w3-probe.solidcraft\"\n}",
+     "file_exists": true,
+     "bytes": 1141
+    },
+    "pass": true
+   },
+   {
+    "id": "G1",
+    "group": "rendering",
+    "description": "screenshot {view: iso, 96x64} (no GPU in sandbox)",
+    "expected": null,
+    "observed": {
+     "is_error": false,
+     "content_types": [
+      "image",
+      "text"
+     ],
+     "source": "model",
+     "renderer": "cpu",
+     "warning": "drawn by the CPU rasterizer (no GPU adapter qualified, or SOLIDCRAFT_GPU=cpu): surface analysis colours, highlights and legends are not drawn; `solidcraft-cli gpu` lists the adapters",
+     "bytes": 13741,
+     "width": 96,
+     "height": 64
+    },
+    "pass": null
+   },
+   {
+    "id": "SV1",
+    "group": "transaction",
+    "description": "serial/version fields: persisted document.json (base vs final) + undo depth",
+    "expected": "next_id grows monotonically; features carry u64 ids; undo depth from inspect",
+    "observed": {
+     "base": {
+      "format": "solidcraft/27",
+      "next_id": 1,
+      "feature_ids": []
+     },
+     "final": {
+      "format": "solidcraft/27",
+      "next_id": 4,
+      "feature_ids": [
+       1,
+       2,
+       3
+      ],
+      "feature_names": [
+       "Sketch1",
+       "Extrude1",
+       "Sketch2"
+      ],
+      "param_names": null
+     },
+     "undo_depth_now": 15
+    },
+    "pass": true
+   },
+   {
+    "id": "PM1",
+    "group": "cad-chain",
+    "description": "parameters.list after the run (parametric wiring)",
+    "expected": null,
+    "observed": {
+     "parameters": [
+      {
+       "name": "width",
+       "expression": "40",
+       "unit": "mm",
+       "value": 40.0,
+       "uses": []
+      },
+      {
+       "name": "height",
+       "expression": "30",
+       "unit": "mm",
+       "value": 30.0,
+       "uses": []
+      },
+      {
+       "name": "depth",
+       "expression": "20",
+       "unit": "mm",
+       "value": 20.0,
+       "uses": []
+      },
+      {
+       "name": "d1",
+       "expression": "width",
+       "unit": "mm",
+       "value": 40.0,
+       "uses": [
+        "width"
+       ]
+      },
+      {
+       "name": "d2",
+       "expression": "height",
+       "unit": "mm",
+       "value": 30.0,
+       "uses": [
+        "height"
+       ]
+      },
+      {
+       "name": "d3",
+       "expression": "depth",
+       "unit": "mm",
+       "value": 20.0,
+       "uses": [
+        "depth"
+       ]
+      }
+     ]
+    },
+    "pass": null
+   },
+   {
+    "id": "X1",
+    "group": "shutdown",
+    "description": "main session clean shutdown after stdin close",
+    "expected": "process exits (exit code 0), no orphan process",
+    "observed": {
+     "exit_code": 0,
+     "seconds": 0.0,
+     "orphan": false
+    },
+    "pass": true
+   }
+  ]
+ }
+}
